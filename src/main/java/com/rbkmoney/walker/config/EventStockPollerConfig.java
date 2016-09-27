@@ -3,6 +3,7 @@ package com.rbkmoney.walker.config;
 import com.rbkmoney.eventstock.client.*;
 import com.rbkmoney.eventstock.client.poll.EventFlowFilter;
 import com.rbkmoney.eventstock.client.poll.PollingEventPublisherBuilder;
+import com.rbkmoney.walker.dao.JiraDao;
 import com.rbkmoney.walker.handler.Handler;
 import com.rbkmoney.walker.handler.poller.EventStockErrorHandler;
 import com.rbkmoney.walker.handler.poller.EventStockHandler;
@@ -22,17 +23,20 @@ import java.util.List;
 @Configuration
 public class EventStockPollerConfig {
 
-    @Value("${bm.pooling.url}")
+    @Value("${wk.pooling.url}")
     Resource bmUri;
 
-    @Value("${bm.pooling.delay}")
+    @Value("${wk.pooling.delay}")
     int pollDelay;
 
-    @Value("${bm.pooling.maxPoolSize}")
+    @Value("${wk.pooling.maxPoolSize}")
     int maxPoolSize;
 
     @Autowired
     List<Handler> handlers;
+
+    @Autowired
+    JiraDao jiraDao;
 
     @Bean
     public EventPublisher eventPublisher() throws IOException {
@@ -52,7 +56,7 @@ public class EventStockPollerConfig {
 
     public EventFilter eventFilter() {
         EventConstraint.EventIDRange eventIDRange = new EventConstraint.EventIDRange();
-        Long lastEventId = 0L;
+        Long lastEventId = jiraDao.getLastEventId();
         if (lastEventId != null) {
             eventIDRange.setFromExclusive(lastEventId);
         }
