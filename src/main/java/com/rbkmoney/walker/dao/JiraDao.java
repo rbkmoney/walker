@@ -17,6 +17,8 @@ public class JiraDao {
     @Autowired
     JiraConfig config;
 
+
+    //todo fix multithred acces
     private JiraClient jira;
 
     @PostConstruct

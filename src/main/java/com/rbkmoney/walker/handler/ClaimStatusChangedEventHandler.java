@@ -50,7 +50,7 @@ public class ClaimStatusChangedEventHandler implements Handler<StockEvent> {
             try {
                 jiraDao.closeIssue(claimStatusChanged.getId());
             } catch (JiraException e) {
-               log.error("Cant close Accepted or Denied claim with id {}", claimStatusChanged.getId());
+                log.error("Cant close Accepted or Denied claim with id {}", claimStatusChanged.getId(), e);
             }
         } else {
             log.error("Unsupported ClaimStatus changing for eventId : {}", eventId);
