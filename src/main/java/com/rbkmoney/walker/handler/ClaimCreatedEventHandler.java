@@ -2,11 +2,13 @@ package com.rbkmoney.walker.handler;
 
 import com.rbkmoney.damsel.event_stock.StockEvent;
 import com.rbkmoney.damsel.payment_processing.Claim;
+import com.rbkmoney.damsel.payment_processing.Event;
 import com.rbkmoney.damsel.payment_processing.InvoiceCreated;
 import com.rbkmoney.thrift.filter.Filter;
 import com.rbkmoney.thrift.filter.PathConditionFilter;
 import com.rbkmoney.thrift.filter.rule.PathConditionRule;
 import com.rbkmoney.walker.dao.JiraDao;
+import net.rcarz.jiraclient.JiraException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,14 +31,18 @@ public class ClaimCreatedEventHandler implements Handler<StockEvent> {
 
     @Override
     public void handle(StockEvent value) {
-        // evendID
-        long eventId = value.getSourceEvent().getProcessingEvent().getId();
-        Claim claim = value.getSourceEvent().getProcessingEvent().getPayload().getPartyEvent().getClaimCreated().getClaim();
-        // PartyId
-        // value.getSourceEvent().getFieldValue();
-        //
-        //jiraDao.createIssue(eventId,claim.getId());
-        System.out.println("claim_created.claim ACTIVEATED");
+        Event processingEvent = value.getSourceEvent().getProcessingEvent();
+        log.info("Got Claim Created event {} ",  processingEvent.getId());
+        try {
+            jiraDao.createIssue(
+                    processingEvent.getId(),
+                    processingEvent.getPayload().getPartyEvent().getClaimCreated().getClaim().getId(),
+                    processingEvent.getSource().getParty(),
+                    "Создана заявка",
+                    "Описание заявки"); //todo
+        } catch (JiraException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

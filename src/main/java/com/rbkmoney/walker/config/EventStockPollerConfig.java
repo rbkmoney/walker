@@ -7,7 +7,7 @@ import com.rbkmoney.walker.dao.JiraDao;
 import com.rbkmoney.walker.handler.Handler;
 import com.rbkmoney.walker.handler.poller.EventStockErrorHandler;
 import com.rbkmoney.walker.handler.poller.EventStockHandler;
-import com.rbkmoney.walker.service.EventService;
+import net.rcarz.jiraclient.JiraException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -54,9 +54,14 @@ public class EventStockPollerConfig {
         return new DefaultSubscriberConfig(eventFilter());
     }
 
-    public EventFilter eventFilter() {
+    public EventFilter eventFilter()  {
         EventConstraint.EventIDRange eventIDRange = new EventConstraint.EventIDRange();
-        Long lastEventId = jiraDao.getLastEventId();
+        Long lastEventId = null;
+        try {
+            lastEventId = jiraDao.getLastEventId();
+        } catch (JiraException e) {
+            e.printStackTrace();
+        }
         if (lastEventId != null) {
             eventIDRange.setFromExclusive(lastEventId);
         }

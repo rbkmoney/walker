@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class JIraConfig {
+public class JiraConfig {
 
     @Value("${jira.api.url}")
     public String host;
@@ -15,18 +15,14 @@ public class JIraConfig {
     @Value("${jira.user.password}")
     public String password;
 
-
-
     @Value("${ISSUE_TYPE_NAME}")
     public String ISSUE_TYPE_NAME;
 
     @Value("${PROJECT_KEY_NAME}")
     public String PROJECT_KEY_NAME;
 
-
-    @Value("${RESOLUTION}")
-    public String RESOLUTION;
-
+    @Value("${REASON}")
+    public String REASON;
 
     @Value("${SUMMARY}")
     public String SUMMARY;
@@ -47,8 +43,8 @@ public class JIraConfig {
     @Value("${PARTY_ID}")
     public String PARTY_ID;
 
-    public final String DESCRIPTION = "description";
-    public final String ASSIGNEE = "assignee";
+    public final static String APPROVED = "Approved";
+    public final static String DENIED = "Denied";
 
 
 }
