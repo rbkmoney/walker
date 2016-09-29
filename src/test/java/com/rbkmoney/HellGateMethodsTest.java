@@ -90,7 +90,6 @@ public class HellGateMethodsTest {
                         + "; Category desc: " + shop.getShop().getCategory().getData().getDescription()
 
         );
-        ;
 //        partyManagement.activateShop(new UserInfo(userId), partyId, shopId);
     }
 

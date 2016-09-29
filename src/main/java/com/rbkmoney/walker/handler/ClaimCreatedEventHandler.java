@@ -45,9 +45,18 @@ public class ClaimCreatedEventHandler implements Handler<StockEvent> {
     }
 
     private String buildDescription(ClaimCreated claimCreated) {
-         String description = "Modifications :";
-        for(PartyModification modification: claimCreated.getClaim().getChangeset()) {
-            description += "\n " + modification.getFieldValue().toString();
+        String description = "Операция :";
+        for (PartyModification modification : claimCreated.getClaim().getChangeset()) {
+            if (modification.isSetShopCreation()) {
+                description += " Создание магазина";
+                description += "\n Название: " + modification.getShopCreation().getDetails().getName();
+                description += "\n Описание: " + modification.getShopCreation().getDetails().getDescription();
+                description += "\n Местоположение: " + modification.getShopCreation().getDetails().getLocation();
+                description += "\n Категория: " + modification.getShopCreation().getCategory().getData().getName();
+                description += "\n Описание категории: " + modification.getShopCreation().getCategory().getData().getDescription();
+            } else {
+                description += "\n " + modification.getFieldValue().toString();
+            }
         }
         return description;
     }

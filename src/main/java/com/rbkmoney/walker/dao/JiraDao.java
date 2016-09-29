@@ -46,17 +46,18 @@ public class JiraDao {
         log.info("Created issue {}, ClaimdId {}", issue.getKey(), claimId);
     }
 
-    public void closeIssue(String claimId) throws JiraException {
+    public void closeIssue(long eventId,String claimId) throws JiraException {
         JiraClient jira = getJiraClient();
         Issue issue = jira.searchIssues("project =  WAL AND ClaimID ~ " + claimId, 1).issues.get(0);
-        issue.transition().execute("Close");
+        issue.transition().field(config.EVENT_ID,eventId).execute("Close");
         log.info("Issue closed {}, ClaimId {}", issue.getKey(), claimId);
     }
 
-    public void closeRevokedIssue(String claimId, String reason) throws JiraException {
+    public void closeRevokedIssue(long eventId, String claimId, String reason) throws JiraException {
         JiraClient jira = getJiraClient();
         Issue issue = jira.searchIssues("project =  WAL AND ClaimID ~ " + claimId, 1).issues.get(0);
         issue.update()
+                .field(config.EVENT_ID, eventId)
                 .field(config.REASON, "Revoked with reason: " + reason)
                 .field(Field.ASSIGNEE, "walker")
                 .execute();
@@ -64,10 +65,11 @@ public class JiraDao {
         log.info("Issue {} with ClaimID {} - revoked and closed", issue.getKey(), claimId);
     }
 
-    public void closeDeniedIssue(String claimId, String reason) throws JiraException {
+    public void closeDeniedIssue(long eventId, String claimId, String reason) throws JiraException {
         JiraClient jira = getJiraClient();
         Issue issue = jira.searchIssues("project =  WAL AND ClaimID ~ " + claimId, 1).issues.get(0);
         issue.update()
+                .field(config.EVENT_ID, eventId)
                 .field(config.REASON, "Denied with reason: " + reason)
                 .field(Field.ASSIGNEE, "walker")
                 .execute();

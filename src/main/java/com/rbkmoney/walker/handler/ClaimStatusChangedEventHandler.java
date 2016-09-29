@@ -39,20 +39,21 @@ public class ClaimStatusChangedEventHandler implements Handler<StockEvent> {
 
         ClaimStatusChanged claimStatusChanged = value.getSourceEvent().getProcessingEvent().getPayload().getPartyEvent().getClaimStatusChanged();
         if (claimStatusChanged.getStatus().isSetRevoked()) {
-            closeRevoked(claimStatusChanged);
+            closeRevoked(eventId,claimStatusChanged);
         } else if (claimStatusChanged.getStatus().isSetAccepted()) {
-            closeAccepted(claimStatusChanged);
+            closeAccepted(eventId,claimStatusChanged);
         } else if (claimStatusChanged.getStatus().isSetDenied()) {
-            closeDenied(claimStatusChanged);
+            closeDenied(eventId,claimStatusChanged);
         } else {
             log.error("Unsupported ClaimStatus changing for eventId : {}", eventId);
         }
 
     }
 
-    private void closeRevoked(ClaimStatusChanged claimStatusChanged) {
+    private void closeRevoked(long eventId, ClaimStatusChanged claimStatusChanged) {
         try {
             jiraDao.closeRevokedIssue(
+                    eventId,
                     claimStatusChanged.getId(),
                     claimStatusChanged.getStatus().getRevoked().getReason());
         } catch (JiraException e) {
@@ -60,17 +61,18 @@ public class ClaimStatusChangedEventHandler implements Handler<StockEvent> {
         }
     }
 
-    private void closeAccepted(ClaimStatusChanged claimStatusChanged) {
+    private void closeAccepted(long eventId, ClaimStatusChanged claimStatusChanged) {
         try {
-            jiraDao.closeIssue(claimStatusChanged.getId());
+            jiraDao.closeIssue(eventId, claimStatusChanged.getId());
         } catch (JiraException e) {
             log.error("Cant close Accepted claim with id {}", claimStatusChanged.getId(), e);
         }
     }
 
-    private void closeDenied(ClaimStatusChanged claimStatusChanged) {
+    private void closeDenied(long eventId, ClaimStatusChanged claimStatusChanged) {
         try {
             jiraDao.closeDeniedIssue(
+                    eventId,
                     claimStatusChanged.getId(),
                     claimStatusChanged.getStatus().getDenied().getReason());
         } catch (JiraException e) {
