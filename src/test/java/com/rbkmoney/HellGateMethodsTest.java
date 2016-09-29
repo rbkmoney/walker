@@ -25,17 +25,15 @@ public class HellGateMethodsTest {
 
     private PartyManagementSrv.Iface partyManagement;
 
-
-    private static String SERVICE_URL = "http://localhost:8022/v1/processing/eventsink";
-
     private static String PARTY_MANAGEMENT_SERVICE_URL = "http://localhost:8022/v1/processing/partymgmt";
 
     String userId = "Vinni Puh";
     String partyId = "Medovarnya LTD";
-    String shopName = "Honey Bunny Winny Money";
+    String shopName = "Honey Bunny Winny 2";
     String categoryName = "Sweet Honey";
     String categoryDescription = "Best honey in region. Just try it!";
-    String shopId = "1";
+    String shopId = "2";
+    String claimId = "3";
 
 
     @Before
@@ -64,7 +62,6 @@ public class HellGateMethodsTest {
 
     @Test
     public void updateShop() throws TException {
-
         ClaimResult shop = partyManagement.updateShop(
                 new UserInfo(userId),
                 partyId,
@@ -76,15 +73,16 @@ public class HellGateMethodsTest {
 
     @Test
     public void revokeClaim() throws TException {
-        partyManagement.revokeClaim(new UserInfo(userId), partyId, shopId, "Revoked from TEST");
+        partyManagement.revokeClaim(new UserInfo(userId), partyId, claimId, "Revoked from TEST");
     }
 
     @Test
     public void getShopInfo() throws TException {
         ShopState shop = partyManagement.getShop(new UserInfo(userId), partyId, shopId);
         System.out.println(
-                " Shop info : " + shop.getRevision()
+                " Shop info  rev.: " + shop.getRevision()
                         + " id: " + shop.getShop().getId()
+                        + " name: " + shop.getShop().getDetails().getName()
                         + " Status " + shop.getShop().getSuspension().getFieldValue().toString()
                         + "; Cat name:  " + shop.getShop().getCategory().getData().getName()
                         + "; Category desc: " + shop.getShop().getCategory().getData().getDescription()

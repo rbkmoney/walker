@@ -5,6 +5,11 @@ import net.rcarz.jiraclient.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.SpringApplication;
+import org.springframework.context.ApplicationContext;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Recover;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -18,42 +23,57 @@ public class JiraDao {
     JiraConfig config;
 
 
+    private static final long delayMls = 1000;
+    private static final long maxDelayMls = 10000;
+
+    private final String REVOKE = "Revoke";
+    private final String CLOSE = "Close";
+
+
     //library cant work in multithread mode
-    private JiraClient getJiraClient(){
+    private JiraClient getJiraClient() {
         BasicCredentials creds = new BasicCredentials(config.user_name, config.password);
         return new JiraClient(config.host, creds);
     }
 
+    @Retryable(maxAttempts = 5, backoff = @Backoff(delay = delayMls, maxDelay = maxDelayMls), value = JiraException.class)
     public Issue getIssueByKey(String key) throws JiraException {
         JiraClient jira = getJiraClient();
         return jira.getIssue(key);
     }
 
+    @Retryable(maxAttempts = 5, backoff = @Backoff(delay = 1000, maxDelay = maxDelayMls), value = JiraException.class)
     public void createIssue(long eventId,
                             String claimId,
                             String partyId,
                             String summary,
                             String description) throws JiraException {
         JiraClient jira = getJiraClient();
+        log.info("Try to create issue");
         Issue issue = jira.createIssue(config.PROJECT_KEY_NAME, config.ISSUE_TYPE_NAME)
                 .field(Field.ASSIGNEE, config.user_name)
                 .field(config.EVENT_ID, eventId)
                 .field(config.CLAIM_ID, claimId)
                 .field(config.PARTY_ID, partyId)
-                .field(config.SUMMARY, summary)
+                .field(Field.SUMMARY, summary)
                 .field(Field.DESCRIPTION, description)
                 .execute();
         log.info("Created issue {}, ClaimdId {}", issue.getKey(), claimId);
     }
 
-    public void closeIssue(long eventId,String claimId) throws JiraException {
+    @Retryable(maxAttempts = 5, backoff = @Backoff(delay = delayMls, maxDelay = maxDelayMls), value = JiraException.class)
+    public void closeIssue(long eventId, String claimId) throws JiraException {
+        log.info("Try to close issue");
         JiraClient jira = getJiraClient();
         Issue issue = jira.searchIssues("project =  WAL AND ClaimID ~ " + claimId, 1).issues.get(0);
-        issue.transition().field(config.EVENT_ID,eventId).execute("Close");
+        issue.update().field(config.EVENT_ID, eventId).execute();
+        issue.transition().execute(CLOSE);
         log.info("Issue closed {}, ClaimId {}", issue.getKey(), claimId);
     }
 
+    @Retryable(maxAttempts = 5, backoff = @Backoff(delay = delayMls, maxDelay = maxDelayMls), value = JiraException.class)
     public void closeRevokedIssue(long eventId, String claimId, String reason) throws JiraException {
+        log.info("Try to close revokes issue");
         JiraClient jira = getJiraClient();
         Issue issue = jira.searchIssues("project =  WAL AND ClaimID ~ " + claimId, 1).issues.get(0);
         issue.update()
@@ -61,11 +81,13 @@ public class JiraDao {
                 .field(config.REASON, "Revoked with reason: " + reason)
                 .field(Field.ASSIGNEE, "walker")
                 .execute();
-        issue.transition().execute("Revoke");
+        issue.transition().execute(REVOKE);
         log.info("Issue {} with ClaimID {} - revoked and closed", issue.getKey(), claimId);
     }
 
+    @Retryable(maxAttempts = 5, backoff = @Backoff(delay = delayMls, maxDelay = maxDelayMls), value = JiraException.class)
     public void closeDeniedIssue(long eventId, String claimId, String reason) throws JiraException {
+        log.info("Try to close denied issue");
         JiraClient jira = getJiraClient();
         Issue issue = jira.searchIssues("project =  WAL AND ClaimID ~ " + claimId, 1).issues.get(0);
         issue.update()
@@ -73,16 +95,13 @@ public class JiraDao {
                 .field(config.REASON, "Denied with reason: " + reason)
                 .field(Field.ASSIGNEE, "walker")
                 .execute();
-        issue.transition().execute("Close");
+        issue.transition().execute(CLOSE);
         log.info("Issue {} with ClaimID {} - denied and closed", issue.getKey(), claimId);
     }
 
-    public Issue.SearchResult getFinishedIssues() throws JiraException {
-        JiraClient jira = getJiraClient();
-        return jira.searchIssues("project =  WAL AND status in ( Approved , Denied ) ORDER BY EvendID ", 100);
-    }
-
+    @Retryable(maxAttempts = 5, backoff = @Backoff(delay = delayMls, maxDelay = maxDelayMls), value = JiraException.class)
     public long getLastEventId() throws JiraException {
+        log.info("Try to get Last event Id from Jira host: {}", config.host);
         JiraClient jira = getJiraClient();
         Issue.SearchResult searchResult = jira.searchIssues("project =  WAL ORDER BY EvendID DESC", 1);
         Long lastEventId = 0L;
@@ -92,4 +111,20 @@ public class JiraDao {
         log.info("Last processed eventId in Jira is: {}", lastEventId);
         return lastEventId;
     }
+
+    public Issue.SearchResult getFinishedIssues() throws JiraException {
+        JiraClient jira = getJiraClient();
+        return jira.searchIssues("project =  WAL AND status in ( Approved , Denied ) ORDER BY EvendID ", 100);
+    }
+
+
+    @Autowired
+    private ApplicationContext appContext;
+
+    @Recover
+    public void recover(JiraException e) {
+        log.error("Can't call Jira API host or use wrong method call. Tried for {} mls. Shutdown Walker application...", maxDelayMls, e);
+        SpringApplication.exit(appContext, () -> -1);
+    }
+
 }

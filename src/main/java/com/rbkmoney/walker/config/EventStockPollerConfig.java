@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
+import org.springframework.retry.annotation.EnableRetry;
+//import org.springframework.retry.annotation.EnableRetry;
 
 import java.io.IOException;
 import java.util.List;
@@ -21,15 +23,16 @@ import java.util.List;
  * Created by tolkonepiu on 03.08.16.
  */
 @Configuration
+@EnableRetry
 public class EventStockPollerConfig {
 
-    @Value("${wk.pooling.url}")
+    @Value("${bm.pooling.url}")
     Resource bmUri;
 
-    @Value("${wk.pooling.delay}")
+    @Value("${bm.pooling.delay}")
     int pollDelay;
 
-    @Value("${wk.pooling.maxPoolSize}")
+    @Value("${bm.pooling.maxPoolSize}")
     int maxPoolSize;
 
     @Autowired

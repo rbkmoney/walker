@@ -50,35 +50,29 @@ public class JiraPoller {
         try {
             log.info("Pooling Jira for not processed issues. ");
             Issue.SearchResult finishedIssues = jiraDao.getFinishedIssues();
-            finishedIssues.issues.stream().forEach(issue -> {
+            for (Issue issue : finishedIssues.issues) {
                 if (issue.getStatus().getName().equals(JiraConfig.APPROVED)) {
-                    try {
-                        partyManagement.acceptClaim(
-                                new UserInfo(issue.getAssignee().getName()), //todo what id we need to keep in system?
-                                String.valueOf(issue.getField(jiraConfig.PARTY_ID)),
-                                String.valueOf(issue.getField(jiraConfig.CLAIM_ID)));
-                        log.info("Accept claim in HG. Issue: {} ClaimID: {} ", issue.getKey(), issue.getField(jiraConfig.CLAIM_ID));
-                    } catch (InvalidClaimStatus e){
-                        log.warn("Invalid status exception while Accepting claim. {}", e.getStatus().getFieldValue().toString());
-                    } catch (TException e) {
-                        e.printStackTrace();
-                    }
+                    partyManagement.acceptClaim(
+                            new UserInfo(issue.getAssignee().getName()), //todo what id we need to keep in system?
+                            String.valueOf(issue.getField(jiraConfig.PARTY_ID)),
+                            String.valueOf(issue.getField(jiraConfig.CLAIM_ID)));
+                    log.info("Accept claim in HG. Issue: {} ClaimID: {} ", issue.getKey(), issue.getField(jiraConfig.CLAIM_ID));
                 } else if (issue.getStatus().getName().equals(JiraConfig.DENIED)) {
-                    try {
-                        partyManagement.denyClaim(
-                                new UserInfo(issue.getAssignee().getName()), //todo what id we need to keep in system?
-                                String.valueOf(issue.getField(jiraConfig.PARTY_ID)),
-                                String.valueOf(issue.getField(jiraConfig.CLAIM_ID)),
-                                String.valueOf(issue.getField(jiraConfig.REASON))
-                        );
-                        log.info("Deny claim in HG. Issue: {} ClaimID {} ", issue.getKey(), issue.getField(jiraConfig.CLAIM_ID));
-                    } catch (TException e) {
-                        e.printStackTrace();
-                    }
+                    partyManagement.denyClaim(
+                            new UserInfo(issue.getAssignee().getName()), //todo what id we need to keep in system?
+                            String.valueOf(issue.getField(jiraConfig.PARTY_ID)),
+                            String.valueOf(issue.getField(jiraConfig.CLAIM_ID)),
+                            String.valueOf(issue.getField(jiraConfig.REASON))
+                    );
+                    log.info("Deny claim in HG. Issue: {} ClaimID {} ", issue.getKey(), issue.getField(jiraConfig.CLAIM_ID));
                 }
-            });
+            }
         } catch (JiraException e) {
-            e.printStackTrace();
+            log.error("Jira connection exception while pooling ", e);
+        } catch (InvalidClaimStatus e) {
+            log.warn("Invalid claim status exception. {}", e.getStatus().getFieldValue().toString());
+        } catch (TException e) {
+            log.error("Party Management service access error ", e);
         }
     }
 }

@@ -24,21 +24,11 @@ public class JiraConfig {
     @Value("${REASON}")
     public String REASON;
 
-    @Value("${SUMMARY}")
-    public String SUMMARY;
-
-
     @Value("${CLAIM_ID}")
     public String CLAIM_ID;
 
-
     @Value("${EVENT_ID}")
     public String EVENT_ID;
-
-
-    @Value("${USER_ID}")
-    public String USER_ID;
-
 
     @Value("${PARTY_ID}")
     public String PARTY_ID;
