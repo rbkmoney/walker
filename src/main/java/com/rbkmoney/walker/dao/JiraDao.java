@@ -18,17 +18,14 @@ public class JiraDao {
     JiraConfig config;
 
 
-    //todo fix multithred acces
-    private JiraClient jira;
-
-    @PostConstruct
-    public void init() {
+    //library cant work in multithread mode
+    private JiraClient getJiraClient(){
         BasicCredentials creds = new BasicCredentials(config.user_name, config.password);
-        jira = new JiraClient(config.host, creds);
-
+        return new JiraClient(config.host, creds);
     }
 
     public Issue getIssueByKey(String key) throws JiraException {
+        JiraClient jira = getJiraClient();
         return jira.getIssue(key);
     }
 
@@ -37,6 +34,7 @@ public class JiraDao {
                             String partyId,
                             String summary,
                             String description) throws JiraException {
+        JiraClient jira = getJiraClient();
         Issue issue = jira.createIssue(config.PROJECT_KEY_NAME, config.ISSUE_TYPE_NAME)
                 .field(Field.ASSIGNEE, config.user_name)
                 .field(config.EVENT_ID, eventId)
@@ -45,31 +43,45 @@ public class JiraDao {
                 .field(config.SUMMARY, summary)
                 .field(Field.DESCRIPTION, description)
                 .execute();
-        log.info("Created issue {}", issue.getKey());
+        log.info("Created issue {}, ClaimdId {}", issue.getKey(), claimId);
     }
 
     public void closeIssue(String claimId) throws JiraException {
+        JiraClient jira = getJiraClient();
         Issue issue = jira.searchIssues("project =  WAL AND ClaimID ~ " + claimId, 1).issues.get(0);
         issue.transition().execute("Close");
         log.info("Issue closed {}, ClaimId {}", issue.getKey(), claimId);
     }
 
-    public synchronized void closeRevokedIssue(String claimId, String reason) throws JiraException {
+    public void closeRevokedIssue(String claimId, String reason) throws JiraException {
+        JiraClient jira = getJiraClient();
         Issue issue = jira.searchIssues("project =  WAL AND ClaimID ~ " + claimId, 1).issues.get(0);
         issue.update()
                 .field(config.REASON, "Revoked with reason: " + reason)
                 .field(Field.ASSIGNEE, "walker")
                 .execute();
         issue.transition().execute("Revoke");
-        log.info("Issue {} - revoked and closed", issue.getKey());
+        log.info("Issue {} with ClaimID {} - revoked and closed", issue.getKey(), claimId);
     }
 
+    public void closeDeniedIssue(String claimId, String reason) throws JiraException {
+        JiraClient jira = getJiraClient();
+        Issue issue = jira.searchIssues("project =  WAL AND ClaimID ~ " + claimId, 1).issues.get(0);
+        issue.update()
+                .field(config.REASON, "Denied with reason: " + reason)
+                .field(Field.ASSIGNEE, "walker")
+                .execute();
+        issue.transition().execute("Close");
+        log.info("Issue {} with ClaimID {} - denied and closed", issue.getKey(), claimId);
+    }
 
     public Issue.SearchResult getFinishedIssues() throws JiraException {
+        JiraClient jira = getJiraClient();
         return jira.searchIssues("project =  WAL AND status in ( Approved , Denied ) ORDER BY EvendID ", 100);
     }
 
     public long getLastEventId() throws JiraException {
+        JiraClient jira = getJiraClient();
         Issue.SearchResult searchResult = jira.searchIssues("project =  WAL ORDER BY EvendID DESC", 1);
         Long lastEventId = 0L;
         if (!searchResult.issues.isEmpty()) {

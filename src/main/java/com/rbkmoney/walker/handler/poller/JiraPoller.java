@@ -57,7 +57,9 @@ public class JiraPoller {
                                 new UserInfo(issue.getAssignee().getName()), //todo what id we need to keep in system?
                                 String.valueOf(issue.getField(jiraConfig.PARTY_ID)),
                                 String.valueOf(issue.getField(jiraConfig.CLAIM_ID)));
-                        log.info("Accept claim in HG. ClaimID {} ", issue.getField(jiraConfig.CLAIM_ID));
+                        log.info("Accept claim in HG. Issue: {} ClaimID: {} ", issue.getKey(), issue.getField(jiraConfig.CLAIM_ID));
+                    } catch (InvalidClaimStatus e){
+                        log.warn("Invalid status exception while Accepting claim. {}", e.getStatus().getFieldValue().toString());
                     } catch (TException e) {
                         e.printStackTrace();
                     }
@@ -69,7 +71,7 @@ public class JiraPoller {
                                 String.valueOf(issue.getField(jiraConfig.CLAIM_ID)),
                                 String.valueOf(issue.getField(jiraConfig.REASON))
                         );
-                        log.info("Deny claim in HG. ClaimID {} ", issue.getField(jiraConfig.CLAIM_ID));
+                        log.info("Deny claim in HG. Issue: {} ClaimID {} ", issue.getKey(), issue.getField(jiraConfig.CLAIM_ID));
                     } catch (TException e) {
                         e.printStackTrace();
                     }

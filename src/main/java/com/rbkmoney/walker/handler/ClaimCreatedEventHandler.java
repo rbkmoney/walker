@@ -1,9 +1,7 @@
 package com.rbkmoney.walker.handler;
 
 import com.rbkmoney.damsel.event_stock.StockEvent;
-import com.rbkmoney.damsel.payment_processing.Claim;
-import com.rbkmoney.damsel.payment_processing.Event;
-import com.rbkmoney.damsel.payment_processing.InvoiceCreated;
+import com.rbkmoney.damsel.payment_processing.*;
 import com.rbkmoney.thrift.filter.Filter;
 import com.rbkmoney.thrift.filter.PathConditionFilter;
 import com.rbkmoney.thrift.filter.rule.PathConditionRule;
@@ -32,18 +30,28 @@ public class ClaimCreatedEventHandler implements Handler<StockEvent> {
     @Override
     public void handle(StockEvent value) {
         Event processingEvent = value.getSourceEvent().getProcessingEvent();
-        log.info("Got Claim Created event {} ",  processingEvent.getId());
+        log.info("Got Claim Created event {} ", processingEvent.getId());
         try {
+
             jiraDao.createIssue(
                     processingEvent.getId(),
                     processingEvent.getPayload().getPartyEvent().getClaimCreated().getClaim().getId(),
                     processingEvent.getSource().getParty(),
                     "Создана заявка",
-                    "Описание заявки"); //todo
+                    buildDescription(processingEvent.getPayload().getPartyEvent().getClaimCreated()));
         } catch (JiraException e) {
             e.printStackTrace();
         }
     }
+
+    private String buildDescription(ClaimCreated claimCreated) {
+         String description = "Modifications :";
+        for(PartyModification modification: claimCreated.getClaim().getChangeset()) {
+            description += "\n " + modification.getFieldValue().toString();
+        }
+        return description;
+    }
+
 
     @Override
     public Filter getFilter() {

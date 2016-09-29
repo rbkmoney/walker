@@ -6,6 +6,9 @@ import com.rbkmoney.damsel.domain.CategoryRef;
 import com.rbkmoney.damsel.domain.ShopDetails;
 import com.rbkmoney.damsel.payment_processing.*;
 import com.rbkmoney.woody.thrift.impl.http.THClientBuilder;
+import net.rcarz.jiraclient.BasicCredentials;
+import net.rcarz.jiraclient.JiraClient;
+import net.rcarz.jiraclient.JiraException;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.thrift.TException;
 import org.junit.Before;
@@ -29,9 +32,10 @@ public class HellGateMethodsTest {
 
     String userId = "Vinni Puh";
     String partyId = "Medovarnya LTD";
-    String shopName = "Honey Bunny";
+    String shopName = "Honey Bunny Winny Money";
     String categoryName = "Sweet Honey";
     String categoryDescription = "Best honey in region. Just try it!";
+    String shopId = "1";
 
 
     @Before
@@ -60,7 +64,7 @@ public class HellGateMethodsTest {
 
     @Test
     public void updateShop() throws TException {
-        String shopId = "1";
+
         ClaimResult shop = partyManagement.updateShop(
                 new UserInfo(userId),
                 partyId,
@@ -69,6 +73,27 @@ public class HellGateMethodsTest {
         );
         System.out.println("Updated shop with ID " + shop.getId());
     }
+
+    @Test
+    public void revokeClaim() throws TException {
+        partyManagement.revokeClaim(new UserInfo(userId), partyId, shopId, "Revoked from TEST");
+    }
+
+    @Test
+    public void getShopInfo() throws TException {
+        ShopState shop = partyManagement.getShop(new UserInfo(userId), partyId, shopId);
+        System.out.println(
+                " Shop info : " + shop.getRevision()
+                        + " id: " + shop.getShop().getId()
+                        + " Status " + shop.getShop().getSuspension().getFieldValue().toString()
+                        + "; Cat name:  " + shop.getShop().getCategory().getData().getName()
+                        + "; Category desc: " + shop.getShop().getCategory().getData().getDescription()
+
+        );
+        ;
+//        partyManagement.activateShop(new UserInfo(userId), partyId, shopId);
+    }
+
 
     @Test
     public void acceptClaim() throws TException {
@@ -99,5 +124,24 @@ public class HellGateMethodsTest {
         shopParams.setDetails(new ShopDetails(shopName));
         return shopParams;
 
+    }
+
+
+    @Test
+    public void test() throws JiraException {
+        long l = System.currentTimeMillis();
+        JiraClient jira = getJiraClient();
+        jira.getIssue("WAL-31");
+        System.out.println("!!!! " + String.valueOf(System.currentTimeMillis() - l));
+        long l2 = System.currentTimeMillis();
+        jira.getIssue("WAL-31");
+        System.out.println("!!!! " + String.valueOf(System.currentTimeMillis() - l));
+
+    }
+
+
+    private JiraClient getJiraClient() {
+        BasicCredentials creds = new BasicCredentials("walker", "walker");
+        return new JiraClient("http://localhost:2990/jira", creds);
     }
 }
