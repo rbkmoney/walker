@@ -12,6 +12,7 @@ import net.rcarz.jiraclient.JiraException;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.thrift.TException;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -20,8 +21,8 @@ import java.net.URI;
 
 
 @RunWith(SpringRunner.class)
+@Ignore
 public class HellGateMethodsTest {
-    private EventSinkSrv.Iface eventSinkClient;
 
     private PartyManagementSrv.Iface partyManagement;
 
