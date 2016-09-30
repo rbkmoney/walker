@@ -46,6 +46,10 @@
         </profile>
     </profiles>
 
+    <properties>
+        <dockerfile.base.service.tag>d688a72d5859177174f733a5b6e6f4c460ce8ef3</dockerfile.base.service.tag>
+    </properties>
+
     <dependencies>
         <!--Thrirdparty libs-->
         <dependency>
