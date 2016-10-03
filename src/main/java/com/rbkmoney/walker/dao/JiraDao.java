@@ -42,7 +42,7 @@ public class JiraDao {
         return jira.getIssue(key);
     }
 
-    @Retryable(maxAttempts = 5, backoff = @Backoff(delay = 1000, maxDelay = maxDelayMls), value = JiraException.class)
+    @Retryable(maxAttempts = 5, backoff = @Backoff(delay = delayMls, maxDelay = maxDelayMls), value = JiraException.class)
     public void createIssue(long eventId,
                             String claimId,
                             String partyId,
@@ -101,14 +101,14 @@ public class JiraDao {
 
     @Retryable(maxAttempts = 5, backoff = @Backoff(delay = delayMls, maxDelay = maxDelayMls), value = JiraException.class)
     public long getLastEventId() throws JiraException {
-        log.info("Try to get Last event Id from Jira host: {}", config.host);
+        log.info("Try to get LastEventId from Jira host: {}", config.host);
         JiraClient jira = getJiraClient();
         Issue.SearchResult searchResult = jira.searchIssues("project =  WAL ORDER BY EvendID DESC", 1);
         Long lastEventId = 0L;
         if (!searchResult.issues.isEmpty()) {
             lastEventId = Math.round((Double) searchResult.issues.get(0).getField(config.EVENT_ID));
         }
-        log.info("Last processed eventId in Jira is: {}", lastEventId);
+        log.info("LastEventId in Jira is: {}", lastEventId);
         return lastEventId;
     }
 
