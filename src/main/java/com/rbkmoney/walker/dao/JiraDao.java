@@ -24,7 +24,7 @@ public class JiraDao {
 
 
     private static final long delayMls = 1000;
-    private static final long maxDelayMls = 10000;
+    private static final long maxDelayMls = 15 * 60 * 1000 ;
 
     private final String REVOKE = "Revoke";
     private final String CLOSE = "Close";

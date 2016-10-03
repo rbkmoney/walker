@@ -35,7 +35,11 @@ public class PartyEventHandler implements Handler<StockEvent> {
 
             if (event.getPayload().getPartyEvent().isSetClaimCreated()) {
                 log.info("Got ClaimCreated event with EventID: {}", eventId);
-                createIssue(event);
+                if (event.getPayload().getPartyEvent().getClaimCreated().getClaim().getStatus().isSetAccepted()) {
+                    log.info("Auto accepted claim with EventID: {} -  skipped.", eventId);
+                } else {
+                    createIssue(event);
+                }
             } else if (event.getPayload().getPartyEvent().isSetClaimStatusChanged()) {
                 log.info("Got ClaimStatusChanged event with EventID: {}", eventId);
                 ClaimStatusChanged claimStatusChanged = event.getPayload().getPartyEvent().getClaimStatusChanged();

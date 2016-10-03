@@ -53,13 +53,13 @@ public class JiraPoller {
             for (Issue issue : finishedIssues.issues) {
                 if (issue.getStatus().getName().equals(JiraConfig.APPROVED)) {
                     partyManagement.acceptClaim(
-                            new UserInfo(issue.getAssignee().getName()), //todo what id we need to keep in system?
+                            new UserInfo(issue.getAssignee().getEmail()), //todo what id we need to keep in system?
                             String.valueOf(issue.getField(jiraConfig.PARTY_ID)),
                             String.valueOf(issue.getField(jiraConfig.CLAIM_ID)));
                     log.info("Accept claim in HG. Issue: {} ClaimID: {} ", issue.getKey(), issue.getField(jiraConfig.CLAIM_ID));
                 } else if (issue.getStatus().getName().equals(JiraConfig.DENIED)) {
                     partyManagement.denyClaim(
-                            new UserInfo(issue.getAssignee().getName()), //todo what id we need to keep in system?
+                            new UserInfo(issue.getAssignee().getEmail()), //todo what id we need to keep in system?
                             String.valueOf(issue.getField(jiraConfig.PARTY_ID)),
                             String.valueOf(issue.getField(jiraConfig.CLAIM_ID)),
                             String.valueOf(issue.getField(jiraConfig.REASON))
