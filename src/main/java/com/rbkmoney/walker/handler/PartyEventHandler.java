@@ -62,7 +62,7 @@ public class PartyEventHandler implements Handler<StockEvent> {
                     processingEvent.getId(),
                     processingEvent.getPayload().getPartyEvent().getClaimCreated().getClaim().getId(),
                     processingEvent.getSource().getParty(),
-                    "Создана заявка",
+                    "Заявка " + processingEvent.getSource().getParty(),
                     buildDescription(processingEvent.getPayload().getPartyEvent().getClaimCreated()));
         } catch (JiraException e) {
             log.error("Cant Create issue with event id {}", processingEvent.getId(), e);
@@ -70,15 +70,27 @@ public class PartyEventHandler implements Handler<StockEvent> {
     }
 
     private String buildDescription(ClaimCreated claimCreated) {
-        String description = "Операция :";
+        String description = "";
         for (PartyModification modification : claimCreated.getClaim().getChangeset()) {
             if (modification.isSetShopCreation()) {
-                description += " Создание магазина";
-                description += "\n Название: " + modification.getShopCreation().getDetails().getName();
-                description += "\n Описание: " + modification.getShopCreation().getDetails().getDescription();
-                description += "\n Местоположение: " + modification.getShopCreation().getDetails().getLocation();
-                description += "\n Категория: " + modification.getShopCreation().getCategory().getData().getName();
-                description += "\n Описание категории: " + modification.getShopCreation().getCategory().getData().getDescription();
+                description += "\n h5. Операция: Создание магазина ";
+                description += "\n * Название: " + modification.getShopCreation().getDetails().getName();
+                description += "\n * Описание: " + modification.getShopCreation().getDetails().getDescription();
+                description += "\n * Местоположение: " + modification.getShopCreation().getDetails().getLocation();
+                description += "\n * Категория: " + modification.getShopCreation().getCategory().getData().getName();
+                description += "\n * Описание категории: " + modification.getShopCreation().getCategory().getData().getDescription();
+                if (modification.getShopCreation().isSetContractor()) {
+                    description += "\n * Контрактор: " + modification.getShopCreation().getContractor().getRegisteredName();
+                    description += "\n * Форма юридического лица контрактора: " + modification.getShopCreation().getContractor().getLegalEntity().toString();
+                }
+                if (modification.getShopCreation().isSetContract()) {
+                    description += "\n Номер контракта: " + modification.getShopCreation().getContract().getNumber();
+                    description += "\n Имя контрактора: " + modification.getShopCreation().getContract().getSystemContractor().getData().getRegisteredName();
+                    description += "\n Контракт заключен : " + modification.getShopCreation().getContract().getConcludedAt();
+                    description += "\n Действует с : " + modification.getShopCreation().getContract().getValidSince();
+                    description += "\n Действует до : " + modification.getShopCreation().getContract().getValidUntil();
+                    description += "\n Разорван : " + modification.getShopCreation().getContract().getTerminatedAt();
+                }
             } else {
                 description += "\n " + modification.getFieldValue().toString();
             }

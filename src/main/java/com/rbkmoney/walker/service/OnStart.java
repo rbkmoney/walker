@@ -22,6 +22,7 @@ public class OnStart implements ApplicationListener<ApplicationReadyEvent> {
 
     @Override
     public void onApplicationEvent(ApplicationReadyEvent event) {
+        //todo get last event id;
         eventPublisher.subscribe(subscriberConfig);
     }
 

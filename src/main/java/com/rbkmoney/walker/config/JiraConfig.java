@@ -35,4 +35,8 @@ public class JiraConfig {
     public final static String APPROVED = "Approved";
     public final static String DENIED = "Denied";
 
+    public final static String REVOKE = "Revoke";
+    public final static String CLOSE = "Close";
+
+
 }

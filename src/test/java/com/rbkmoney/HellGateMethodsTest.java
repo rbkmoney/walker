@@ -21,11 +21,9 @@ import java.net.URI;
 
 
 @RunWith(SpringRunner.class)
-@Ignore
 public class HellGateMethodsTest {
 
     private PartyManagementSrv.Iface partyManagement;
-
     private static String PARTY_MANAGEMENT_SERVICE_URL = "http://localhost:8022/v1/processing/partymgmt";
 
     String userId = "Vinni Puh";
@@ -35,7 +33,6 @@ public class HellGateMethodsTest {
     String categoryDescription = "Best honey in region. Just try it!";
     String shopId = "2";
     String claimId = "3";
-
 
     @Before
     public void setUp() throws Exception {
@@ -124,7 +121,6 @@ public class HellGateMethodsTest {
 
     }
 
-
     @Test
     public void test() throws JiraException {
         long l = System.currentTimeMillis();
@@ -136,7 +132,6 @@ public class HellGateMethodsTest {
         System.out.println("!!!! " + String.valueOf(System.currentTimeMillis() - l));
 
     }
-
 
     private JiraClient getJiraClient() {
         BasicCredentials creds = new BasicCredentials("walker", "walker");

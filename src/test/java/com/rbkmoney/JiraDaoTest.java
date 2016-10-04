@@ -26,7 +26,7 @@ public class JiraDaoTest {
 
     @Test
     public void getIssue() throws JiraException {
-        Issue issueByKey = jiraDao.getIssueByKey("WAL-14");
+        Issue issueByKey = jiraDao.getIssueByKey("CLAIM-1");
     }
 
     @Test
@@ -44,7 +44,5 @@ public class JiraDaoTest {
         long lastEventId = jiraDao.getLastEventId();
         System.out.println(lastEventId);
     }
-
-
 
 }
