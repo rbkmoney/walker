@@ -73,7 +73,7 @@ public class PartyEventHandler implements Handler<StockEvent> {
         String description = "";
         for (PartyModification modification : claimCreated.getClaim().getChangeset()) {
             if (modification.isSetShopCreation()) {
-                description += "\n h5. Операция: Создание магазина ";
+                description += "\n \n h5. Операция: Создание магазина ";
                 description += "\n * Название: " + modification.getShopCreation().getDetails().getName();
                 description += "\n * Описание: " + modification.getShopCreation().getDetails().getDescription();
                 description += "\n * Местоположение: " + modification.getShopCreation().getDetails().getLocation();
