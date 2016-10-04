@@ -31,6 +31,10 @@ email.password: Ktye469GfHroVvij
 Пароль от Jira лежит в конфиге: jira.user.password
  
 # Development 
+1 Поднимаешь окружение через docker-compose в папке docker_compose
+2 поднимаешь Jira
+3 запускаешь Walker
+
 Для работы c HG можно использовать тесты
 
 
