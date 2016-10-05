@@ -33,6 +33,6 @@ public class EventStockHandler implements EventHandler<StockEvent> {
 
     @Override
     public void handleNoMoreElements(String subsKey) {
-
+        log.info("HandleNoMoreElements Called");
     }
 }

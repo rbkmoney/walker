@@ -6,6 +6,7 @@ import com.rbkmoney.damsel.payment_processing.UserInfo;
 import com.rbkmoney.walker.config.JiraConfig;
 import com.rbkmoney.walker.dao.JiraDao;
 import com.rbkmoney.woody.thrift.impl.http.THClientBuilder;
+import com.rbkmoney.woody.thrift.impl.http.THSpawnClientBuilder;
 import net.rcarz.jiraclient.Issue;
 import net.rcarz.jiraclient.JiraException;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -30,20 +31,10 @@ public class JiraPoller {
     @Autowired
     JiraConfig jiraConfig;
 
-    @Value("${hg.party.management.url}")
-    private String PARTY_MANAGEMENT_SERVICE_URL;
-
+    @Autowired
     private PartyManagementSrv.Iface partyManagement;
+
     Logger log = LoggerFactory.getLogger(this.getClass());
-
-
-    @PostConstruct
-    public void setUp() throws Exception {
-        THClientBuilder clientBuilder = new THClientBuilder()
-                .withHttpClient(HttpClientBuilder.create().build())
-                .withAddress(new URI(PARTY_MANAGEMENT_SERVICE_URL));
-        partyManagement = clientBuilder.build(PartyManagementSrv.Iface.class);
-    }
 
     @Scheduled(fixedDelay = 10000)
     public void pushFinishedIssuesToHG() {

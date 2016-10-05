@@ -1,7 +1,7 @@
 # @dockerfile.Template@
 
 # base java service image
-FROM dr.rbkmoney.com/rbkmoney/service-java:@dockerfile.base.service.tag@
+FROM dr.rbkmoney.com/rbkmoney/service-java:d688a72d5859177174f733a5b6e6f4c460ce8ef3
 MAINTAINER Alexey Semenkov <a.semenkov@rbkmoney.com>
 
 COPY @artifactId@-@version@.jar /opt/@artifactId@/@artifactId@-@version@.jar

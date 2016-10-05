@@ -21,7 +21,7 @@ public class JiraDao {
     @Autowired
     JiraConfig config;
 
-    private static final long maxDelayMls = 15 * 60 * 1000 ;
+    private final long maxDelayMls = 15 * 60 * 1000;
 
     @Retryable(maxAttempts = 5, backoff = @Backoff(multiplier = 2, maxDelay = maxDelayMls), value = JiraException.class)
     public Issue getIssueByKey(String key) throws JiraException {
@@ -59,7 +59,7 @@ public class JiraDao {
 
     @Retryable(maxAttempts = 5, backoff = @Backoff(multiplier = 2, maxDelay = maxDelayMls), value = JiraException.class)
     public void closeRevokedIssue(long eventId, String claimId, String reason) throws JiraException {
-        log.info("Try to close revoked issue with ClaimID: {}",  claimId);
+        log.info("Try to close revoked issue with ClaimID: {}", claimId);
         Issue issue = getIssueByClaimId(claimId);
         issue.update()
                 .field(config.EVENT_ID, eventId)
@@ -118,6 +118,7 @@ public class JiraDao {
 
     @Recover
     private void recover(JiraException e) {
+        //todo: will be fixed in different pool request
         log.error("Can't call Jira API host or use wrong method call. Tried for {} mls. Shutdown Walker application...", maxDelayMls, e);
         SpringApplication.exit(appContext, () -> -1);
     }

@@ -29,7 +29,7 @@ public class PartyEventHandler implements Handler<StockEvent> {
 
     @Override
     public void handle(StockEvent value) {
-        synchronized (this) { //Must not brake event order!
+         //Must not brake event order! - Its guaranted by event-stock library.
             Event event = value.getSourceEvent().getProcessingEvent();
             long eventId = event.getId();
 
@@ -53,7 +53,6 @@ public class PartyEventHandler implements Handler<StockEvent> {
                     log.error("Unsupported ClaimStatus changing for eventId : {}", eventId);
                 }
             }
-        }
     }
 
     private void createIssue(Event processingEvent) {
