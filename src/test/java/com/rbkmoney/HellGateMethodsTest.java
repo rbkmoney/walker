@@ -18,17 +18,24 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.net.URI;
+import java.util.List;
 
 
 @RunWith(SpringRunner.class)
+@Ignore
 public class HellGateMethodsTest {
 
     private PartyManagementSrv.Iface partyManagement;
+    private EventSinkSrv.Iface eventSink;
+
+
     private static String PARTY_MANAGEMENT_SERVICE_URL = "http://localhost:8022/v1/processing/partymgmt";
+    private static String EVENT_SINK_SERVICE_URL = "http://localhost:8022/v1/processing/eventsink";
+
 
     String userId = "Vinni Puh";
     String partyId = "Medovarnya LTD";
-    String shopName = "Honey Bunny Winny 2";
+    String shopName = "Honey Bunny Winny 1";
     String categoryName = "Sweet Honey";
     String categoryDescription = "Best honey in region. Just try it!";
     String shopId = "2";
@@ -40,12 +47,23 @@ public class HellGateMethodsTest {
                 .withHttpClient(HttpClientBuilder.create().build())
                 .withAddress(new URI(PARTY_MANAGEMENT_SERVICE_URL));
         partyManagement = clientBuilder.build(PartyManagementSrv.Iface.class);
+
+        THClientBuilder cb = new THClientBuilder()
+                .withHttpClient(HttpClientBuilder.create().build())
+                .withAddress(new URI(EVENT_SINK_SERVICE_URL));
+        eventSink = cb.build(EventSinkSrv.Iface.class);
+    }
+
+    @Test
+    public void eventSink() throws TException {
+        List<Event> events = eventSink.getEvents(new EventRange(10));
+        System.out.println("### Count of events in sink " + events.size());
     }
 
     @Test
     public void createUser() throws TException {
         partyManagement.create(new UserInfo(userId), partyId);
-        System.out.println("User created");
+        System.out.println("#### User created");
     }
 
     @Test
@@ -55,7 +73,7 @@ public class HellGateMethodsTest {
                 partyId,
                 buildShopParams()
         );
-        System.out.println("Created shop with ID " + shop.getId());
+        System.out.println("#### Created shop with ID " + shop.getId());
     }
 
     @Test
@@ -66,7 +84,7 @@ public class HellGateMethodsTest {
                 shopId,
                 buildShopUpdate()
         );
-        System.out.println("Updated shop with ID " + shop.getId());
+        System.out.println("#### Updated shop with ID " + shop.getId());
     }
 
     @Test
