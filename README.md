@@ -27,7 +27,7 @@ security officer - сотрудник безопасности
 # Credentials
 В джире создан аккаунт walker с email-ом:
 email: walker@rbkmoney.com 
-email.password: Ktye469GfHroVvij
+
 Пароль от Jira лежит в конфиге: jira.user.password
  
 # Development 
