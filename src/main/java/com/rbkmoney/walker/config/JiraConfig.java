@@ -32,9 +32,11 @@ public class JiraConfig {
     @Value("${jira.reason.field}")
     public String REASON;
 
+    //Jira state names
     public final static String APPROVED = "Approved";
     public final static String DENIED = "Denied";
 
+    //Jira transition names
     public final static String REVOKE = "Revoke";
     public final static String CLOSE = "Close";
 

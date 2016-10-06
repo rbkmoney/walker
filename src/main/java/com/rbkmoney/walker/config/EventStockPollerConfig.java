@@ -1,6 +1,5 @@
 package com.rbkmoney.walker.config;
 
-import com.rbkmoney.damsel.payment_processing.EventSinkSrv;
 import com.rbkmoney.damsel.payment_processing.PartyManagementSrv;
 import com.rbkmoney.eventstock.client.*;
 import com.rbkmoney.eventstock.client.poll.EventFlowFilter;
@@ -74,10 +73,10 @@ public class EventStockPollerConfig {
 
     @Bean
     public SubscriberConfig subscriberConfig() {
-        return new DefaultSubscriberConfig(eventFilter());
+        return new DefaultSubscriberConfig(buildEventFilter());
     }
 
-    public EventFilter eventFilter() {
+    public EventFilter buildEventFilter() {
         EventConstraint.EventIDRange eventIDRange = new EventConstraint.EventIDRange();
         Long lastEventId = null;
         try {

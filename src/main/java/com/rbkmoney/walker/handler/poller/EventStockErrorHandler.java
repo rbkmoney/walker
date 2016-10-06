@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
  * Created by tolkonepiu on 09.08.16.
  */
 public class EventStockErrorHandler implements ErrorHandler {
-
     Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Override
