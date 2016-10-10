@@ -25,10 +25,7 @@
 
     <profiles>
         <profile>
-            <id>dev</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
+            <id>local</id>
             <properties>
                 <jira.api.url>http://localhost:2990/jira</jira.api.url>
                 <jira.user.name>walker@rbkmoney.com</jira.user.name>
@@ -40,6 +37,28 @@
                 <jira.claim_id.field>customfield_10005</jira.claim_id.field>
                 <jira.party_id.field>customfield_10003</jira.party_id.field>
                 <jira.reason.field>customfield_10004</jira.reason.field>
+
+                <bm.pooling.url>http://localhost:8023/repo</bm.pooling.url>
+                <hg.party.management.url>http://localhost:8022/v1/processing/partymgmt</hg.party.management.url>
+            </properties>
+        </profile>
+        <profile>
+            <!--Container Jira Config-->
+            <id>dev</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <jira.api.url>http://localhost:2990/jira</jira.api.url>
+                <jira.user.name>walker@rbkmoney.com</jira.user.name>
+                <jira.user.password>walker</jira.user.password>
+
+                <jira.issue.type.name>Claim</jira.issue.type.name>
+                <jira.project_key.name>CLAIM</jira.project_key.name>
+                <jira.even_id.field>customfield_10000</jira.even_id.field>
+                <jira.claim_id.field>customfield_10001</jira.claim_id.field>
+                <jira.party_id.field>customfield_10002</jira.party_id.field>
+                <jira.reason.field>customfield_10003</jira.reason.field>
 
                 <bm.pooling.url>http://localhost:8023/repo</bm.pooling.url>
                 <hg.party.management.url>http://localhost:8022/v1/processing/partymgmt</hg.party.management.url>
