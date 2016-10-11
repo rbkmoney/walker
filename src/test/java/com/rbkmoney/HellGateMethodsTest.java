@@ -28,10 +28,8 @@ public class HellGateMethodsTest {
     private PartyManagementSrv.Iface partyManagement;
     private EventSinkSrv.Iface eventSink;
 
-
     private static String PARTY_MANAGEMENT_SERVICE_URL = "http://localhost:8022/v1/processing/partymgmt";
     private static String EVENT_SINK_SERVICE_URL = "http://localhost:8022/v1/processing/eventsink";
-
 
     String userId = "Vinni Puh";
     String partyId = "Medovarnya LTD";

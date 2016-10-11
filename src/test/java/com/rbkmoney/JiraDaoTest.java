@@ -1,15 +1,18 @@
 package com.rbkmoney;
 
 import com.rbkmoney.config.TestJiraConfig;
+import com.rbkmoney.walker.ObservableValue;
+import com.rbkmoney.walker.EventObserver;
 import com.rbkmoney.walker.dao.JiraDao;
-import net.rcarz.jiraclient.Issue;
-import net.rcarz.jiraclient.JiraException;
-import org.junit.Ignore;
+import net.rcarz.jiraclient.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import java.io.IOException;
+import java.net.URISyntaxException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = TestJiraConfig.class)
