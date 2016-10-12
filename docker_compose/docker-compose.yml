@@ -2,7 +2,6 @@ version: '2'
 services:
   hellgate:
     image: dr.rbkmoney.com/rbkmoney/hellgate:ee85cc90d487c2d7d870a6912171da4bbc41af4d
-    working_dir: /Users/alexeysemenkov/git/hellgate
     ports:
       - "8022:8022"
     depends_on:
