@@ -2,7 +2,6 @@ version: '2'
 services:
   hellgate:
     image: dr.rbkmoney.com/rbkmoney/hellgate:ee85cc90d487c2d7d870a6912171da4bbc41af4d
-    working_dir: /Users/alexeysemenkov/git/hellgate
     ports:
       - "8022:8022"
     depends_on:
@@ -14,25 +13,34 @@ services:
       - ./machinegun/sys.config:/opt/machinegun/releases/0.1.0/sys.config
 
   bustermaze:
-     image: dr.rbkmoney.com/rbkmoney/bustermaze:3ad50e51cbc0982d98c593433d12fbc83ccfded0
+     image: dr.rbkmoney.com/rbkmoney/bustermaze:f9a48f014efd024e24c4db5a159f651a454c79d7
+     command: [ "java", "-Xmx512m",
+                "-Dhg.pooling.url=http://hellgate:8022/v1/processing/eventsink",
+                "-jar", "/opt/bustermaze/bustermaze-1.0.2.jar" ]
      ports:
        - "8023:8022"
      volumes:
        - .:/code
-       - /Users/alexeysemenkov/.m2:/tmp/m2_settings_xml
      working_dir: /code
      depends_on:
        - bm_db
 
   bm_db:
     image: postgres:9.6
-    container_name: bm_postgres
     ports:
       - "5432:5432"
     environment:
          POSTGRES_PASSWORD: postgres
          POSTGRES_USER: postgres
          POSTGRES_DB: bustermaze
+
+  # Better start Jira in separate container with start_jira.sh script
+  jira:
+    image: dr.rbkmoney.com/rbkmoney/walker/test-jira:0.1
+    command: ['atlas-run-standalone', '--product',  'jira' , '-Dallow.google.tracking=false']
+    tty: true
+    ports:
+      - "2990:2990"
 
 networks:
   default:

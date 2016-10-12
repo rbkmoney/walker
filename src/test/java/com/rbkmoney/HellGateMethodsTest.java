@@ -28,10 +28,8 @@ public class HellGateMethodsTest {
     private PartyManagementSrv.Iface partyManagement;
     private EventSinkSrv.Iface eventSink;
 
-
     private static String PARTY_MANAGEMENT_SERVICE_URL = "http://localhost:8022/v1/processing/partymgmt";
     private static String EVENT_SINK_SERVICE_URL = "http://localhost:8022/v1/processing/eventsink";
-
 
     String userId = "Vinni Puh";
     String partyId = "Medovarnya LTD";
@@ -104,9 +102,7 @@ public class HellGateMethodsTest {
                         + "; Category desc: " + shop.getShop().getCategory().getData().getDescription()
 
         );
-//        partyManagement.activateShop(new UserInfo(userId), partyId, shopId);
     }
-
 
     @Test
     public void acceptClaim() throws TException {
@@ -125,7 +121,6 @@ public class HellGateMethodsTest {
         return shopUpdate;
     }
 
-
     public ShopParams buildShopParams() {
         ShopParams shopParams = new ShopParams();
 
@@ -136,23 +131,5 @@ public class HellGateMethodsTest {
 
         shopParams.setDetails(new ShopDetails(shopName));
         return shopParams;
-
-    }
-
-    @Test
-    public void test() throws JiraException {
-        long l = System.currentTimeMillis();
-        JiraClient jira = getJiraClient();
-        jira.getIssue("WAL-31");
-        System.out.println("!!!! " + String.valueOf(System.currentTimeMillis() - l));
-        long l2 = System.currentTimeMillis();
-        jira.getIssue("WAL-31");
-        System.out.println("!!!! " + String.valueOf(System.currentTimeMillis() - l));
-
-    }
-
-    private JiraClient getJiraClient() {
-        BasicCredentials creds = new BasicCredentials("walker", "walker");
-        return new JiraClient("http://localhost:2990/jira", creds);
     }
 }

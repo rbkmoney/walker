@@ -1,23 +1,20 @@
 package com.rbkmoney;
 
-import com.rbkmoney.walker.WalkerApplication;
+import com.rbkmoney.config.TestJiraConfig;
 import com.rbkmoney.walker.dao.JiraDao;
-import com.rbkmoney.walker.handler.poller.JiraPoller;
-import net.rcarz.jiraclient.BasicCredentials;
-import net.rcarz.jiraclient.Issue;
-import net.rcarz.jiraclient.JiraClient;
-import net.rcarz.jiraclient.JiraException;
+import net.rcarz.jiraclient.*;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.SystemProfileValueSource;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes = WalkerApplication.class)
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = TestJiraConfig.class)
 @Ignore
 public class JiraDaoTest {
 
@@ -26,7 +23,8 @@ public class JiraDaoTest {
 
     @Test
     public void getIssue() throws JiraException {
-        Issue issueByKey = jiraDao.getIssueByKey("CLAIM-1");
+        Issue issueByKey = jiraDao.getIssueByKey("CLAIM-3");
+        System.out.println(issueByKey.getId());
     }
 
     @Test
