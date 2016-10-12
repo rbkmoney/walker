@@ -33,7 +33,7 @@ public class HellGateMethodsTest {
 
     String userId = "Vinni Puh";
     String partyId = "Medovarnya LTD";
-    String shopName = "Honey Bunny Winny 2";
+    String shopName = "Honey Bunny Winny 1";
     String categoryName = "Sweet Honey";
     String categoryDescription = "Best honey in region. Just try it!";
     String shopId = "2";
