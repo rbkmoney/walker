@@ -37,7 +37,7 @@ email: walker@rbkmoney.com
     * поднимает MG
     * поднимает Bustermaze
     * поднимает PostgreSQL базу для BM
-    * поднимает контейнер с настроенной Jira       
+    * поднимает контейнер с настроенной Jira, либо запускаешь контейнер скриптом       
 2. Запускаешь Walker
 3. Для генерации событий используется HellGateMethodsTest
 4. Jira доступна по адресу localhost:2990/jira

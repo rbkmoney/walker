@@ -25,7 +25,6 @@ services:
      working_dir: /code
      depends_on:
        - bm_db
-       - jira
 
   bm_db:
     image: postgres:9.6
@@ -36,8 +35,9 @@ services:
          POSTGRES_USER: postgres
          POSTGRES_DB: bustermaze
 
+  # Better start Jira in separate container with start_jira.sh script
   jira:
-    image: walker/jira:0.1
+    image: dr.rbkmoney.com/rbkmoney/walker/test-jira:0.1
     command: ['atlas-run-standalone', '--product',  'jira' , '-Dallow.google.tracking=false']
     tty: true
     ports:

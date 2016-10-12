@@ -23,13 +23,13 @@ public class JiraDao {
 
     private final long maxDelayMls = 15 * 60 * 1000;
 
-    @Retryable(maxAttempts = 5, backoff = @Backoff(multiplier = 2, maxDelay = maxDelayMls), value = JiraException.class)
+    @Retryable(maxAttempts = 20, backoff = @Backoff(multiplier = 2, maxDelay = maxDelayMls), value = JiraException.class)
     public Issue getIssueByKey(String key) throws JiraException {
         JiraClient jira = getJiraClient();
         return jira.getIssue(key);
     }
 
-    @Retryable(maxAttempts = 5, backoff = @Backoff(multiplier = 2, maxDelay = maxDelayMls), value = JiraException.class)
+    @Retryable(maxAttempts = 20, backoff = @Backoff(multiplier = 2, maxDelay = maxDelayMls), value = JiraException.class)
     public void createIssue(long eventId,
                             String claimId,
                             String partyId,
@@ -45,10 +45,10 @@ public class JiraDao {
                 .field(Field.SUMMARY, summary)
                 .field(Field.DESCRIPTION, description)
                 .execute();
-        log.info("Created issue {}, ClaimID {}", issue.getKey(), claimId);
+        log.info("Created issue {}, ClaimID: {}", issue.getKey(), claimId);
     }
 
-    @Retryable(maxAttempts = 5, backoff = @Backoff(multiplier = 2, maxDelay = maxDelayMls), value = JiraException.class)
+    @Retryable(maxAttempts = 20, backoff = @Backoff(multiplier = 2, maxDelay = maxDelayMls), value = JiraException.class)
     public void closeIssue(long eventId, String claimId) throws JiraException {
         log.info("Try to close issue");
         Issue issue = getIssueByClaimId(claimId);
@@ -57,7 +57,7 @@ public class JiraDao {
         log.info("Issue closed {}, ClaimId {}", issue.getKey(), claimId);
     }
 
-    @Retryable(maxAttempts = 5, backoff = @Backoff(multiplier = 2, maxDelay = maxDelayMls), value = JiraException.class)
+    @Retryable(maxAttempts = 20, backoff = @Backoff(multiplier = 2, maxDelay = maxDelayMls), value = JiraException.class)
     public void closeRevokedIssue(long eventId, String claimId, String reason) throws JiraException {
         log.info("Try to close revoked issue with ClaimID: {}", claimId);
         Issue issue = getIssueByClaimId(claimId);
@@ -70,7 +70,7 @@ public class JiraDao {
         log.info("Issue {} with ClaimID {} - revoked and closed", issue.getKey(), claimId);
     }
 
-    @Retryable(maxAttempts = 5, backoff = @Backoff(multiplier = 2, maxDelay = maxDelayMls), value = JiraException.class)
+    @Retryable(maxAttempts = 20, backoff = @Backoff(multiplier = 2, maxDelay = maxDelayMls), value = JiraException.class)
     public void closeDeniedIssue(long eventId, String claimId, String reason) throws JiraException {
         log.info("Try to close denied issue with ClaimID: ", claimId);
         Issue issue = getIssueByClaimId(claimId);

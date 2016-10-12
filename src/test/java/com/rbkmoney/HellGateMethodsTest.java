@@ -22,7 +22,7 @@ import java.util.List;
 
 
 @RunWith(SpringRunner.class)
-@Ignore
+//@Ignore
 public class HellGateMethodsTest {
 
     private PartyManagementSrv.Iface partyManagement;
@@ -33,7 +33,7 @@ public class HellGateMethodsTest {
 
     String userId = "Vinni Puh";
     String partyId = "Medovarnya LTD";
-    String shopName = "Honey Bunny Winny 1";
+    String shopName = "Honey Bunny Winny 2";
     String categoryName = "Sweet Honey";
     String categoryDescription = "Best honey in region. Just try it!";
     String shopId = "2";
@@ -102,9 +102,7 @@ public class HellGateMethodsTest {
                         + "; Category desc: " + shop.getShop().getCategory().getData().getDescription()
 
         );
-//        partyManagement.activateShop(new UserInfo(userId), partyId, shopId);
     }
-
 
     @Test
     public void acceptClaim() throws TException {
@@ -123,7 +121,6 @@ public class HellGateMethodsTest {
         return shopUpdate;
     }
 
-
     public ShopParams buildShopParams() {
         ShopParams shopParams = new ShopParams();
 
@@ -134,23 +131,5 @@ public class HellGateMethodsTest {
 
         shopParams.setDetails(new ShopDetails(shopName));
         return shopParams;
-
-    }
-
-    @Test
-    public void test() throws JiraException {
-        long l = System.currentTimeMillis();
-        JiraClient jira = getJiraClient();
-        jira.getIssue("WAL-31");
-        System.out.println("!!!! " + String.valueOf(System.currentTimeMillis() - l));
-        long l2 = System.currentTimeMillis();
-        jira.getIssue("WAL-31");
-        System.out.println("!!!! " + String.valueOf(System.currentTimeMillis() - l));
-
-    }
-
-    private JiraClient getJiraClient() {
-        BasicCredentials creds = new BasicCredentials("walker", "walker");
-        return new JiraClient("http://localhost:2990/jira", creds);
     }
 }

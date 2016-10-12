@@ -1,10 +1,9 @@
 package com.rbkmoney;
 
 import com.rbkmoney.config.TestJiraConfig;
-import com.rbkmoney.walker.ObservableValue;
-import com.rbkmoney.walker.EventObserver;
 import com.rbkmoney.walker.dao.JiraDao;
 import net.rcarz.jiraclient.*;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
