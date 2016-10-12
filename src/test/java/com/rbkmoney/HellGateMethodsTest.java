@@ -22,7 +22,7 @@ import java.util.List;
 
 
 @RunWith(SpringRunner.class)
-//@Ignore
+@Ignore
 public class HellGateMethodsTest {
 
     private PartyManagementSrv.Iface partyManagement;
