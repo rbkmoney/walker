@@ -32,14 +32,13 @@ email: walker@rbkmoney.com
 Пароль от Jira лежит в конфиге: jira.user.password
  
 # Development 
-1. Поднимаешь окружение через docker-compose в папке docker_compose
-    * поднимает HG 
-    * поднимает MG
-    * поднимает Bustermaze
-    * поднимает PostgreSQL базу для BM
-    * поднимает контейнер с настроенной Jira, либо запускаешь контейнер скриптом       
-2. Запускаешь Walker
-3. Для генерации событий используется HellGateMethodsTest
-4. Jira доступна по адресу localhost:2990/jira
+1. Поднять окружение через docker-compose в папке docker_compose
+2. Поднять Jira скриптом (или раскоментить Jira в compose файлe)
+3. Накатить минимальную конфигурацию:
+   Подключашеься к инспектору "docker exec -ti  infrastructurem_inspector_1 bash" 
+   выполнить "/scripts/dominant/commit-base-fixture.sh"
+4. Запускаешь Walker
+5. Для генерации событий используется HellGateMethodsTest
+6. Jira доступна по адресу localhost:2990/jira
 
 

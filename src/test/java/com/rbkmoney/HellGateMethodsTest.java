@@ -98,9 +98,7 @@ public class HellGateMethodsTest {
                         + " id: " + shop.getShop().getId()
                         + " name: " + shop.getShop().getDetails().getName()
                         + " Status " + shop.getShop().getSuspension().getFieldValue().toString()
-                        + "; Cat name:  " + shop.getShop().getCategory().getData().getName()
-                        + "; Category desc: " + shop.getShop().getCategory().getData().getDescription()
-
+                        + "; Cat name:  " + shop.getShop().getCategory().getId()
         );
     }
 
@@ -117,7 +115,7 @@ public class HellGateMethodsTest {
         CategoryObject categoryObject = new CategoryObject();
         categoryObject.setRef(new CategoryRef(1));
         categoryObject.setData(new Category("TestCategory_UPDATED", "no descrition_UPDATED"));
-        shopUpdate.setCategory(categoryObject);
+        shopUpdate.setCategory(new CategoryRef(1));
         return shopUpdate;
     }
 
@@ -127,7 +125,7 @@ public class HellGateMethodsTest {
         CategoryObject categoryObject = new CategoryObject();
         categoryObject.setRef(new CategoryRef(1));
         categoryObject.setData(new Category(categoryName, categoryDescription));
-        shopParams.setCategory(categoryObject);
+        shopParams.setCategory(new CategoryRef(1));
 
         shopParams.setDetails(new ShopDetails(shopName));
         return shopParams;

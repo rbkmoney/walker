@@ -1,5 +1,6 @@
 package com.rbkmoney.walker.handler;
 
+import com.rbkmoney.damsel.domain.ShopAccountSet;
 import com.rbkmoney.damsel.event_stock.StockEvent;
 import com.rbkmoney.damsel.payment_processing.*;
 import com.rbkmoney.thrift.filter.Filter;
@@ -29,30 +30,30 @@ public class PartyEventHandler implements Handler<StockEvent> {
 
     @Override
     public void handle(StockEvent value) {
-         //Must not brake event order! - Its guaranted by event-stock library.
-            Event event = value.getSourceEvent().getProcessingEvent();
-            long eventId = event.getId();
+        //Must not brake event order! - Its guaranted by event-stock library.
+        Event event = value.getSourceEvent().getProcessingEvent();
+        long eventId = event.getId();
 
-            if (event.getPayload().getPartyEvent().isSetClaimCreated()) {
-                log.info("Got ClaimCreated event with EventID: {}", eventId);
-                if (event.getPayload().getPartyEvent().getClaimCreated().getClaim().getStatus().isSetAccepted()) {
-                    log.info("Auto accepted claim with EventID: {} -  skipped.", eventId);
-                } else {
-                    createIssue(event);
-                }
-            } else if (event.getPayload().getPartyEvent().isSetClaimStatusChanged()) {
-                log.info("Got ClaimStatusChanged event with EventID: {}", eventId);
-                ClaimStatusChanged claimStatusChanged = event.getPayload().getPartyEvent().getClaimStatusChanged();
-                if (claimStatusChanged.getStatus().isSetRevoked()) {
-                    closeRevoked(eventId, claimStatusChanged);
-                } else if (claimStatusChanged.getStatus().isSetAccepted()) {
-                    closeAccepted(eventId, claimStatusChanged);
-                } else if (claimStatusChanged.getStatus().isSetDenied()) {
-                    closeDenied(eventId, claimStatusChanged);
-                } else {
-                    log.error("Unsupported ClaimStatus changing for eventId : {}", eventId);
-                }
+        if (event.getPayload().getPartyEvent().isSetClaimCreated()) {
+            log.info("Got ClaimCreated event with EventID: {}", eventId);
+            if (event.getPayload().getPartyEvent().getClaimCreated().getClaim().getStatus().isSetAccepted()) {
+                log.info("Auto accepted claim with EventID: {} -  skipped.", eventId);
+            } else {
+                createIssue(event);
             }
+        } else if (event.getPayload().getPartyEvent().isSetClaimStatusChanged()) {
+            log.info("Got ClaimStatusChanged event with EventID: {}", eventId);
+            ClaimStatusChanged claimStatusChanged = event.getPayload().getPartyEvent().getClaimStatusChanged();
+            if (claimStatusChanged.getStatus().isSetRevoked()) {
+                closeRevoked(eventId, claimStatusChanged);
+            } else if (claimStatusChanged.getStatus().isSetAccepted()) {
+                closeAccepted(eventId, claimStatusChanged);
+            } else if (claimStatusChanged.getStatus().isSetDenied()) {
+                closeDenied(eventId, claimStatusChanged);
+            } else {
+                log.error("Unsupported ClaimStatus changing for eventId : {}", eventId);
+            }
+        }
     }
 
     private void createIssue(Event processingEvent) {
@@ -76,19 +77,28 @@ public class PartyEventHandler implements Handler<StockEvent> {
                 description += "\n * Название: " + modification.getShopCreation().getDetails().getName();
                 description += "\n * Описание: " + modification.getShopCreation().getDetails().getDescription();
                 description += "\n * Местоположение: " + modification.getShopCreation().getDetails().getLocation();
-                description += "\n * Категория: " + modification.getShopCreation().getCategory().getData().getName();
-                description += "\n * Описание категории: " + modification.getShopCreation().getCategory().getData().getDescription();
+                description += "\n * Категория: " + modification.getShopCreation().getCategory().getId();
                 if (modification.getShopCreation().isSetContractor()) {
                     description += "\n * Контрактор: " + modification.getShopCreation().getContractor().getRegisteredName();
                     description += "\n * Форма юридического лица контрактора: " + modification.getShopCreation().getContractor().getLegalEntity().toString();
                 }
                 if (modification.getShopCreation().isSetContract()) {
                     description += "\n Номер контракта: " + modification.getShopCreation().getContract().getNumber();
-                    description += "\n Имя контрактора: " + modification.getShopCreation().getContract().getSystemContractor().getData().getRegisteredName();
+                    description += "\n ID контрактора: " + modification.getShopCreation().getContract().getSystemContractor().getId();
                     description += "\n Контракт заключен : " + modification.getShopCreation().getContract().getConcludedAt();
                     description += "\n Действует с : " + modification.getShopCreation().getContract().getValidSince();
                     description += "\n Действует до : " + modification.getShopCreation().getContract().getValidUntil();
                     description += "\n Разорван : " + modification.getShopCreation().getContract().getTerminatedAt();
+                }
+            } else if (modification.isSetShopModification()) {
+                if (modification.getShopModification().getModification().isSetAccountsCreated()) {
+                    ShopAccountSet accounts = modification.getShopModification().getModification().getAccountsCreated().getAccounts();
+                    description += "\n * Созданы счета:";
+                    description += "\n в валюте: " + accounts.getCurrency().getSymbolicCode();
+                    description += "\n освновной счет: " + accounts.getGeneral();
+                    description += "\n гарантийный счет: " + accounts.getGuarantee();
+                } else {
+                    description += "\n " + modification.getFieldValue().toString();
                 }
             } else {
                 description += "\n " + modification.getFieldValue().toString();
