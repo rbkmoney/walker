@@ -33,9 +33,9 @@ email: walker@rbkmoney.com
  
 # Development 
 1. Поднять окружение через docker-compose в папке docker_compose
-2. Поднять Jira скриптом (или раскоментить Jira в compose файлe)
+2. Поднять Jira скриптом (или раскомментить Jira в compose файлe)
 3. Накатить минимальную конфигурацию:
-   Подключашеься к инспектору "docker exec -ti  infrastructurem_inspector_1 bash" 
+   Подключаешься к инспектору "docker exec -ti  infrastructurem_inspector_1 bash" 
    выполнить "/scripts/dominant/commit-base-fixture.sh"
 4. Запускаешь Walker
 5. Для генерации событий используется HellGateMethodsTest

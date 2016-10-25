@@ -43,12 +43,6 @@ services:
         "-jar", "/opt/bustermaze/bustermaze.jar" ]
     ports:
       - "8023:8022"
-    command: [
-              "-Xmx512m",
-              "-jar",
-              "/opt/bustermaze/bustermaze.jar",
-              "--hg.pooling.url=http://hellgate:8022/v1/processing/eventsink"
-    ]
     depends_on:
       - hellgate
       - bm_db
