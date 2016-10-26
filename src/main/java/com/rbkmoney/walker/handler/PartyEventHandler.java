@@ -33,7 +33,9 @@ public class PartyEventHandler implements Handler<StockEvent> {
         //Must not brake event order! - Its guaranted by event-stock library.
         Event event = value.getSourceEvent().getProcessingEvent();
         long eventId = event.getId();
-
+        if (!event.getPayload().isSetPartyEvent()) {
+            return;
+        }
         if (event.getPayload().getPartyEvent().isSetClaimCreated()) {
             log.info("Got ClaimCreated event with EventID: {}", eventId);
             if (event.getPayload().getPartyEvent().getClaimCreated().getClaim().getStatus().isSetAccepted()) {
@@ -91,12 +93,20 @@ public class PartyEventHandler implements Handler<StockEvent> {
                     description += "\n Разорван : " + modification.getShopCreation().getContract().getTerminatedAt();
                 }
             } else if (modification.isSetShopModification()) {
+                description += "\n \n h5. Операция: Редактирование магазина ";
                 if (modification.getShopModification().getModification().isSetAccountsCreated()) {
                     ShopAccountSet accounts = modification.getShopModification().getModification().getAccountsCreated().getAccounts();
                     description += "\n * Созданы счета:";
                     description += "\n в валюте: " + accounts.getCurrency().getSymbolicCode();
                     description += "\n освновной счет: " + accounts.getGeneral();
                     description += "\n гарантийный счет: " + accounts.getGuarantee();
+                } else if (modification.getShopModification().getModification().isSetUpdate()) {
+                    ShopUpdate update = modification.getShopModification().getModification().getUpdate();
+                    description +=  "\n Изменен магазин : " + update.getDetails().getName();
+                    description +=  "\n Контрактор : " + update.getContractor().getRegisteredName();
+                    description +=  "\n Описание : " + update.getDetails().getDescription();
+                    description +=  "\n Местоположение : " + update.getDetails().getLocation();
+                    description +=  "\n Категория : " + update.getCategory().getId();
                 } else {
                     description += "\n " + modification.getFieldValue().toString();
                 }

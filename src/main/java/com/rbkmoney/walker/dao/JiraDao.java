@@ -12,6 +12,8 @@ import org.springframework.retry.annotation.Recover;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 import static com.rbkmoney.walker.config.JiraConfig.*;
 
 @Service
@@ -22,6 +24,11 @@ public class JiraDao {
     JiraConfig config;
 
     private final long maxDelayMls = 15 * 60 * 1000;
+
+    public List<IssueType> getTypes() throws JiraException {
+        JiraClient jira = getJiraClient();
+        return jira.getIssueTypes();
+    }
 
     @Retryable(maxAttempts = 20, backoff = @Backoff(multiplier = 2, maxDelay = maxDelayMls), value = JiraException.class)
     public Issue getIssueByKey(String key) throws JiraException {
