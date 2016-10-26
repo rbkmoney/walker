@@ -12,6 +12,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.List;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = TestJiraConfig.class)
@@ -20,6 +21,14 @@ public class JiraDaoTest {
 
     @Autowired
     JiraDao jiraDao;
+
+    @Test
+    public void getTypes() throws JiraException {
+        List<IssueType> types = jiraDao.getTypes();
+        System.out.println(
+                types.get(0).toString()
+        );
+    }
 
     @Test
     public void getIssue() throws JiraException {
