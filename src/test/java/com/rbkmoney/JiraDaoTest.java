@@ -16,7 +16,7 @@ import java.util.List;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = TestJiraConfig.class)
- //@Ignore
+@Ignore
 public class JiraDaoTest {
 
     @Autowired
