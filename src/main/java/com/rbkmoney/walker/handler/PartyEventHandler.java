@@ -86,10 +86,6 @@ public class PartyEventHandler implements Handler<StockEvent> {
                     description += "\n * Описание: " + modification.getShopCreation().getDetails().getDescription();
                     description += "\n * Местоположение: " + modification.getShopCreation().getDetails().getLocation();
                     description += "\n * Категория: " + modification.getShopCreation().getCategory().getId();
-                    if (modification.getShopCreation().isSetContractor()) {
-                        description += "\n * Контрактор: " + modification.getShopCreation().getContractor().getRegisteredName();
-                        description += "\n * Форма юридического лица контрактора: " + modification.getShopCreation().getContractor().getLegalEntity().toString();
-                    }
                     if (modification.getShopCreation().isSetContract()) {
                         description += "\n Номер контракта: " + modification.getShopCreation().getContract().getNumber();
                         description += "\n ID контрактора: " + modification.getShopCreation().getContract().getSystemContractor().getId();
