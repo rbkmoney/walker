@@ -1,6 +1,8 @@
 package com.rbkmoney.walker.handler;
 
+import com.rbkmoney.damsel.domain.CategoryRef;
 import com.rbkmoney.damsel.domain.ShopAccountSet;
+import com.rbkmoney.damsel.domain.ShopDetails;
 import com.rbkmoney.damsel.event_stock.StockEvent;
 import com.rbkmoney.damsel.payment_processing.*;
 import com.rbkmoney.thrift.filter.Filter;
@@ -12,6 +14,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.Optional;
+
 
 @Component
 public class PartyEventHandler implements Handler<StockEvent> {
@@ -73,46 +78,49 @@ public class PartyEventHandler implements Handler<StockEvent> {
 
     private String buildDescription(ClaimCreated claimCreated) {
         String description = "";
-        for (PartyModification modification : claimCreated.getClaim().getChangeset()) {
-            if (modification.isSetShopCreation()) {
-                description += "\n \n h5. Операция: Создание магазина ";
-                description += "\n * Название: " + modification.getShopCreation().getDetails().getName();
-                description += "\n * Описание: " + modification.getShopCreation().getDetails().getDescription();
-                description += "\n * Местоположение: " + modification.getShopCreation().getDetails().getLocation();
-                description += "\n * Категория: " + modification.getShopCreation().getCategory().getId();
-                if (modification.getShopCreation().isSetContractor()) {
-                    description += "\n * Контрактор: " + modification.getShopCreation().getContractor().getRegisteredName();
-                    description += "\n * Форма юридического лица контрактора: " + modification.getShopCreation().getContractor().getLegalEntity().toString();
-                }
-                if (modification.getShopCreation().isSetContract()) {
-                    description += "\n Номер контракта: " + modification.getShopCreation().getContract().getNumber();
-                    description += "\n ID контрактора: " + modification.getShopCreation().getContract().getSystemContractor().getId();
-                    description += "\n Контракт заключен : " + modification.getShopCreation().getContract().getConcludedAt();
-                    description += "\n Действует с : " + modification.getShopCreation().getContract().getValidSince();
-                    description += "\n Действует до : " + modification.getShopCreation().getContract().getValidUntil();
-                    description += "\n Разорван : " + modification.getShopCreation().getContract().getTerminatedAt();
-                }
-            } else if (modification.isSetShopModification()) {
-                description += "\n \n h5. Операция: Редактирование магазина ";
-                if (modification.getShopModification().getModification().isSetAccountsCreated()) {
-                    ShopAccountSet accounts = modification.getShopModification().getModification().getAccountsCreated().getAccounts();
-                    description += "\n * Созданы счета:";
-                    description += "\n в валюте: " + accounts.getCurrency().getSymbolicCode();
-                    description += "\n освновной счет: " + accounts.getGeneral();
-                    description += "\n гарантийный счет: " + accounts.getGuarantee();
-                } else if (modification.getShopModification().getModification().isSetUpdate()) {
-                    ShopUpdate update = modification.getShopModification().getModification().getUpdate();
-                    description +=  "\n Изменен магазин : " + update.getDetails().getName();
-                    description +=  "\n Контрактор : " + update.getContractor().getRegisteredName();
-                    description +=  "\n Описание : " + update.getDetails().getDescription();
-                    description +=  "\n Местоположение : " + update.getDetails().getLocation();
-                    description +=  "\n Категория : " + update.getCategory().getId();
+        try {
+            for (PartyModification modification : claimCreated.getClaim().getChangeset()) {
+                if (modification.isSetShopCreation()) {
+                    description += "\n \n h5. Операция: Создание магазина ";
+                    description += "\n * Название: " + modification.getShopCreation().getDetails().getName();
+                    description += "\n * Описание: " + modification.getShopCreation().getDetails().getDescription();
+                    description += "\n * Местоположение: " + modification.getShopCreation().getDetails().getLocation();
+                    description += "\n * Категория: " + modification.getShopCreation().getCategory().getId();
+                    if (modification.getShopCreation().isSetContractor()) {
+                        description += "\n * Контрактор: " + modification.getShopCreation().getContractor().getRegisteredName();
+                        description += "\n * Форма юридического лица контрактора: " + modification.getShopCreation().getContractor().getLegalEntity().toString();
+                    }
+                    if (modification.getShopCreation().isSetContract()) {
+                        description += "\n Номер контракта: " + modification.getShopCreation().getContract().getNumber();
+                        description += "\n ID контрактора: " + modification.getShopCreation().getContract().getSystemContractor().getId();
+                        description += "\n Контракт заключен : " + modification.getShopCreation().getContract().getConcludedAt();
+                        description += "\n Действует с : " + modification.getShopCreation().getContract().getValidSince();
+                        description += "\n Действует до : " + modification.getShopCreation().getContract().getValidUntil();
+                        description += "\n Разорван : " + modification.getShopCreation().getContract().getTerminatedAt();
+                    }
+                } else if (modification.isSetShopModification()) {
+                    description += "\n \n h5. Операция: Редактирование магазина ";
+                    if (modification.getShopModification().getModification().isSetAccountsCreated()) {
+                        ShopAccountSet accounts = modification.getShopModification().getModification().getAccountsCreated().getAccounts();
+                        description += "\n * Созданы счета:";
+                        description += "\n в валюте: " + accounts.getCurrency().getSymbolicCode();
+                        description += "\n освновной счет: " + accounts.getGeneral();
+                        description += "\n гарантийный счет: " + accounts.getGuarantee();
+                    } else if (modification.getShopModification().getModification().isSetUpdate()) {
+                        ShopUpdate update = modification.getShopModification().getModification().getUpdate();
+                        description += "\n Изменен магазин : " + Optional.ofNullable(update.getDetails()).map(ShopDetails::getName).orElse("-");
+                        description += "\n Описание : " + Optional.ofNullable(update.getDetails()).map(ShopDetails::getDescription).orElse("-");
+                        description += "\n Местоположение : " + Optional.ofNullable(update.getDetails()).map(ShopDetails::getLocation).orElse("-");
+                        description += "\n Категория : " + Optional.ofNullable(update.getCategory()).map(CategoryRef::getId).orElse(0);
+                    } else {
+                        description += "\n " + modification.getFieldValue().toString();
+                    }
                 } else {
                     description += "\n " + modification.getFieldValue().toString();
                 }
-            } else {
-                description += "\n " + modification.getFieldValue().toString();
             }
+        } catch (NullPointerException e) {
+            log.error("Cant build correct description: {} ", claimCreated.toString(), e);
         }
         return description;
     }
