@@ -3,6 +3,7 @@ package com.rbkmoney;
 import com.rbkmoney.config.TestJiraConfig;
 import com.rbkmoney.walker.dao.JiraDao;
 import net.rcarz.jiraclient.*;
+import net.sf.json.JSON;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -50,6 +51,14 @@ public class JiraDaoTest {
     public void getLastEventId() throws JiraException {
         long lastEventId = jiraDao.getLastEventId();
         System.out.println(lastEventId);
+    }
+
+    @Test
+    public void deleteIssue() throws URISyntaxException, IOException, RestException {
+        //CLAIM-8
+        JSON json = jiraDao.getJiraClient().getRestClient().delete("/rest/api/2/issue/CLAIM-9");
+        System.out.printf(String.valueOf(json));
+
     }
 
 }

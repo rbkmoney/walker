@@ -114,7 +114,7 @@ public class JiraDao {
     }
 
     //library cant work in multithread mode
-    private JiraClient getJiraClient() {
+    public JiraClient getJiraClient() {
         BasicCredentials creds = new BasicCredentials(config.user_name, config.password);
         return new JiraClient(config.host, creds);
     }

@@ -1,9 +1,6 @@
 package com.rbkmoney;
 
-import com.rbkmoney.damsel.domain.Category;
-import com.rbkmoney.damsel.domain.CategoryObject;
-import com.rbkmoney.damsel.domain.CategoryRef;
-import com.rbkmoney.damsel.domain.ShopDetails;
+import com.rbkmoney.damsel.domain.*;
 import com.rbkmoney.damsel.payment_processing.*;
 import com.rbkmoney.woody.thrift.impl.http.THClientBuilder;
 import net.rcarz.jiraclient.BasicCredentials;
@@ -36,7 +33,7 @@ public class HellGateMethodsTest {
     String shopName = "Honey Bunny Winny 1";
     String categoryName = "Sweet Honey";
     String categoryDescription = "Best honey in region. Just try it!";
-    String shopId = "2";
+    int shopId = 2;
     String claimId = "3";
 
     @Before
@@ -76,6 +73,7 @@ public class HellGateMethodsTest {
 
     @Test
     public void updateShop() throws TException {
+        // : UserInfo user, 2: PartyID party_id, 3: ShopID id, 4: ShopUpdate update
         ClaimResult shop = partyManagement.updateShop(
                 new UserInfo(userId),
                 partyId,
@@ -92,13 +90,13 @@ public class HellGateMethodsTest {
 
     @Test
     public void getShopInfo() throws TException {
-        ShopState shop = partyManagement.getShop(new UserInfo(userId), partyId, shopId);
+        Shop shop = partyManagement.getShop(new UserInfo(userId), partyId, shopId);
         System.out.println(
-                " Shop info  rev.: " + shop.getRevision()
-                        + " id: " + shop.getShop().getId()
-                        + " name: " + shop.getShop().getDetails().getName()
-                        + " Status " + shop.getShop().getSuspension().getFieldValue().toString()
-                        + "; Cat name:  " + shop.getShop().getCategory().getId()
+                " Shop info  rev.: " + shop.getContractId()
+                        + " id: " + shop.getId()
+                        + " name: " + shop.getDetails().getName()
+                        + " Status " + shop.getSuspension().getFieldValue().toString()
+                        + "; Cat name:  " + shop.getCategory().getId()
         );
     }
 
