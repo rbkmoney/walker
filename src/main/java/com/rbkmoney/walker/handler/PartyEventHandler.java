@@ -1,6 +1,5 @@
 package com.rbkmoney.walker.handler;
 
-import com.rbkmoney.damsel.domain.*;
 import com.rbkmoney.damsel.event_stock.StockEvent;
 import com.rbkmoney.damsel.payment_processing.*;
 import com.rbkmoney.thrift.filter.Filter;
@@ -12,8 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.Optional;
 
 
 @Component
@@ -30,6 +27,9 @@ public class PartyEventHandler implements Handler<StockEvent> {
 
     @Autowired
     JiraDao jiraDao;
+
+    @Autowired
+    DescriptionBuilder descriptionBuilder;
 
     @Override
     public void handle(StockEvent value) {
@@ -68,7 +68,7 @@ public class PartyEventHandler implements Handler<StockEvent> {
                     processingEvent.getPayload().getPartyEvent().getClaimCreated().getId(),
                     processingEvent.getSource().getParty(),
                     "Заявка " + processingEvent.getSource().getParty(),
-                    JiraDesciptionBuilder.buildDescription(processingEvent.getPayload().getPartyEvent().getClaimCreated()));
+                    descriptionBuilder.buildDescription(processingEvent.getPayload().getPartyEvent().getClaimCreated()));
         } catch (JiraException e) {
             log.error("Cant Create issue with event id {}", processingEvent.getId(), e);
         }
