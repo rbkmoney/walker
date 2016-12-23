@@ -1,6 +1,6 @@
 package com.rbkmoney.walker.config;
 
-import com.rbkmoney.walker.handler.DescriptionBuilder;
+import com.rbkmoney.walker.service.DescriptionBuilder;
 import freemarker.template.TemplateExceptionHandler;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

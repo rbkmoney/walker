@@ -1,4 +1,4 @@
-package com.rbkmoney.walker.handler;
+package com.rbkmoney.walker.service;
 
 import com.rbkmoney.damsel.domain.*;
 import com.rbkmoney.damsel.payment_processing.*;
@@ -13,10 +13,9 @@ import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Optional;
 
-import static com.rbkmoney.walker.handler.DescriptionBuilder.TemplateName.SHOP_CREATION;
-import static com.rbkmoney.walker.handler.DescriptionBuilder.TemplateName.SHOP_MODIFICATION;
+import static com.rbkmoney.walker.service.DescriptionBuilder.TemplateName.SHOP_CREATION;
+import static com.rbkmoney.walker.service.DescriptionBuilder.TemplateName.SHOP_MODIFICATION;
 
 /**
  * @since 21.12.16
@@ -43,7 +42,7 @@ public class DescriptionBuilder {
                 if (modification.isSetShopCreation()) {
                     description += buildShopCreation(modification.getShopCreation());
                 } else if (modification.isSetShopModification()) {
-                    description += buildShopModification(modification.getShopModification().getModification());
+                    description += buildShopModification(modification.getShopModification());
                 } else if (modification.isSetContractCreation()) {
                     buildContractCreation(description, modification.getContractCreation());
                 } else if (modification.isSetContractModification()) {
@@ -83,29 +82,15 @@ public class DescriptionBuilder {
         return out.toString();
     }
 
-    private String buildShopModification(ShopModification shopModification) throws IOException, TemplateException {
+    private String buildShopModification(ShopModificationUnit shopModificationUnit) throws IOException, TemplateException {
         Map<String, Object> root = new HashMap<>();
-        root.put("modification", shopModification);
+        ShopModification modification = shopModificationUnit.getModification();
+        root.put("shop_id", shopModificationUnit.getId());
+        root.put("modification_type", modification.getSetField().getFieldName());
+        root.put("modification", modification);
         StringWriter out = new StringWriter();
         templates.get(SHOP_MODIFICATION).process(root, out);
         return out.toString();
-
-//        description += "\n \n h5. Операция: Редактирование магазина ";
-//        if (shopModification.isSetAccountsCreated()) {
-//            ShopAccountSet accounts = shopModification.getAccountsCreated().getAccounts();
-//            description += "\n * Созданы счета:";
-//            description += "\n в валюте: " + accounts.getCurrency().getSymbolicCode();
-//            description += "\n освновной счет: " + accounts.getGeneral();
-//            description += "\n гарантийный счет: " + accounts.getGuarantee();
-//        } else if (shopModification.isSetUpdate()) {
-//            ShopUpdate update = shopModification.getUpdate();
-//            description += "\n Изменен магазин : " + Optional.ofNullable(update.getDetails()).map(ShopDetails::getName).orElse("-");
-//            description += "\n Описание : " + Optional.ofNullable(update.getDetails()).map(ShopDetails::getDescription).orElse("-");
-//            description += "\n Местоположение : " + Optional.ofNullable(update.getDetails()).map(ShopDetails::getLocation).map(ShopLocation::getUrl).orElse("-");
-//            description += "\n Категория : " + Optional.ofNullable(update.getCategory()).map(CategoryRef::getId).orElse(0);
-//        } else {
-//            description += "\n " + shopModification.getFieldValue().toString();
-//        }
     }
 
     enum TemplateName {

@@ -1,4 +1,4 @@
-package com.rbkmoney.walker.handler.poller;
+package com.rbkmoney.walker.service;
 
 import com.rbkmoney.damsel.payment_processing.InvalidClaimStatus;
 import com.rbkmoney.damsel.payment_processing.PartyManagementSrv;

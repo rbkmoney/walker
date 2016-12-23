@@ -1,15 +1,37 @@
+<#-- @ftlvariable name="modification" type="com.rbkmoney.damsel.payment_processing.ShopModification" -->
 h5. Операция: Редактирование магазина
-* Созданы счета:";
-description += "\n в валюте: " + accounts.getCurrency().getSymbolicCode();
-description += "\n освновной счет: " + accounts.getGeneral();
-description += "\n гарантийный счет: " + accounts.getGuarantee();
-} else if (shopModification.isSetUpdate()) {
-ShopUpdate update = shopModification.getUpdate();
-description += "\n Изменен магазин : " + Optional.ofNullable(update.getDetails()).map(ShopDetails::getName).orElse("-");
-description += "\n Описание : " + Optional.ofNullable(update.getDetails()).map(ShopDetails::getDescription).orElse("-");
-description += "\n Местоположение : " + Optional.ofNullable(update.getDetails()).map(ShopDetails::getLocation).map(ShopLocation::getUrl).orElse("-");
-description += "\n Категория : " + Optional.ofNullable(update.getCategory()).map(CategoryRef::getId).orElse(0);
-} else {
-description += "\n " + shopModification.getFieldValue().toString();
-}
-return description;
+* Идентификатор магазина:  ${shop_id}
+<#----->
+<#if modification_type == "blocking">
+    <#if modification.getBlocking().isSetBlocked()>
+        <#assign blk = modification.getBlocking().getBlocked()>
+    * Заблокирован магазин по причине : ${(blk.reason)!"-"}
+    <#else>
+        <#assign ublk = modification.getBlocking().getUnblocked()>
+    * Разблокирован магазин по причине : ${(ublk.reason)!"-"}
+    </#if>
+</#if>
+<#----->
+<#if modification_type == "suspension">
+    <#if (modification.suspension.isSetSuspended())!false >
+    * Приастановлен магазин
+    <#else>
+    * Приастановленный магазин активирован
+    </#if>
+</#if>
+<#----->
+<#if modification_type == "update">
+<#--по какойто причине ломается на геттере '.update'-->
+    <#assign shop_update = modification.getUpdate()>
+* Изменен магазин : ${(shop_update.details.name)!"-"}
+* Описание : ${(shop_update.details.description)!"-"}
+* Местоположение : ${(shop_update.details.location.fieldValue)!"-"}
+* Категория : ${(shop_update.category.id)!"-"}
+</#if>
+<#----->
+<#if modification_type == "accounts_created">
+* Созданы счета:
+В валюте: ${modification.accountsCreated.accounts.currency.symbolicCode}
+Освновной счет: ${modification.accountsCreated.accounts.general}
+Гарантийный счет: ${modification.accountsCreated.accounts.guarantee}
+</#if>

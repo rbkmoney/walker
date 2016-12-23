@@ -6,6 +6,7 @@ import com.rbkmoney.thrift.filter.Filter;
 import com.rbkmoney.thrift.filter.PathConditionFilter;
 import com.rbkmoney.thrift.filter.rule.PathConditionRule;
 import com.rbkmoney.walker.dao.JiraDao;
+import com.rbkmoney.walker.service.DescriptionBuilder;
 import net.rcarz.jiraclient.JiraException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

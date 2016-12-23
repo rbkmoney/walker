@@ -2,7 +2,6 @@ package com.rbkmoney.walker.service;
 
 import com.rbkmoney.eventstock.client.EventPublisher;
 import com.rbkmoney.eventstock.client.SubscriberConfig;
-import com.rbkmoney.walker.handler.poller.JiraPoller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
@@ -22,7 +21,6 @@ public class OnStart implements ApplicationListener<ApplicationReadyEvent> {
 
     @Override
     public void onApplicationEvent(ApplicationReadyEvent event) {
-        //todo get last event id;
         eventPublisher.subscribe(subscriberConfig);
     }
 
