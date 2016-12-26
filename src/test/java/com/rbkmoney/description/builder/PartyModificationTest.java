@@ -19,57 +19,10 @@ import static org.junit.Assert.assertEquals;
  **/
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = TestDescriptionBuilderConfig.class)
-public class ShopModificationTest {
+public class PartyModificationTest {
 
     @Autowired
     DescriptionBuilder descriptionBuilder;
-
-    @Test
-    public void testUpdate() {
-        String description = descriptionBuilder.buildDescription(buildUpdateClaim());
-        System.out.println(" : \n" + description);
-        assertEquals(true, description.contains("* Категория : 1"));
-    }
-
-    private Claim buildUpdateClaim() {
-        ShopLocation shopLocation = new ShopLocation();
-        shopLocation.setUrl("http://misvoihneboriv228.piu");
-
-        ShopDetails shopDetails = new ShopDetails();
-        shopDetails.setDescription("Описание магазина");
-        shopDetails.setName("Драг стор 228");
-        shopDetails.setLocation(shopLocation);
-
-        ShopUpdate shopUpdate = new ShopUpdate();
-        shopUpdate.setDetails(shopDetails);
-        shopUpdate.setCategory(new CategoryRef(1));
-
-        ShopModification shopModification = new ShopModification();
-        shopModification.setUpdate(shopUpdate);
-
-        return buildClaim(shopModification);
-    }
-
-    @Test
-    public void testAccountCreated() {
-        String description = descriptionBuilder.buildDescription(buildAccountClaim());
-        System.out.println(" ShopModification Accounts_created: \n" + description);
-        assertEquals(true, description.contains("Гарантийный счет: 456"));
-    }
-
-    private Claim buildAccountClaim() {
-        ShopAccountSet shopAccountSet = new ShopAccountSet();
-        shopAccountSet.setCurrency(new CurrencyRef("BTC"));
-        shopAccountSet.setGeneral(123);
-
-        shopAccountSet.setGuarantee(456);
-        ShopAccountSetCreated shopAccountSetCreated = new ShopAccountSetCreated(shopAccountSet);
-
-        ShopModification shopModification = new ShopModification();
-        shopModification.setAccountsCreated(shopAccountSetCreated);
-
-        return buildClaim(shopModification);
-    }
 
     @Test
     public void testBlocked() {
@@ -103,7 +56,6 @@ public class ShopModificationTest {
         return buildClaim(shopModification);
     }
 
-
     @Test
     public void testSuspension() {
         String description = descriptionBuilder.buildDescription(buildShopModificationSuspensionActive());
@@ -134,7 +86,29 @@ public class ShopModificationTest {
         return buildClaim(shopModification);
     }
 
-    private Claim buildClaim(ShopModification shopModification) {
+    @Test
+    public void testAccountCreated() {
+        String description = descriptionBuilder.buildDescription(buildAccountClaim());
+        System.out.println(" ShopModification Accounts_created: \n" + description);
+        assertEquals(true, description.contains("Гарантийный счет: 456"));
+    }
+
+    private Claim buildAccountClaim() {
+        ShopAccountSet shopAccountSet = new ShopAccountSet();
+        shopAccountSet.setCurrency(new CurrencyRef("BTC"));
+        shopAccountSet.setGeneral(123);
+
+        shopAccountSet.setGuarantee(456);
+        ShopAccountSetCreated shopAccountSetCreated = new ShopAccountSetCreated(shopAccountSet);
+
+        ShopModification shopModification = new ShopModification();
+        shopModification.setAccountsCreated(shopAccountSetCreated);
+
+        return buildClaim(shopModification);
+    }
+
+
+    public static Claim buildClaim(ShopModification shopModification) {
         ShopModificationUnit shopModificationUnit = new ShopModificationUnit();
         shopModificationUnit.setModification(shopModification);
 

@@ -14,8 +14,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import static com.rbkmoney.walker.service.DescriptionBuilder.TemplateName.SHOP_CREATION;
-import static com.rbkmoney.walker.service.DescriptionBuilder.TemplateName.SHOP_MODIFICATION;
+import static com.rbkmoney.walker.service.DescriptionBuilder.TemplateName.*;
 
 /**
  * @since 21.12.16
@@ -33,6 +32,9 @@ public class DescriptionBuilder {
         templates = new LinkedHashMap<>();
         templates.put(SHOP_CREATION, cfg.getTemplate("shop_creation.ftl"));
         templates.put(SHOP_MODIFICATION, cfg.getTemplate("shop_modification.ftl"));
+        templates.put(CONTRACT_CREATION, cfg.getTemplate("contract_creation.ftl"));
+        templates.put(CONTRACT_MODIFICATION, cfg.getTemplate("contract_modification.ftl"));
+
     }
 
     public String buildDescription(Claim claim) {
@@ -44,9 +46,9 @@ public class DescriptionBuilder {
                 } else if (modification.isSetShopModification()) {
                     description += buildShopModification(modification.getShopModification());
                 } else if (modification.isSetContractCreation()) {
-                    buildContractCreation(description, modification.getContractCreation());
+                    description += buildContractCreation(modification.getContractCreation());
                 } else if (modification.isSetContractModification()) {
-                    buildContractModification(description, modification.getContractModification());
+                    description += buildContractModification(modification.getContractModification());
                 } else {
                     description += "\n " + modification.getFieldValue().toString();
                 }
@@ -60,18 +62,20 @@ public class DescriptionBuilder {
     }
 
 
-    private String buildContractCreation(String description, Contract contract) {
-        description += "\n \n h5. Операция: Создание контракта ";
-        description += "\n * Идентификатор контракта: " + contract.getId();
-        description += "\n * Банковский аккаунт: " + contract.getContractor().getBankAccount().getAccount();
-        return description;
+    private String buildContractCreation(Contract contract) throws IOException, TemplateException {
+        Map<String, Object> root = new HashMap<>();
+        root.put("contract", contract);
+        StringWriter out = new StringWriter();
+        templates.get(CONTRACT_CREATION).process(root, out);
+        return out.toString();
     }
 
-    private String buildContractModification(String description, ContractModificationUnit contractModificationUnit) {
-        description += "\n \n h5. Операция: Редактирование контракта ";
-        description += "\n * Идентификатор контракта: " + contractModificationUnit.getId();
-        description += "\n * Банковский аккаунт: " + contractModificationUnit.getModification().getAdjustmentCreation().getId();
-        return description;
+    private String buildContractModification(ContractModificationUnit contractModificationUnit) throws IOException, TemplateException {
+        Map<String, Object> root = new HashMap<>();
+        root.put("contract_modification_unit", contractModificationUnit);
+        StringWriter out = new StringWriter();
+        templates.get(CONTRACT_MODIFICATION).process(root, out);
+        return out.toString();
     }
 
     private String buildShopCreation(Shop shop) throws IOException, TemplateException {
@@ -96,6 +100,8 @@ public class DescriptionBuilder {
     enum TemplateName {
         SHOP_CREATION,
         SHOP_MODIFICATION,
+        CONTRACT_CREATION,
+        CONTRACT_MODIFICATION
     }
 
 }
