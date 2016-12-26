@@ -13,10 +13,10 @@ h5. Операция: Редактирование магазина
 </#if>
 <#----->
 <#if modification_type == "suspension">
-    <#if (modification.suspension.isSetSuspended())!false >
+    <#if (modification.getSuspension().isSetSuspended())!false >
     * Приастановлен магазин
     <#else>
-    * Приастановленный магазин активирован
+    * Приостановленный магазин активирован
     </#if>
 </#if>
 <#----->
