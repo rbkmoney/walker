@@ -34,7 +34,6 @@ public class DescriptionBuilder {
         templates.put(SHOP_MODIFICATION, cfg.getTemplate("shop_modification.ftl"));
         templates.put(CONTRACT_CREATION, cfg.getTemplate("contract_creation.ftl"));
         templates.put(CONTRACT_MODIFICATION, cfg.getTemplate("contract_modification.ftl"));
-
     }
 
     public String buildDescription(Claim claim) {
@@ -42,13 +41,17 @@ public class DescriptionBuilder {
         try {
             for (PartyModification modification : claim.getChangeset()) {
                 if (modification.isSetShopCreation()) {
-                    description += buildShopCreation(modification.getShopCreation());
+                    description += renderDescription(
+                            SHOP_CREATION, "shop", modification.getShopCreation());
                 } else if (modification.isSetShopModification()) {
-                    description += buildShopModification(modification.getShopModification());
+                    description += renderDescription(
+                            SHOP_MODIFICATION, "modification_unit", modification.getShopModification());
                 } else if (modification.isSetContractCreation()) {
-                    description += buildContractCreation(modification.getContractCreation());
+                    description += renderDescription(
+                            CONTRACT_CREATION, "contract", modification.getContractCreation());
                 } else if (modification.isSetContractModification()) {
-                    description += buildContractModification(modification.getContractModification());
+                    description += renderDescription(
+                            CONTRACT_MODIFICATION, "contract_modification_unit", modification.getContractModification());
                 } else {
                     description += "\n " + modification.getFieldValue().toString();
                 }
@@ -61,38 +64,11 @@ public class DescriptionBuilder {
         return description;
     }
 
-
-    private String buildContractCreation(Contract contract) throws IOException, TemplateException {
+    private String renderDescription(TemplateName templateName, String paramName, Object obj) throws IOException, TemplateException {
         Map<String, Object> root = new HashMap<>();
-        root.put("contract", contract);
+        root.put(paramName, obj);
         StringWriter out = new StringWriter();
-        templates.get(CONTRACT_CREATION).process(root, out);
-        return out.toString();
-    }
-
-    private String buildContractModification(ContractModificationUnit contractModificationUnit) throws IOException, TemplateException {
-        Map<String, Object> root = new HashMap<>();
-        root.put("contract_modification_unit", contractModificationUnit);
-        StringWriter out = new StringWriter();
-        templates.get(CONTRACT_MODIFICATION).process(root, out);
-        return out.toString();
-    }
-
-    private String buildShopCreation(Shop shop) throws IOException, TemplateException {
-        Map<String, Object> root = new HashMap<>();
-        root.put("shop", shop);
-        StringWriter out = new StringWriter();
-        templates.get(SHOP_CREATION).process(root, out);
-        return out.toString();
-    }
-
-    private String buildShopModification(ShopModificationUnit shopModificationUnit) throws IOException, TemplateException {
-        Map<String, Object> root = new HashMap<>();
-        ShopModification modification = shopModificationUnit.getModification();
-        root.put("shop_id", shopModificationUnit.getId());
-        root.put("modification", modification);
-        StringWriter out = new StringWriter();
-        templates.get(SHOP_MODIFICATION).process(root, out);
+        templates.get(templateName).process(root, out);
         return out.toString();
     }
 

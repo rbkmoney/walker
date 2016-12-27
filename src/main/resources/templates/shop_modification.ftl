@@ -1,7 +1,9 @@
 <#-- @ftlvariable name="modification" type="com.rbkmoney.damsel.payment_processing.ShopModification" -->
+<#-- @ftlvariable name="modification_unit" type="com.rbkmoney.damsel.payment_processing.ShopModificationUnit" -->
 h5. Операция: Редактирование магазина
-* Идентификатор магазина:  ${shop_id}
+* Идентификатор магазина:  ${modification_unit.id}
 <#----->
+<#assign modification = modification_unit.getModification() >
 <#if modification.isSetBlocking()>
     <#if modification.getBlocking().isSetBlocked()>
         <#assign blk = modification.getBlocking().getBlocked()>
