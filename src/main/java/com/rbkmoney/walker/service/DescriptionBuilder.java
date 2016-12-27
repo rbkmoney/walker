@@ -90,7 +90,6 @@ public class DescriptionBuilder {
         Map<String, Object> root = new HashMap<>();
         ShopModification modification = shopModificationUnit.getModification();
         root.put("shop_id", shopModificationUnit.getId());
-        root.put("modification_type", modification.getSetField().getFieldName());
         root.put("modification", modification);
         StringWriter out = new StringWriter();
         templates.get(SHOP_MODIFICATION).process(root, out);

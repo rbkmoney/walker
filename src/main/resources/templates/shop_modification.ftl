@@ -2,7 +2,7 @@
 h5. Операция: Редактирование магазина
 * Идентификатор магазина:  ${shop_id}
 <#----->
-<#if modification_type == "blocking">
+<#if modification.isSetBlocking()>
     <#if modification.getBlocking().isSetBlocked()>
         <#assign blk = modification.getBlocking().getBlocked()>
     * Заблокирован магазин по причине : ${(blk.reason)!"-"}
@@ -12,7 +12,7 @@ h5. Операция: Редактирование магазина
     </#if>
 </#if>
 <#----->
-<#if modification_type == "suspension">
+<#if modification.isSetSuspension()>
     <#if (modification.getSuspension().isSetSuspended())!false >
     * Приастановлен магазин
     <#else>
@@ -20,7 +20,7 @@ h5. Операция: Редактирование магазина
     </#if>
 </#if>
 <#----->
-<#if modification_type == "update">
+<#if modification.isSetUpdate()>
 <#--по какойто причине ломается на геттере '.update'-->
     <#assign shop_update = modification.getUpdate()>
 * Изменен магазин : ${(shop_update.details.name)!"-"}
@@ -29,9 +29,10 @@ h5. Операция: Редактирование магазина
 * Категория : ${(shop_update.category.id)!"-"}
 </#if>
 <#----->
-<#if modification_type == "accounts_created">
+
+<#if modification.isSetAccountCreated()>
 * Созданы счета:
-В валюте: ${modification.accountsCreated.accounts.currency.symbolicCode}
-Освновной счет: ${modification.accountsCreated.accounts.general}
-Гарантийный счет: ${modification.accountsCreated.accounts.guarantee}
+В валюте: ${modification.accountCreated.account.currency.symbolicCode}
+Освновной счет: ${modification.accountCreated.account.settlement}
+Гарантийный счет: ${modification.accountCreated.account.guarantee}
 </#if>

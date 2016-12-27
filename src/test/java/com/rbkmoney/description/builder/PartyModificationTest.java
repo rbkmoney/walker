@@ -60,7 +60,7 @@ public class PartyModificationTest {
     public void testSuspension() {
         String description = descriptionBuilder.buildDescription(buildShopModificationSuspensionActive());
         System.out.println(" ShopModification Accounts_created: \n" + description);
-        assertEquals(true, description.contains("* Приастановленный магазин активирован"));
+        assertEquals(true, description.contains("* Приостановленный магазин активирован"));
     }
 
     private Claim buildShopModificationSuspensionActive() {
@@ -90,20 +90,20 @@ public class PartyModificationTest {
     public void testAccountCreated() {
         String description = descriptionBuilder.buildDescription(buildAccountClaim());
         System.out.println(" ShopModification Accounts_created: \n" + description);
-        assertEquals(true, description.contains("Гарантийный счет: 456"));
+        assertEquals(true, description.contains("Гарантийный счет: 111"));
     }
 
     private Claim buildAccountClaim() {
-        ShopAccountSet shopAccountSet = new ShopAccountSet();
-        shopAccountSet.setCurrency(new CurrencyRef("BTC"));
-        shopAccountSet.setGeneral(123);
+        ShopAccount shopAccount = new ShopAccount();
+        shopAccount.setCurrency(new CurrencyRef("BTC"));
+        shopAccount.setGuarantee(111);
+        shopAccount.setSettlement(222);
 
-        shopAccountSet.setGuarantee(456);
-        ShopAccountSetCreated shopAccountSetCreated = new ShopAccountSetCreated(shopAccountSet);
+        ShopAccountCreated shopAccountCreated = new ShopAccountCreated();
+        shopAccountCreated.setAccount(shopAccount);
 
         ShopModification shopModification = new ShopModification();
-        shopModification.setAccountsCreated(shopAccountSetCreated);
-
+        shopModification.setAccountCreated(shopAccountCreated);
         return buildClaim(shopModification);
     }
 

@@ -57,7 +57,6 @@ public class ContractBuilderTest {
         assertEquals(true, description.contains("* Дата расторжения:  01.01.2038"));
     }
 
-
     private Claim buildContractTerminationClaim() {
         ContractTermination contractTermination = new ContractTermination();
         contractTermination.setReason("all humans are dead");
@@ -86,7 +85,6 @@ public class ContractBuilderTest {
         System.out.println(" ContractModificationAdjustment : \n" + description);
         assertEquals(true, description.contains("* Заключчен: 01.02.2034"));
     }
-
 
     private Claim buildContractAdjustmentCreation() {
         ContractAdjustment contractAdjustment = new ContractAdjustment();
