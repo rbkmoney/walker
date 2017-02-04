@@ -3,9 +3,6 @@ package com.rbkmoney;
 import com.rbkmoney.damsel.domain.*;
 import com.rbkmoney.damsel.payment_processing.*;
 import com.rbkmoney.woody.thrift.impl.http.THClientBuilder;
-import net.rcarz.jiraclient.BasicCredentials;
-import net.rcarz.jiraclient.JiraClient;
-import net.rcarz.jiraclient.JiraException;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.thrift.TException;
 import org.junit.Before;
@@ -56,6 +53,7 @@ public class HellGateMethodsTest {
         List<Event> events = eventSink.getEvents(new EventRange(10));
         System.out.println("### Count of events in sink " + events.size());
     }
+
     @Test
     public void createUser() throws TException {
         PartyParams partyParams = new PartyParams();
@@ -63,6 +61,7 @@ public class HellGateMethodsTest {
         partyManagement.create(userInfo, partyId, partyParams);
         System.out.println("#### User created");
     }
+
     @Test
     public void createShop() throws TException {
         ClaimResult claimResult = partyManagement.createShop(
@@ -72,8 +71,8 @@ public class HellGateMethodsTest {
         );
         //shopId = (int) shop.getId();
         System.out.println("#### Created shop with ID " + claimResult.getId());
-        partyManagement.acceptClaim(userInfo, partyId, claimResult.getId());
     }
+
     @Test
     public void updateShop() throws TException {
         // : UserInfo user, 2: PartyID party_id, 3: ShopID id, 4: ShopUpdate update
@@ -84,8 +83,13 @@ public class HellGateMethodsTest {
                 buildShopUpdate()
         );
         System.out.println("#### Updated shop with ID " + claimResult.getId());
-        partyManagement.acceptClaim(userInfo, partyId, claimResult.getId());
     }
+
+    @Test
+    public void revokeClaim() throws TException {
+        partyManagement.revokeClaim(userInfo, partyId, Long.valueOf(claimId), "Revoked from TEST");
+    }
+
     @Test
     public void getShopInfo() throws TException {
         Shop shop = partyManagement.getShop(userInfo, partyId, shopId);
@@ -96,6 +100,12 @@ public class HellGateMethodsTest {
                         + " Status " + shop.getSuspension().getFieldValue().toString()
                         + "; Cat name:  " + shop.getCategory().getId()
         );
+    }
+
+    @Test
+    public void acceptClaim() throws TException {
+        String claimId = "1";
+        partyManagement.acceptClaim(userInfo, partyId, Long.valueOf(claimId));
     }
 
     public ShopUpdate buildShopUpdate() {

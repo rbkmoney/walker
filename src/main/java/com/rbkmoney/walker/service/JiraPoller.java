@@ -42,15 +42,15 @@ public class JiraPoller {
             for (Issue issue : finishedIssues.issues) {
                 if (issue.getStatus().getName().equals(JiraConfig.APPROVED)) {
                     partyManagement.acceptClaim(
-                            new UserInfo(issue.getAssignee().getId(), UserType.service_user(new ServiceUser())), //todo what id we need to keep in system?
+                            new UserInfo(issue.getAssignee().getEmail(), UserType.service_user(new ServiceUser())), //todo what id we need to keep in system?
                             String.valueOf(issue.getField(jiraConfig.PARTY_ID)),
-                            (Long)issue.getField(jiraConfig.CLAIM_ID));
+                            Long.valueOf(String.valueOf(issue.getField(jiraConfig.CLAIM_ID))));
                     log.info("Accept claim in HG. Issue: {} ClaimID: {} ", issue.getKey(), issue.getField(jiraConfig.CLAIM_ID));
                 } else if (issue.getStatus().getName().equals(JiraConfig.DENIED)) {
                     partyManagement.denyClaim(
-                            new UserInfo(issue.getAssignee().getId(), UserType.service_user(new ServiceUser())), //todo what id we need to keep in system?
+                            new UserInfo(issue.getAssignee().getEmail(), UserType.service_user(new ServiceUser())), //todo what id we need to keep in system?
                             String.valueOf(issue.getField(jiraConfig.PARTY_ID)),
-                            (Long)issue.getField(jiraConfig.CLAIM_ID),
+                            Long.valueOf(String.valueOf(issue.getField(jiraConfig.CLAIM_ID))),
                             String.valueOf(issue.getField(jiraConfig.REASON))
                     );
                     log.info("Deny claim in HG. Issue: {} ClaimID {} ", issue.getKey(), issue.getField(jiraConfig.CLAIM_ID));
