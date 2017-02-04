@@ -39,7 +39,7 @@ public class JiraDaoTest {
 
     @Test
     public void jiraCreateIssue() throws JiraException {
-        jiraDao.createIssue(1000, "claim", "partyo", "Head", "Description");
+        jiraDao.createIssue(1000, 1000001, "partyo", "Head", "Description");
     }
 
     @Test
@@ -60,5 +60,4 @@ public class JiraDaoTest {
         System.out.printf(String.valueOf(json));
 
     }
-
 }

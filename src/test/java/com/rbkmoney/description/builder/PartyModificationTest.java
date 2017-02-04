@@ -118,7 +118,7 @@ public class PartyModificationTest {
         ArrayList<PartyModification> partyModificationChangeSet = new ArrayList<>();
         partyModificationChangeSet.add(partyModification);
         Claim claim = new Claim();
-        claim.setId("claim_id").setChangeset(partyModificationChangeSet);
+        claim.setId(1000001).setChangeset(partyModificationChangeSet);
         return claim;
     }
 }

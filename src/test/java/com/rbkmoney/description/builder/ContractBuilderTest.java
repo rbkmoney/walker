@@ -46,7 +46,7 @@ public class ContractBuilderTest {
         ArrayList<PartyModification> partyModificationChangeSet = new ArrayList<>();
         partyModificationChangeSet.add(partyModification);
         Claim claim = new Claim();
-        claim.setId("claim_id").setChangeset(partyModificationChangeSet);
+        claim.setId(1000001).setChangeset(partyModificationChangeSet);
         return claim;
     }
 
@@ -75,7 +75,7 @@ public class ContractBuilderTest {
         ArrayList<PartyModification> partyModificationChangeSet = new ArrayList<>();
         partyModificationChangeSet.add(partyModification);
         Claim claim = new Claim();
-        claim.setId("claim_id").setChangeset(partyModificationChangeSet);
+        claim.setId(1000001).setChangeset(partyModificationChangeSet);
         return claim;
     }
 
@@ -83,14 +83,14 @@ public class ContractBuilderTest {
     public void testAdjustmentModification() {
         String description = descriptionBuilder.buildDescription(buildContractAdjustmentCreation());
         System.out.println(" ContractModificationAdjustment : \n" + description);
-        assertEquals(true, description.contains("* Заключчен: 01.02.2034"));
+        assertEquals(true, description.contains("* Заключен: 01.02.2034"));
     }
 
     private Claim buildContractAdjustmentCreation() {
         ContractAdjustment contractAdjustment = new ContractAdjustment();
         contractAdjustment.setId(2);
-        contractAdjustment.setConcludedAt("01.02.2034");
-        contractAdjustment.setTemplate(new ContractTemplateRef(23));
+        contractAdjustment.setValidUntil("01.02.2034");
+        contractAdjustment.setTerms(new TermSetHierarchyRef(23));
 
         ContractModification contractModification = new ContractModification();
         contractModification.setAdjustmentCreation(contractAdjustment);
@@ -106,7 +106,7 @@ public class ContractBuilderTest {
         ArrayList<PartyModification> partyModificationChangeSet = new ArrayList<>();
         partyModificationChangeSet.add(partyModification);
         Claim claim = new Claim();
-        claim.setId("claim_id").setChangeset(partyModificationChangeSet);
+        claim.setId(1000001).setChangeset(partyModificationChangeSet);
         return claim;
     }
 

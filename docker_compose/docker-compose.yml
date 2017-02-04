@@ -4,10 +4,10 @@ services:
   # docker exec -ti  infrastructurem_inspector_1 bash
   # ./scripts/dominant/commit-base-fixture.sh -v
   inspector:
-    image: dr.rbkmoney.com/rbkmoney/inspector:df679bc9ee17ad037e2c69ee096b682fa75fb1b3
+    image: dr.rbkmoney.com/rbkmoney/holmes:e1e866ad74f517c3370f167b6c7a6b7c948c53c6
 
   hellgate:
-    image: dr.rbkmoney.com/rbkmoney/hellgate:ef9864b17f88d98a2b851a7cc090c3cfc4c19d4b
+    image: dr.rbkmoney.com/rbkmoney/hellgate:bcd776a4185747f22ae5b260dd1e8774b0607d57
     command: [ "/opt/hellgate/bin/hellgate",  "foreground"]
     ports:
       - "8022:8022"
@@ -18,43 +18,46 @@ services:
       - dominant
 
   machinegun:
-    image: dr.rbkmoney.com/rbkmoney/machinegun:487d2f034466dca40645fc1de50093154339849c
-    command: ["/opt/machinegun/bin/machinegun", "foreground"]
+    image: dr.rbkmoney.com/rbkmoney/machinegun:bde2440a87e8311b6e2db90e915f8efdaa520ba1
+    command: /opt/machinegun/bin/machinegun foreground
     volumes:
       - ./machinegun/sys.config:/opt/machinegun/releases/0.1.0/sys.config
 
   dominant:
-    image: dr.rbkmoney.com/rbkmoney/dominant:9e614e00cb6bde345ecd65d01aaf15f833dc6558
-    command: ["/opt/dominant/bin/dominant", "foreground"]
-    volumes:
-      - ./dominant/sys.config:/opt/dominant/releases/0.1/sys.config
-    ports:
-      - "8024:8022"
+    image: dr.rbkmoney.com/rbkmoney/dominant:9c757f3fdeae26423b777901da528cdd675dfa40
+    command: /opt/dominant/bin/dominant foreground
     depends_on:
       - machinegun
 
   bustermaze:
-    image: dr.rbkmoney.com/rbkmoney/bustermaze:c50c584f3f2fcc6edb226712b2d241e237121ead
+    image: dr.rbkmoney.com/rbkmoney/bustermaze:57c4cf3f9950b6ee46f67ffca286ebe8267bedde
     container_name: bustermaze
     entrypoint:
       - java
-    command: [  "-Xmx512m",
-        "-Dhg.pooling.url=http://hellgate:8022/v1/processing/eventsink",
-        "-jar", "/opt/bustermaze/bustermaze.jar" ]
+    command: -Xmx512m
+        -Dhg.pooling.url=http://hellgate:8022/v1/processing/eventsink
+        -jar /opt/bustermaze/bustermaze.jar
+        --spring.datasource.url=jdbc:postgresql://bustermaze-db:5432/bustermaze
+        --spring.datasource.username=postgres
+        --spring.datasource.password=postgres
+        --flyway.url=jdbc:postgresql://bustermaze-db:5432/bustermaze
+        --flyway.user=postgres
+        --flyway.password=postgres
+        --flyway.schemas=bm
     ports:
       - "8023:8022"
     depends_on:
       - hellgate
-      - bm_db
+      - bustermaze-db
 
-  bm_db:
-     image: postgres:9.6
-     ports:
-       - "5432:5432"
-     environment:
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_USER: postgres
-          POSTGRES_DB: bustermaze
+  bustermaze-db:
+    image: dr.rbkmoney.com/rbkmoney/postgres:9.6
+    environment:
+      - POSTGRES_DB=bustermaze
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - SERVICE_NAME=bustermaze-db
+
 
   shumway:
     image: dr.rbkmoney.com/rbkmoney/shumway:cd00af9d70b28a7851295fca39bdeded5a3606b0
@@ -78,12 +81,12 @@ services:
       - SERVICE_NAME=shumway-db
 
       # Better start Jira in separate container with start_jira.sh script
-#  jira:
-#    image: dr.rbkmoney.com/rbkmoney/walker/test-jira:0.1
-#    command: ['atlas-run-standalone', '--product',  'jira' , '-Dallow.google.tracking=false']
-#    tty: true
-#    ports:
-#      - "2990:2990"
+  jira:
+    image: dr.rbkmoney.com/rbkmoney/walker/test-jira:0.1
+    command: ['atlas-run-standalone', '--product',  'jira' , '-Dallow.google.tracking=false']
+    tty: true
+    ports:
+      - "2990:2990"
 
 
 networks:

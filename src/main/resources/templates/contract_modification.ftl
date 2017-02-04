@@ -12,5 +12,5 @@ h5. Операция: Изменение контракта
 * Поправки к договору
 * Идентификатор контракта:  ${contract_modification_unit.id}
 * Идентификатор: ${contract_modification_unit.modification.adjustmentCreation.id}
-* Заключчен: ${contract_modification_unit.modification.adjustmentCreation.concludedAt}
+* Заключен: ${contract_modification_unit.modification.adjustmentCreation.validUntil}
 </#if>
