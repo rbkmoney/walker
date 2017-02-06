@@ -3,6 +3,12 @@ services:
   # To init base configuration run:
   # docker exec -ti  infrastructurem_inspector_1 bash
   # ./scripts/dominant/commit-base-fixture.sh -v
+
+#  walker:
+#      image: walker:local
+#      entrypoint: ""
+#      command: [ "java", "-Xmx512m", "-jar", "/opt/walker/walker.jar"]
+
   inspector:
     image: dr.rbkmoney.com/rbkmoney/holmes:e1e866ad74f517c3370f167b6c7a6b7c948c53c6
 
