@@ -1,14 +1,8 @@
 package com.rbkmoney;
 
-import com.rbkmoney.damsel.domain.Category;
-import com.rbkmoney.damsel.domain.CategoryObject;
-import com.rbkmoney.damsel.domain.CategoryRef;
-import com.rbkmoney.damsel.domain.ShopDetails;
+import com.rbkmoney.damsel.domain.*;
 import com.rbkmoney.damsel.payment_processing.*;
 import com.rbkmoney.woody.thrift.impl.http.THClientBuilder;
-import net.rcarz.jiraclient.BasicCredentials;
-import net.rcarz.jiraclient.JiraClient;
-import net.rcarz.jiraclient.JiraException;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.thrift.TException;
 import org.junit.Before;
@@ -36,8 +30,9 @@ public class HellGateMethodsTest {
     String shopName = "Honey Bunny Winny 1";
     String categoryName = "Sweet Honey";
     String categoryDescription = "Best honey in region. Just try it!";
-    String shopId = "2";
+    int shopId = 2;
     String claimId = "3";
+    private UserInfo userInfo;
 
     @Before
     public void setUp() throws Exception {
@@ -50,6 +45,7 @@ public class HellGateMethodsTest {
                 .withHttpClient(HttpClientBuilder.create().build())
                 .withAddress(new URI(EVENT_SINK_SERVICE_URL));
         eventSink = cb.build(EventSinkSrv.Iface.class);
+        userInfo = new UserInfo(userId, UserType.service_user(new ServiceUser()));
     }
 
     @Test
@@ -60,54 +56,57 @@ public class HellGateMethodsTest {
 
     @Test
     public void createUser() throws TException {
-        partyManagement.create(new UserInfo(userId), partyId);
+        PartyParams partyParams = new PartyParams();
+        partyParams.setContactInfo(new PartyContactInfo("aaaa@mail.ru"));
+        partyManagement.create(userInfo, partyId, partyParams);
         System.out.println("#### User created");
     }
 
     @Test
     public void createShop() throws TException {
-        ClaimResult shop = partyManagement.createShop(
-                new UserInfo(userId),
+        ClaimResult claimResult = partyManagement.createShop(
+                userInfo,
                 partyId,
                 buildShopParams()
         );
-        System.out.println("#### Created shop with ID " + shop.getId());
+        //shopId = (int) shop.getId();
+        System.out.println("#### Created shop with ID " + claimResult.getId());
     }
 
     @Test
     public void updateShop() throws TException {
-        ClaimResult shop = partyManagement.updateShop(
-                new UserInfo(userId),
+        // : UserInfo user, 2: PartyID party_id, 3: ShopID id, 4: ShopUpdate update
+        ClaimResult claimResult = partyManagement.updateShop(
+                userInfo,
                 partyId,
                 shopId,
                 buildShopUpdate()
         );
-        System.out.println("#### Updated shop with ID " + shop.getId());
+        System.out.println("#### Updated shop with ID " + claimResult.getId());
     }
 
     @Test
     public void revokeClaim() throws TException {
-        partyManagement.revokeClaim(new UserInfo(userId), partyId, claimId, "Revoked from TEST");
+        partyManagement.revokeClaim(userInfo, partyId, Long.valueOf(claimId), "Revoked from TEST");
     }
 
     @Test
     public void getShopInfo() throws TException {
-        ShopState shop = partyManagement.getShop(new UserInfo(userId), partyId, shopId);
+        Shop shop = partyManagement.getShop(userInfo, partyId, shopId);
         System.out.println(
-                " Shop info  rev.: " + shop.getRevision()
-                        + " id: " + shop.getShop().getId()
-                        + " name: " + shop.getShop().getDetails().getName()
-                        + " Status " + shop.getShop().getSuspension().getFieldValue().toString()
-                        + "; Cat name:  " + shop.getShop().getCategory().getId()
+                " Shop info  rev.: " + shop.getContractId()
+                        + " id: " + shop.getId()
+                        + " name: " + shop.getDetails().getName()
+                        + " Status " + shop.getSuspension().getFieldValue().toString()
+                        + "; Cat name:  " + shop.getCategory().getId()
         );
     }
 
     @Test
     public void acceptClaim() throws TException {
         String claimId = "1";
-        partyManagement.acceptClaim(new UserInfo("MyTestUser"), partyId, claimId);
+        partyManagement.acceptClaim(userInfo, partyId, Long.valueOf(claimId));
     }
-
 
     public ShopUpdate buildShopUpdate() {
         ShopUpdate shopUpdate = new ShopUpdate();

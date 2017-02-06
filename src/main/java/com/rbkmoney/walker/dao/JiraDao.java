@@ -38,7 +38,7 @@ public class JiraDao {
 
     @Retryable(maxAttempts = 20, backoff = @Backoff(multiplier = 2, maxDelay = maxDelayMls), value = JiraException.class)
     public void createIssue(long eventId,
-                            String claimId,
+                            long claimId,
                             String partyId,
                             String summary,
                             String description) throws JiraException {
@@ -56,7 +56,7 @@ public class JiraDao {
     }
 
     @Retryable(maxAttempts = 20, backoff = @Backoff(multiplier = 2, maxDelay = maxDelayMls), value = JiraException.class)
-    public void closeIssue(long eventId, String claimId) throws JiraException {
+    public void closeIssue(long eventId, long claimId) throws JiraException {
         log.info("Try to close issue");
         Issue issue = getIssueByClaimId(claimId);
         issue.update().field(config.EVENT_ID, eventId).execute();
@@ -65,7 +65,7 @@ public class JiraDao {
     }
 
     @Retryable(maxAttempts = 20, backoff = @Backoff(multiplier = 2, maxDelay = maxDelayMls), value = JiraException.class)
-    public void closeRevokedIssue(long eventId, String claimId, String reason) throws JiraException {
+    public void closeRevokedIssue(long eventId, long claimId, String reason) throws JiraException {
         log.info("Try to close revoked issue with ClaimID: {}", claimId);
         Issue issue = getIssueByClaimId(claimId);
         issue.update()
@@ -78,7 +78,7 @@ public class JiraDao {
     }
 
     @Retryable(maxAttempts = 20, backoff = @Backoff(multiplier = 2, maxDelay = maxDelayMls), value = JiraException.class)
-    public void closeDeniedIssue(long eventId, String claimId, String reason) throws JiraException {
+    public void closeDeniedIssue(long eventId, long claimId, String reason) throws JiraException {
         log.info("Try to close denied issue with ClaimID: ", claimId);
         Issue issue = getIssueByClaimId(claimId);
         issue.update()
@@ -108,13 +108,13 @@ public class JiraDao {
                 + " AND status in ( " + APPROVED + " , " + DENIED + " ) ORDER BY EventID ", 100);
     }
 
-    private Issue getIssueByClaimId(String claimId) throws JiraException {
+    private Issue getIssueByClaimId(long claimId) throws JiraException {
         JiraClient jira = getJiraClient();
         return jira.searchIssues("project = " + config.PROJECT_KEY_NAME + " AND ClaimID ~ " + claimId, 1).issues.get(0);
     }
 
     //library cant work in multithread mode
-    private JiraClient getJiraClient() {
+    public JiraClient getJiraClient() {
         BasicCredentials creds = new BasicCredentials(config.user_name, config.password);
         return new JiraClient(config.host, creds);
     }

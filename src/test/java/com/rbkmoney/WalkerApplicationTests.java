@@ -1,9 +1,7 @@
 package com.rbkmoney;
 
 import com.rbkmoney.walker.WalkerApplication;
-import com.rbkmoney.walker.dao.JiraDao;
-import com.rbkmoney.walker.handler.poller.JiraPoller;
-import net.rcarz.jiraclient.JiraException;
+import com.rbkmoney.walker.service.JiraPoller;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;

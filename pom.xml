@@ -55,7 +55,7 @@
                 <jira.user.password>walker</jira.user.password>
 
                 <jira.issue.type.name>Claim</jira.issue.type.name>
-                <jira.project_key.name>CLAIM</jira.project_key.name>
+                <jira.project_key.name>TCLAIM</jira.project_key.name>
                 <jira.even_id.field>customfield_10501</jira.even_id.field>
                 <jira.claim_id.field>customfield_10500</jira.claim_id.field>
                 <jira.party_id.field>customfield_10502</jira.party_id.field>
@@ -80,6 +80,10 @@
         <dependency>
             <groupId>org.springframework.retry</groupId>
             <artifactId>spring-retry</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.freemarker</groupId>
+            <artifactId>freemarker</artifactId>
         </dependency>
         <dependency>
             <groupId>de.codecentric</groupId>
@@ -112,7 +116,7 @@
         <dependency>
             <groupId>com.rbkmoney</groupId>
             <artifactId>damsel</artifactId>
-            <version>1.99-557f549</version>
+            <version>1.131-a603319</version>
         </dependency>
 
         <!--Test-->

@@ -1,21 +1,17 @@
 package com.rbkmoney.walker.handler;
 
-import com.rbkmoney.damsel.domain.CategoryRef;
-import com.rbkmoney.damsel.domain.ShopAccountSet;
-import com.rbkmoney.damsel.domain.ShopDetails;
 import com.rbkmoney.damsel.event_stock.StockEvent;
 import com.rbkmoney.damsel.payment_processing.*;
 import com.rbkmoney.thrift.filter.Filter;
 import com.rbkmoney.thrift.filter.PathConditionFilter;
 import com.rbkmoney.thrift.filter.rule.PathConditionRule;
 import com.rbkmoney.walker.dao.JiraDao;
+import com.rbkmoney.walker.service.DescriptionBuilder;
 import net.rcarz.jiraclient.JiraException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.Optional;
 
 
 @Component
@@ -33,6 +29,9 @@ public class PartyEventHandler implements Handler<StockEvent> {
     @Autowired
     JiraDao jiraDao;
 
+    @Autowired
+    DescriptionBuilder descriptionBuilder;
+
     @Override
     public void handle(StockEvent value) {
         //Must not brake event order! - Its guaranted by event-stock library.
@@ -43,7 +42,7 @@ public class PartyEventHandler implements Handler<StockEvent> {
         }
         if (event.getPayload().getPartyEvent().isSetClaimCreated()) {
             log.info("Got ClaimCreated event with EventID: {}", eventId);
-            if (event.getPayload().getPartyEvent().getClaimCreated().getClaim().getStatus().isSetAccepted()) {
+            if (event.getPayload().getPartyEvent().getClaimCreated().getStatus().isSetAccepted()) {
                 log.info("Auto accepted claim with EventID: {} -  skipped.", eventId);
             } else {
                 createIssue(event);
@@ -67,58 +66,13 @@ public class PartyEventHandler implements Handler<StockEvent> {
         try {
             jiraDao.createIssue(
                     processingEvent.getId(),
-                    processingEvent.getPayload().getPartyEvent().getClaimCreated().getClaim().getId(),
+                    processingEvent.getPayload().getPartyEvent().getClaimCreated().getId(),
                     processingEvent.getSource().getParty(),
                     "Заявка " + processingEvent.getSource().getParty(),
-                    buildDescription(processingEvent.getPayload().getPartyEvent().getClaimCreated()));
+                    descriptionBuilder.buildDescription(processingEvent.getPayload().getPartyEvent().getClaimCreated()));
         } catch (JiraException e) {
             log.error("Cant Create issue with event id {}", processingEvent.getId(), e);
         }
-    }
-
-    private String buildDescription(ClaimCreated claimCreated) {
-        String description = "";
-        try {
-            for (PartyModification modification : claimCreated.getClaim().getChangeset()) {
-                if (modification.isSetShopCreation()) {
-                    description += "\n \n h5. Операция: Создание магазина ";
-                    description += "\n * Название: " + modification.getShopCreation().getDetails().getName();
-                    description += "\n * Описание: " + modification.getShopCreation().getDetails().getDescription();
-                    description += "\n * Местоположение: " + modification.getShopCreation().getDetails().getLocation();
-                    description += "\n * Категория: " + modification.getShopCreation().getCategory().getId();
-                    if (modification.getShopCreation().isSetContract()) {
-                        description += "\n Номер контракта: " + modification.getShopCreation().getContract().getNumber();
-                        description += "\n ID контрактора: " + modification.getShopCreation().getContract().getSystemContractor().getId();
-                        description += "\n Контракт заключен : " + modification.getShopCreation().getContract().getConcludedAt();
-                        description += "\n Действует с : " + modification.getShopCreation().getContract().getValidSince();
-                        description += "\n Действует до : " + modification.getShopCreation().getContract().getValidUntil();
-                        description += "\n Разорван : " + modification.getShopCreation().getContract().getTerminatedAt();
-                    }
-                } else if (modification.isSetShopModification()) {
-                    description += "\n \n h5. Операция: Редактирование магазина ";
-                    if (modification.getShopModification().getModification().isSetAccountsCreated()) {
-                        ShopAccountSet accounts = modification.getShopModification().getModification().getAccountsCreated().getAccounts();
-                        description += "\n * Созданы счета:";
-                        description += "\n в валюте: " + accounts.getCurrency().getSymbolicCode();
-                        description += "\n освновной счет: " + accounts.getGeneral();
-                        description += "\n гарантийный счет: " + accounts.getGuarantee();
-                    } else if (modification.getShopModification().getModification().isSetUpdate()) {
-                        ShopUpdate update = modification.getShopModification().getModification().getUpdate();
-                        description += "\n Изменен магазин : " + Optional.ofNullable(update.getDetails()).map(ShopDetails::getName).orElse("-");
-                        description += "\n Описание : " + Optional.ofNullable(update.getDetails()).map(ShopDetails::getDescription).orElse("-");
-                        description += "\n Местоположение : " + Optional.ofNullable(update.getDetails()).map(ShopDetails::getLocation).orElse("-");
-                        description += "\n Категория : " + Optional.ofNullable(update.getCategory()).map(CategoryRef::getId).orElse(0);
-                    } else {
-                        description += "\n " + modification.getFieldValue().toString();
-                    }
-                } else {
-                    description += "\n " + modification.getFieldValue().toString();
-                }
-            }
-        } catch (NullPointerException e) {
-            log.error("Cant build correct description: {} ", claimCreated.toString(), e);
-        }
-        return description;
     }
 
     private void closeRevoked(long eventId, ClaimStatusChanged claimStatusChanged) {
