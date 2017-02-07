@@ -33,8 +33,23 @@ public class ContractBuilderTest {
 
     private Claim buildContractCreationClaim() {
         BankAccount bankAccount = new BankAccount("Аккаунт", "Degu Bank Inc", "123123123 post", "12313");
+
+        RussianLegalEntity russianLegalEntity = new RussianLegalEntity();
+        russianLegalEntity.setActualAddress("Улица пушкина, Дом колотушкина");
+        russianLegalEntity.setInn("АЙНАНЕНАН");
+        russianLegalEntity.setPostAddress("Напишимне напиши");
+        russianLegalEntity.setRegisteredName("Офшор забугор инкорпарейтед");
+        russianLegalEntity.setRegisteredNumber("Какая регистрация?");
+        russianLegalEntity.setRepresentativeDocument("Усы лапы и хвост");
+        russianLegalEntity.setRepresentativePosition("Миссионерская");
+        russianLegalEntity.setRepresentativeFullName("Александра Грей");
+
+        Entity entity = new Entity();
+        entity.setRussianLegalEntity(russianLegalEntity);
+
         Contractor contractor = new Contractor();
         contractor.setBankAccount(bankAccount);
+        contractor.setEntity(entity);
 
         Contract contract = new Contract();
         contract.setId(1);
