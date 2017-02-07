@@ -53,8 +53,9 @@ public class DescriptionBuilder {
                     description += renderDescription(
                             CONTRACT_MODIFICATION, "contract_modification_unit", modification.getContractModification());
                 } else {
-                    description += "\n " + modification.getFieldValue().toString();
+                    description += modification.getFieldValue().toString();
                 }
+                description += "\n ";
             }
         } catch (NullPointerException | TemplateException | IOException e) {
             description += "\n Cant build correct Description. " + claim.toString()

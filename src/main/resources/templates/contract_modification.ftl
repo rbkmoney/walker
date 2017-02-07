@@ -14,3 +14,14 @@ h5. Операция: Изменение контракта
 * Идентификатор: ${contract_modification_unit.modification.adjustmentCreation.id}
 * Заключен: ${contract_modification_unit.modification.adjustmentCreation.validUntil}
 </#if>
+<#if (contract_modification_unit.getModification().isSetPayoutToolCreation())!false>
+h6. Способ вывода средств
+    <#assign payoutTool = contract_modification_unit.modification.getPayoutToolCreation()>
+* Id способа выплаты: ${payoutTool.id}
+* Идентификатор: ${payoutTool.id}
+* Тип валюты: ${payoutTool.currency.symbolicCode}
+* Расчетный счет: ${(payoutTool.payoutToolInfo.bankAccount.account)!"-"}
+* Наименование банка: ${(payoutTool.payoutToolInfo.bankAccount.bankName)!"-"}
+* Корреспондентский счет: ${(payoutTool.payoutToolInfo.bankAccount.bankPostAccount)!"-"}
+* БИК банка: ${(payoutTool.payoutToolInfo.bankAccount.bankBik)!"-"}
+</#if>

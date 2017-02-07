@@ -11,6 +11,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 
 import static org.junit.Assert.assertEquals;
 
@@ -25,20 +27,45 @@ public class ContractBuilderTest {
     DescriptionBuilder descriptionBuilder;
 
     @Test
-    public void testCreation() {
+    public void testContractCreation() {
         String description = descriptionBuilder.buildDescription(buildContractCreationClaim());
         System.out.println(" ContractCreation : \n" + description);
-        assertEquals(true, description.contains("* Банковский аккаунт: Аккаунт"));
+        assertEquals(true, description.contains("* Расчетный счет: Аккаунт"));
     }
 
     private Claim buildContractCreationClaim() {
         BankAccount bankAccount = new BankAccount("Аккаунт", "Degu Bank Inc", "123123123 post", "12313");
+
+        RussianLegalEntity russianLegalEntity = new RussianLegalEntity();
+        russianLegalEntity.setActualAddress("Улица пушкина, Дом колотушкина");
+        russianLegalEntity.setInn("АЙНАНЕНАН");
+        russianLegalEntity.setPostAddress("Напишимне напиши");
+        russianLegalEntity.setRegisteredName("Офшор забугор инкорпарейтед");
+        russianLegalEntity.setRegisteredNumber("Какая регистрация?");
+        russianLegalEntity.setRepresentativeDocument("Усы лапы и хвост");
+        russianLegalEntity.setRepresentativePosition("Миссионерская");
+        russianLegalEntity.setRepresentativeFullName("Александра Грей");
+
+        Entity entity = new Entity();
+        entity.setRussianLegalEntity(russianLegalEntity);
+
         Contractor contractor = new Contractor();
         contractor.setBankAccount(bankAccount);
+        contractor.setEntity(entity);
+
+        PayoutToolInfo payoutToolInfo = new PayoutToolInfo();
+        payoutToolInfo.setBankAccount(bankAccount);
+
+        PayoutTool payoutTool = new PayoutTool();
+        payoutTool.setCurrency(new CurrencyRef("RUB"));
+        payoutTool.setId(1);
+        payoutTool.setPayoutToolInfo(payoutToolInfo);
 
         Contract contract = new Contract();
         contract.setId(1);
         contract.setContractor(contractor);
+        contract.setStatus(ContractStatus.active(new ContractActive()));
+        contract.setPayoutTools(Collections.singletonList(payoutTool));
 
         PartyModification partyModification = new PartyModification();
         partyModification.setContractCreation(contract);

@@ -29,12 +29,12 @@ public class ShopModificationBuilderTest {
     public void testShopCreation() {
         String description = descriptionBuilder.buildDescription(buildShopCreationClaim());
         System.out.println(" ShopCreation: \n " + description);
-        assertEquals(true, description.contains("* Местоположение: http://misvoihneboriv228.piu"));
+        assertEquals(true, description.contains("* URL: http://misvoihnebrosim228.piu"));
     }
 
     private Claim buildShopCreationClaim() {
         ShopLocation shopLocation = new ShopLocation();
-        shopLocation.setUrl("http://misvoihneboriv228.piu");
+        shopLocation.setUrl("http://misvoihnebrosim228.piu");
 
         ShopDetails shopDetails = new ShopDetails();
         shopDetails.setDescription("Описание магазина");
@@ -59,7 +59,7 @@ public class ShopModificationBuilderTest {
     public void testUpdate() {
         String description = descriptionBuilder.buildDescription(buildShopUpdateClaim());
         System.out.println(" : \n" + description);
-        assertEquals(true, description.contains("* Категория : 1"));
+        assertEquals(true, description.contains("* Категория: 1"));
     }
 
     private Claim buildShopUpdateClaim() {
