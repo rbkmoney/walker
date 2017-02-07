@@ -28,7 +28,7 @@ public class PartyModificationTest {
     public void testBlocked() {
         String description = descriptionBuilder.buildDescription(buildBlocked());
         System.out.println(" ShopModification Accounts_created: \n" + description);
-        assertEquals(true, description.contains(" * Заблокирован магазин по причине : За разжигание"));
+        assertEquals(true, description.contains("* Заблокирован магазин по причине: За разжигание"));
     }
 
     private Claim buildBlocked() {
@@ -44,7 +44,7 @@ public class PartyModificationTest {
     public void testUnblock() {
         String description = descriptionBuilder.buildDescription(buildUnblock());
         System.out.println(" ShopModification Accounts_created: \n" + description);
-        assertEquals(true, description.contains("* Разблокирован магазин по причине : Потрачено"));
+        assertEquals(true, description.contains("* Разблокирован магазин по причине: Потрачено"));
     }
 
     private Claim buildUnblock() {

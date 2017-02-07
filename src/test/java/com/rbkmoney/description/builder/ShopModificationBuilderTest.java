@@ -59,7 +59,7 @@ public class ShopModificationBuilderTest {
     public void testUpdate() {
         String description = descriptionBuilder.buildDescription(buildShopUpdateClaim());
         System.out.println(" : \n" + description);
-        assertEquals(true, description.contains("* Категория : 1"));
+        assertEquals(true, description.contains("* Категория: 1"));
     }
 
     private Claim buildShopUpdateClaim() {

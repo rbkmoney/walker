@@ -7,10 +7,10 @@ h5. Операция: Редактирование магазина
 <#if modification.isSetBlocking()>
     <#if modification.getBlocking().isSetBlocked()>
         <#assign blk = modification.getBlocking().getBlocked()>
-    * Заблокирован магазин по причине : ${(blk.reason)!"-"}
+    * Заблокирован магазин по причине: ${(blk.reason)!"-"}
     <#else>
         <#assign ublk = modification.getBlocking().getUnblocked()>
-    * Разблокирован магазин по причине : ${(ublk.reason)!"-"}
+    * Разблокирован магазин по причине: ${(ublk.reason)!"-"}
     </#if>
 </#if>
 <#----->
@@ -25,13 +25,15 @@ h5. Операция: Редактирование магазина
 <#if modification.isSetUpdate()>
 <#--по какойто причине ломается на геттере '.update'-->
     <#assign shop_update = modification.getUpdate()>
-* Изменен магазин : ${(shop_update.details.name)!"-"}
-* Описание : ${(shop_update.details.description)!"-"}
-* Местоположение : ${(shop_update.details.location.fieldValue)!"-"}
-* Категория : ${(shop_update.category.id)!"-"}
+* Изменен магазин: ${(shop_update.details.name)!"-"}
+* Описание: ${(shop_update.details.description)!"-"}
+* Местоположение: ${(shop_update.details.location.fieldValue)!"-"}
+* Категория: ${(shop_update.category.id)!"-"}
+* Id контракта: ${(shop_update.contractId)!"-"}
+* Id инструмента выплат: ${(shop_update.payoutToolId)!"-"}
+* Id прокси: ${(shop_update.proxy.ref.id)!"-"}
 </#if>
 <#----->
-
 <#if modification.isSetAccountCreated()>
 * Созданы счета:
 В валюте: ${modification.accountCreated.account.currency.symbolicCode}
