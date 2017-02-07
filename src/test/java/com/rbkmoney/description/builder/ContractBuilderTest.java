@@ -11,6 +11,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 
 import static org.junit.Assert.assertEquals;
 
@@ -28,7 +30,7 @@ public class ContractBuilderTest {
     public void testContractCreation() {
         String description = descriptionBuilder.buildDescription(buildContractCreationClaim());
         System.out.println(" ContractCreation : \n" + description);
-        assertEquals(true, description.contains("* Банковский аккаунт: Аккаунт"));
+        assertEquals(true, description.contains("* Расчетный счет: Аккаунт"));
     }
 
     private Claim buildContractCreationClaim() {
@@ -51,10 +53,19 @@ public class ContractBuilderTest {
         contractor.setBankAccount(bankAccount);
         contractor.setEntity(entity);
 
+        PayoutToolInfo payoutToolInfo = new PayoutToolInfo();
+        payoutToolInfo.setBankAccount(bankAccount);
+
+        PayoutTool payoutTool = new PayoutTool();
+        payoutTool.setCurrency(new CurrencyRef("RUB"));
+        payoutTool.setId(1);
+        payoutTool.setPayoutToolInfo(payoutToolInfo);
+
         Contract contract = new Contract();
         contract.setId(1);
         contract.setContractor(contractor);
         contract.setStatus(ContractStatus.active(new ContractActive()));
+        contract.setPayoutTools(Collections.singletonList(payoutTool));
 
         PartyModification partyModification = new PartyModification();
         partyModification.setContractCreation(contract);
