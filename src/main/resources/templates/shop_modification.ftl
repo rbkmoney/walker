@@ -35,6 +35,6 @@ h5. Операция: Редактирование магазина
 <#if modification.isSetAccountCreated()>
 * Созданы счета:
 В валюте: ${modification.accountCreated.account.currency.symbolicCode}
-Освновной счет: ${modification.accountCreated.account.settlement}
+Основной счет: ${modification.accountCreated.account.settlement}
 Гарантийный счет: ${modification.accountCreated.account.guarantee}
 </#if>

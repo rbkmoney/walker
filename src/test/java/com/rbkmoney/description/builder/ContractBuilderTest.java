@@ -25,7 +25,7 @@ public class ContractBuilderTest {
     DescriptionBuilder descriptionBuilder;
 
     @Test
-    public void testCreation() {
+    public void testContractCreation() {
         String description = descriptionBuilder.buildDescription(buildContractCreationClaim());
         System.out.println(" ContractCreation : \n" + description);
         assertEquals(true, description.contains("* Банковский аккаунт: Аккаунт"));
@@ -39,6 +39,7 @@ public class ContractBuilderTest {
         Contract contract = new Contract();
         contract.setId(1);
         contract.setContractor(contractor);
+        contract.setStatus(ContractStatus.active(new ContractActive()));
 
         PartyModification partyModification = new PartyModification();
         partyModification.setContractCreation(contract);
