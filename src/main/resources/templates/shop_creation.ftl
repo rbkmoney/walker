@@ -4,5 +4,5 @@ h5. Операция: Создание магазина
 * Название: ${(shop.details.name)!"-"}
 * Описание: ${(shop.details.description)!"-"}
 * URL: ${(shop.details.location.fieldValue)!"-"}
-* Id Категории: ${(shop.category.id)!"-"}
+* Id категории: ${(shop.category.id)!"-"}
 * Id контракта: ${(shop.contractId)!"-"}

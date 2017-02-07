@@ -15,7 +15,7 @@ h5. Операция: Изменение контракта
 * Заключен: ${contract_modification_unit.modification.adjustmentCreation.validUntil}
 </#if>
 <#if (contract_modification_unit.getModification().isSetPayoutToolCreation())!false>
-h6. Способ вывода стредств
+h6. Способ вывода средств
     <#assign payoutTool = contract_modification_unit.modification.getPayoutToolCreation()>
 * Id способа выплаты: ${payoutTool.id}
 * Идентификатор: ${payoutTool.id}

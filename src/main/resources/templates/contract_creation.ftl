@@ -22,7 +22,7 @@ h6. Реквизиты юр. лица
 </#if>
 <#if (contract.isSetPayoutTools())!false>
     <#list contract.payoutTools as payoutTool>
-    h6. Способ вывода стредств
+    h6. Способ вывода средств
     * Идентификатор: ${payoutTool.id}
     * Тип валюты: ${payoutTool.currency.symbolicCode}
     * Расчетный счет: ${(payoutTool.payoutToolInfo.bankAccount.account)!"-"}
