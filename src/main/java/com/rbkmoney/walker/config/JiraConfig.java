@@ -8,10 +8,10 @@ public class JiraConfig {
     @Value("${jira.api.url}")
     public String host;
 
-    @Value("${jira.user.name}")
+    @Value("${JIRA_USER}")
     public String user_name;
 
-    @Value("${jira.user.password}")
+    @Value("${JIRA_PASSWORD}")
     public String password;
 
     @Value("${jira.issue.type.name}")
