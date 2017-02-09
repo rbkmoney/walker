@@ -1,9 +1,10 @@
 #!groovy
 build('walker', 'java-maven') {
-    checkoutRepo()
-
     def serviceName = "walker"
     def baseImageTag = "f26fcc19d1941ab74f1c72dd8a408be17a769333"
+
+    checkoutRepo()
+
     // Run mvn and generate docker file
     runStage('Maven package') {
         withCredentials([[$class: 'FileBinding', credentialsId: 'java-maven-settings.xml', variable: 'SETTINGS_XML']]) {
@@ -21,7 +22,7 @@ build('walker', 'java-maven') {
     def serviceImage;
     getCommitId()
     runStage('Build Service image') {
-        serviceImage = docker.build(imgShortName, '-f ./target/Dockerfile ./target')
+        serviceImage = docker.build('rbkmoney/' + "${serviceName}" + ':' + '$COMMIT_ID', '-f ./target/Dockerfile ./target')
     }
 
     sh 'docker images'
@@ -31,9 +32,10 @@ build('walker', 'java-maven') {
             docker.withRegistry('https://dr.rbkmoney.com/v2/', 'dockerhub-rbkmoneycibot') {
                 serviceImage.push();
             }
+            sh 'docker images'
             // Push under 'withRegistry' generates 2d record with 'long name' in local docker registry.
             // Untag the long-name
-            sh "docker rmi dr.rbkmoney.com/${imgShortName}"
+//            sh "docker rmi dr.rbkmoney.com/${imgShortName}"
         }
     }
 
