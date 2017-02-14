@@ -8,14 +8,22 @@ import com.rbkmoney.damsel.payment_processing.UserType;
 import org.apache.thrift.TException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 /**
  * Add data from remote services
  *
  * @since 14.02.17
  **/
-public interface EnrichmentService {
+@Component
+public class EnrichmentService {
 
-    String getPartyEmail(String partyId) throws TException;
+    private static String userId = "walker";
+
+    @Autowired
+    private PartyManagementSrv.Iface partyManagement;
+
+    public String getPartyEmail(String partyId) throws TException {
+        Party party = partyManagement.get(new UserInfo(userId, UserType.service_user(new ServiceUser())), partyId);
+        return party.getContactInfo().getEmail();
+    }
 }

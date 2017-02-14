@@ -6,9 +6,10 @@ import com.rbkmoney.thrift.filter.converter.TemporalConverter;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
-import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -26,6 +27,7 @@ import static java.time.format.DateTimeFormatter.ISO_INSTANT;
 /**
  * @since 21.12.16
  **/
+@Service
 public class DescriptionBuilder {
 
     static Logger log = LoggerFactory.getLogger(DescriptionBuilder.class);
