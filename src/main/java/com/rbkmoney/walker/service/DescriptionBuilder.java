@@ -1,12 +1,14 @@
 package com.rbkmoney.walker.service;
 
-import com.rbkmoney.damsel.domain.*;
 import com.rbkmoney.damsel.payment_processing.*;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
+import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -19,6 +21,7 @@ import static com.rbkmoney.walker.service.DescriptionBuilder.TemplateName.*;
 /**
  * @since 21.12.16
  **/
+@Service
 public class DescriptionBuilder {
 
     static Logger log = LoggerFactory.getLogger(DescriptionBuilder.class);
@@ -26,6 +29,9 @@ public class DescriptionBuilder {
     private Configuration cfg;
 
     private LinkedHashMap<TemplateName, Template> templates;
+
+    @Autowired
+    EnrichmentService enrichmentService;
 
     public DescriptionBuilder(Configuration configuration) throws IOException {
         this.cfg = configuration;
@@ -37,6 +43,13 @@ public class DescriptionBuilder {
     }
 
     public String buildDescription(Claim claim) {
+
+        try {
+            enrichmentService.getPartyEmail("1");
+        } catch (TException e) {
+            e.printStackTrace();
+        }
+
         String description = "";
         try {
             for (PartyModification modification : claim.getChangeset()) {

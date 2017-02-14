@@ -42,7 +42,8 @@
                 <jira.claim_id.field>customfield_10001</jira.claim_id.field>
                 <jira.party_id.field>customfield_10002</jira.party_id.field>
                 <jira.reason.field>customfield_10003</jira.reason.field>
-
+                <!--TODO - UPDATE-->
+                <jira.email.field>customfield_10800</jira.email.field>
                 <bm.pooling.url>http://localhost:8023/repo</bm.pooling.url>
                 <hg.party.management.url>http://localhost:8022/v1/processing/partymgmt</hg.party.management.url>
             </properties>
@@ -60,7 +61,7 @@
                 <jira.claim_id.field>customfield_10500</jira.claim_id.field>
                 <jira.party_id.field>customfield_10502</jira.party_id.field>
                 <jira.reason.field>customfield_10503</jira.reason.field>
-
+                <jira.email.field>customfield_10800</jira.email.field>
                 <bm.pooling.url>http://localhost:8023/repo</bm.pooling.url>
                 <hg.party.management.url>http://localhost:8022/v1/processing/partymgmt</hg.party.management.url>
             </properties>
@@ -111,7 +112,7 @@
         <dependency>
             <groupId>com.rbkmoney</groupId>
             <artifactId>eventstock-client</artifactId>
-            <version>1.0.3</version>
+            <version>1.0.4</version>
         </dependency>
         <dependency>
             <groupId>com.rbkmoney</groupId>
@@ -165,8 +166,6 @@
                 </executions>
             </plugin>
         </plugins>
-
-
     </build>
 
 

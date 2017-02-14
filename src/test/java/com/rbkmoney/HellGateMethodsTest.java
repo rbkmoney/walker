@@ -63,6 +63,12 @@ public class HellGateMethodsTest {
     }
 
     @Test
+    public void getParty() throws TException {
+        Party party = partyManagement.get(new UserInfo("id", UserType.service_user(new ServiceUser())), partyId);
+        System.out.println("### Email: " + party.getContactInfo().getEmail());
+    }
+
+    @Test
     public void createShop() throws TException {
         ClaimResult claimResult = partyManagement.createShop(
                 userInfo,

@@ -7,7 +7,9 @@ import com.rbkmoney.thrift.filter.PathConditionFilter;
 import com.rbkmoney.thrift.filter.rule.PathConditionRule;
 import com.rbkmoney.walker.dao.JiraDao;
 import com.rbkmoney.walker.service.DescriptionBuilder;
+import com.rbkmoney.walker.service.EnrichmentService;
 import net.rcarz.jiraclient.JiraException;
+import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +33,9 @@ public class PartyEventHandler implements Handler<StockEvent> {
 
     @Autowired
     DescriptionBuilder descriptionBuilder;
+
+    @Autowired
+    EnrichmentService enrichmentService;
 
     @Override
     public void handle(StockEvent value) {
@@ -64,14 +69,18 @@ public class PartyEventHandler implements Handler<StockEvent> {
 
     private void createIssue(Event processingEvent) {
         try {
+            String partyEmail = enrichmentService.getPartyEmail(processingEvent.getSource().getParty());
             jiraDao.createIssue(
                     processingEvent.getId(),
                     processingEvent.getPayload().getPartyEvent().getClaimCreated().getId(),
                     processingEvent.getSource().getParty(),
-                    "Заявка " + processingEvent.getSource().getParty(),
+                    partyEmail,
+                    "Заявка " + partyEmail,
                     descriptionBuilder.buildDescription(processingEvent.getPayload().getPartyEvent().getClaimCreated()));
         } catch (JiraException e) {
             log.error("Cant Create issue with event id {}", processingEvent.getId(), e);
+        } catch (TException e) {
+            log.error("Enrichment remote call error {}", processingEvent.getId(), e);
         }
     }
 

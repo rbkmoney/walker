@@ -43,22 +43,12 @@ public class EventStockPollerConfig {
     @Value("${bm.pooling.maxPoolSize}")
     int maxPoolSize;
 
-    @Value("${hg.party.management.url}")
-    private String PARTY_MANAGEMENT_SERVICE_URL;
 
     @Autowired
     List<Handler> handlers;
 
     @Autowired
     JiraDao jiraDao;
-
-    @Bean
-    public PartyManagementSrv.Iface partyManagementSrv() throws IOException, URISyntaxException {
-        THSpawnClientBuilder clientBuilder = new THSpawnClientBuilder()
-                .withHttpClient(HttpClientBuilder.create().build())
-                .withAddress(new URI(PARTY_MANAGEMENT_SERVICE_URL));
-        return clientBuilder.build(PartyManagementSrv.Iface.class);
-    }
 
     @Bean
     public EventPublisher eventPublisher() throws IOException {
