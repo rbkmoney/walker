@@ -36,4 +36,4 @@ h6. Юридическое соглашение
 * Подписанно: ${contract.legalAgreement.signedAt}
 * Идентификатор: ${contract.legalAgreement.legalAgreementId}
 </#if>
-* Контракт действует с ${(contract.validSince)!"-"} по ${(contract.validUntil)!"-"}
+* Контракт действует с ${(contract_valid_since)!"-"} по ${(contract_valid_until)!"-"}
