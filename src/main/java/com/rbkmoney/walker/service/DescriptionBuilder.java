@@ -2,19 +2,26 @@ package com.rbkmoney.walker.service;
 
 import com.rbkmoney.damsel.domain.*;
 import com.rbkmoney.damsel.payment_processing.*;
+import com.rbkmoney.thrift.filter.converter.TemporalConverter;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static com.rbkmoney.walker.service.DescriptionBuilder.TemplateName.*;
+import static java.time.format.DateTimeFormatter.ISO_INSTANT;
 
 /**
  * @since 21.12.16
@@ -47,8 +54,7 @@ public class DescriptionBuilder {
                     description += renderDescription(
                             SHOP_MODIFICATION, "modification_unit", modification.getShopModification());
                 } else if (modification.isSetContractCreation()) {
-                    description += renderDescription(
-                            CONTRACT_CREATION, "contract", modification.getContractCreation());
+                    description += renderContractCreation(modification.getContractCreation());
                 } else if (modification.isSetContractModification()) {
                     description += renderDescription(
                             CONTRACT_MODIFICATION, "contract_modification_unit", modification.getContractModification());
@@ -65,6 +71,16 @@ public class DescriptionBuilder {
         return description;
     }
 
+    private String renderContractCreation(Contract contract) throws IOException, TemplateException {
+        Map<String, Object> root = new HashMap<>();
+        root.put("contract", contract);
+        root.put("contract_valid_since", toPrettyDate(contract.getValidSince()));
+        root.put("contract_valid_until", toPrettyDate(contract.getValidUntil()));
+        StringWriter out = new StringWriter();
+        templates.get(CONTRACT_CREATION).process(root, out);
+        return out.toString();
+    }
+
     private String renderDescription(TemplateName templateName, String paramName, Object obj) throws IOException, TemplateException {
         Map<String, Object> root = new HashMap<>();
         root.put(paramName, obj);
@@ -78,6 +94,16 @@ public class DescriptionBuilder {
         SHOP_MODIFICATION,
         CONTRACT_CREATION,
         CONTRACT_MODIFICATION
+    }
+
+    public static String toPrettyDate(String time) {
+        if(time!=null) {
+            Instant instant = Instant.from(ISO_INSTANT.parse(time));
+            LocalDateTime localDateTime = LocalDateTime.ofInstant(instant, ZoneId.of("Europe/Moscow"));
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+            return formatter.format(localDateTime);
+        }
+        return "-";
     }
 
 }

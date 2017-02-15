@@ -63,6 +63,9 @@ public class ContractBuilderTest {
 
         Contract contract = new Contract();
         contract.setId(1);
+        contract.setValidSince("2017-02-13T18:24:02.346830Z");
+        contract.setValidUntil("2017-05-14T18:24:02.346830Z");
+
         contract.setContractor(contractor);
         contract.setStatus(ContractStatus.active(new ContractActive()));
         contract.setPayoutTools(Collections.singletonList(payoutTool));
