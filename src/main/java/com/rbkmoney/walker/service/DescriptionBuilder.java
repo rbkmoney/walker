@@ -1,14 +1,16 @@
 package com.rbkmoney.walker.service;
 
-import com.rbkmoney.damsel.domain.*;
 import com.rbkmoney.damsel.payment_processing.*;
 import com.rbkmoney.thrift.filter.converter.TemporalConverter;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import org.joda.time.DateTime;
+import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -26,6 +28,7 @@ import static java.time.format.DateTimeFormatter.ISO_INSTANT;
 /**
  * @since 21.12.16
  **/
+@Service
 public class DescriptionBuilder {
 
     static Logger log = LoggerFactory.getLogger(DescriptionBuilder.class);
@@ -33,6 +36,9 @@ public class DescriptionBuilder {
     private Configuration cfg;
 
     private LinkedHashMap<TemplateName, Template> templates;
+
+    @Autowired
+    EnrichmentService enrichmentService;
 
     public DescriptionBuilder(Configuration configuration) throws IOException {
         this.cfg = configuration;
@@ -44,12 +50,18 @@ public class DescriptionBuilder {
     }
 
     public String buildDescription(Claim claim) {
+
+        try {
+            enrichmentService.getPartyEmail("1");
+        } catch (TException e) {
+            e.printStackTrace();
+        }
+
         String description = "";
         try {
             for (PartyModification modification : claim.getChangeset()) {
                 if (modification.isSetShopCreation()) {
-                    description += renderDescription(
-                            SHOP_CREATION, "shop", modification.getShopCreation());
+                    description += renderShopCreation(modification.getShopCreation());
                 } else if (modification.isSetShopModification()) {
                     description += renderDescription(
                             SHOP_MODIFICATION, "modification_unit", modification.getShopModification());
@@ -71,21 +83,30 @@ public class DescriptionBuilder {
         return description;
     }
 
-    private String renderContractCreation(Contract contract) throws IOException, TemplateException {
+    private String renderShopCreation(Shop shop) throws IOException, TemplateException {
         Map<String, Object> root = new HashMap<>();
-        root.put("contract", contract);
-        root.put("contract_valid_since", toPrettyDate(contract.getValidSince()));
-        root.put("contract_valid_until", toPrettyDate(contract.getValidUntil()));
-        StringWriter out = new StringWriter();
-        templates.get(CONTRACT_CREATION).process(root, out);
-        return out.toString();
+        root.put("shop", shop);
+        //TODO: get category name
+        return renderFromTemplate(SHOP_CREATION, root);
+    }
+
+    private String renderContractCreation(Contract contract) throws IOException, TemplateException {
+        Map<String, Object> fields = new HashMap<>();
+        fields.put("contract", contract);
+        fields.put("contract_valid_since", toPrettyDate(contract.getValidSince()));
+        fields.put("contract_valid_until", toPrettyDate(contract.getValidUntil()));
+        return renderFromTemplate(CONTRACT_CREATION, fields);
     }
 
     private String renderDescription(TemplateName templateName, String paramName, Object obj) throws IOException, TemplateException {
-        Map<String, Object> root = new HashMap<>();
-        root.put(paramName, obj);
+        Map<String, Object> fields = new HashMap<>();
+        fields.put(paramName, obj);
+        return renderFromTemplate(templateName, fields);
+    }
+
+    private String renderFromTemplate(TemplateName templateName, Map<String, Object> fields) throws IOException, TemplateException {
         StringWriter out = new StringWriter();
-        templates.get(templateName).process(root, out);
+        templates.get(templateName).process(fields, out);
         return out.toString();
     }
 
@@ -97,11 +118,13 @@ public class DescriptionBuilder {
     }
 
     public static String toPrettyDate(String time) {
-        if(time!=null) {
+        try {
             Instant instant = Instant.from(ISO_INSTANT.parse(time));
             LocalDateTime localDateTime = LocalDateTime.ofInstant(instant, ZoneId.of("Europe/Moscow"));
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
             return formatter.format(localDateTime);
+        } catch (DateTimeParseException | NullPointerException e) {
+            return time;
         }
         return "-";
     }

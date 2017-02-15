@@ -15,4 +15,16 @@ public class TimeTest {
         String s = DescriptionBuilder.toPrettyDate("2017-02-13T18:24:02.346830Z");
         assertEquals("13.02.2017", s);
     }
+
+    @Test
+    public void timeWrongTest() {
+        String s = DescriptionBuilder.toPrettyDate("2017-02-13T18:24:02.346830ZBITCH");
+        assertEquals("2017-02-13T18:24:02.346830ZBITCH", s);
+    }
+
+    @Test
+    public void timeNullTest() {
+        String s = DescriptionBuilder.toPrettyDate(null);
+        assertEquals(null, s);
+    }
 }
