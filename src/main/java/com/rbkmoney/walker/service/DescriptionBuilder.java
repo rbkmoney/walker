@@ -6,7 +6,6 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import org.joda.time.DateTime;
-import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,7 +82,19 @@ public class DescriptionBuilder {
         return description;
     }
 
-    private String renderShopCreation(Shop shop) throws IOException, TemplateException {
+
+    private String renderContractCreation(Contract contract) throws IOException, TemplateException {
+        Map<String, Object> root = new HashMap<>();
+        root.put("contract", contract);
+        root.put("contract_valid_since", toPrettyDate(contract.getValidSince()));
+        root.put("contract_valid_until", toPrettyDate(contract.getValidUntil()));
+        StringWriter out = new StringWriter();
+        templates.get(CONTRACT_CREATION).process(root, out);
+        return out.toString();
+    }
+
+    private String renderDescription(TemplateName templateName, String paramName, Object obj) throws IOException, TemplateException {
+
         Map<String, Object> root = new HashMap<>();
         root.put("shop", shop);
         //TODO: get category name
@@ -118,6 +129,7 @@ public class DescriptionBuilder {
     }
 
     public static String toPrettyDate(String time) {
+
         try {
             Instant instant = Instant.from(ISO_INSTANT.parse(time));
             LocalDateTime localDateTime = LocalDateTime.ofInstant(instant, ZoneId.of("Europe/Moscow"));
@@ -125,8 +137,8 @@ public class DescriptionBuilder {
             return formatter.format(localDateTime);
         } catch (DateTimeParseException | NullPointerException e) {
             return time;
+
         }
-        return "-";
     }
 
 }
