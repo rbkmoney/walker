@@ -1,11 +1,13 @@
 package com.rbkmoney.walker.service;
 
+import com.rbkmoney.damsel.domain.Contract;
+import com.rbkmoney.damsel.domain.Shop;
 import com.rbkmoney.damsel.payment_processing.*;
 import com.rbkmoney.thrift.filter.converter.TemporalConverter;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
-import org.joda.time.DateTime;
+import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -49,13 +52,6 @@ public class DescriptionBuilder {
     }
 
     public String buildDescription(Claim claim) {
-
-        try {
-            enrichmentService.getPartyEmail("1");
-        } catch (TException e) {
-            e.printStackTrace();
-        }
-
         String description = "";
         try {
             for (PartyModification modification : claim.getChangeset()) {
@@ -82,19 +78,7 @@ public class DescriptionBuilder {
         return description;
     }
 
-
-    private String renderContractCreation(Contract contract) throws IOException, TemplateException {
-        Map<String, Object> root = new HashMap<>();
-        root.put("contract", contract);
-        root.put("contract_valid_since", toPrettyDate(contract.getValidSince()));
-        root.put("contract_valid_until", toPrettyDate(contract.getValidUntil()));
-        StringWriter out = new StringWriter();
-        templates.get(CONTRACT_CREATION).process(root, out);
-        return out.toString();
-    }
-
-    private String renderDescription(TemplateName templateName, String paramName, Object obj) throws IOException, TemplateException {
-
+    private String renderShopCreation(Shop shop) throws IOException, TemplateException {
         Map<String, Object> root = new HashMap<>();
         root.put("shop", shop);
         //TODO: get category name
@@ -129,7 +113,6 @@ public class DescriptionBuilder {
     }
 
     public static String toPrettyDate(String time) {
-
         try {
             Instant instant = Instant.from(ISO_INSTANT.parse(time));
             LocalDateTime localDateTime = LocalDateTime.ofInstant(instant, ZoneId.of("Europe/Moscow"));
@@ -137,7 +120,6 @@ public class DescriptionBuilder {
             return formatter.format(localDateTime);
         } catch (DateTimeParseException | NullPointerException e) {
             return time;
-
         }
     }
 
