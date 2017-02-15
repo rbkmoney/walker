@@ -1,18 +1,14 @@
 package com.rbkmoney.walker.service;
 
-import com.rbkmoney.damsel.domain.Contract;
-import com.rbkmoney.damsel.domain.Shop;
+import com.rbkmoney.damsel.domain.*;
 import com.rbkmoney.damsel.payment_processing.*;
 import com.rbkmoney.thrift.filter.converter.TemporalConverter;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import org.joda.time.DateTime;
-import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -20,7 +16,6 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -31,7 +26,6 @@ import static java.time.format.DateTimeFormatter.ISO_INSTANT;
 /**
  * @since 21.12.16
  **/
-@Service
 public class DescriptionBuilder {
 
     static Logger log = LoggerFactory.getLogger(DescriptionBuilder.class);
@@ -54,7 +48,8 @@ public class DescriptionBuilder {
         try {
             for (PartyModification modification : claim.getChangeset()) {
                 if (modification.isSetShopCreation()) {
-                    description += renderShopCreation(modification.getShopCreation());
+                    description += renderDescription(
+                            SHOP_CREATION, "shop", modification.getShopCreation());
                 } else if (modification.isSetShopModification()) {
                     description += renderDescription(
                             SHOP_MODIFICATION, "modification_unit", modification.getShopModification());
@@ -76,30 +71,21 @@ public class DescriptionBuilder {
         return description;
     }
 
-    private String renderShopCreation(Shop shop) throws IOException, TemplateException {
-        Map<String, Object> root = new HashMap<>();
-        root.put("shop", shop);
-        //TODO: get category name
-        return renderFromTemplate(SHOP_CREATION, root);
-    }
-
     private String renderContractCreation(Contract contract) throws IOException, TemplateException {
-        Map<String, Object> fields = new HashMap<>();
-        fields.put("contract", contract);
-        fields.put("contract_valid_since", toPrettyDate(contract.getValidSince()));
-        fields.put("contract_valid_until", toPrettyDate(contract.getValidUntil()));
-        return renderFromTemplate(CONTRACT_CREATION, fields);
+        Map<String, Object> root = new HashMap<>();
+        root.put("contract", contract);
+        root.put("contract_valid_since", toPrettyDate(contract.getValidSince()));
+        root.put("contract_valid_until", toPrettyDate(contract.getValidUntil()));
+        StringWriter out = new StringWriter();
+        templates.get(CONTRACT_CREATION).process(root, out);
+        return out.toString();
     }
 
     private String renderDescription(TemplateName templateName, String paramName, Object obj) throws IOException, TemplateException {
-        Map<String, Object> fields = new HashMap<>();
-        fields.put(paramName, obj);
-        return renderFromTemplate(templateName, fields);
-    }
-
-    private String renderFromTemplate(TemplateName templateName, Map<String, Object> fields) throws IOException, TemplateException {
+        Map<String, Object> root = new HashMap<>();
+        root.put(paramName, obj);
         StringWriter out = new StringWriter();
-        templates.get(templateName).process(fields, out);
+        templates.get(templateName).process(root, out);
         return out.toString();
     }
 
@@ -111,14 +97,13 @@ public class DescriptionBuilder {
     }
 
     public static String toPrettyDate(String time) {
-        try {
+        if(time!=null) {
             Instant instant = Instant.from(ISO_INSTANT.parse(time));
             LocalDateTime localDateTime = LocalDateTime.ofInstant(instant, ZoneId.of("Europe/Moscow"));
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
             return formatter.format(localDateTime);
-        } catch (DateTimeParseException | NullPointerException e) {
-            return time;
         }
+        return "-";
     }
 
 }
