@@ -32,6 +32,9 @@ public class JiraConfig {
     @Value("${jira.reason.field}")
     public String REASON;
 
+    @Value("${jira.email.field}")
+    public String EMAIL;
+
     //Jira state names
     public final static String APPROVED = "Approved";
     public final static String DENIED = "Denied";

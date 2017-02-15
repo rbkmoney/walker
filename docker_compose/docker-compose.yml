@@ -1,8 +1,7 @@
 version: '2'
 services:
   # To init base configuration run:
-  # docker exec -ti  infrastructurem_inspector_1 bash
-  # ./scripts/dominant/commit-base-fixture.sh -v
+  # docker exec -ti  infrastructurem_inspector_1 bash ./scripts/dominant/commit-base-fixture.sh -v
 
 #  walker:
 #      image: walker:local
@@ -10,7 +9,7 @@ services:
 #      command: [ "java", "-Xmx512m", "-jar", "/opt/walker/walker.jar"]
 
   inspector:
-    image: dr.rbkmoney.com/rbkmoney/holmes:e1e866ad74f517c3370f167b6c7a6b7c948c53c6
+    image: dr.rbkmoney.com/rbkmoney/holmes:a8ec6a15ddc60a2c1dc4f3a40a756ba527b21f77
 
   hellgate:
     image: dr.rbkmoney.com/rbkmoney/hellgate:bcd776a4185747f22ae5b260dd1e8774b0607d57
@@ -86,13 +85,13 @@ services:
       - POSTGRES_PASSWORD=postgres
       - SERVICE_NAME=shumway-db
 
-      # Better start Jira in separate container with start_jira.sh script
-  jira:
-    image: dr.rbkmoney.com/rbkmoney/walker/test-jira:0.1
-    command: ['atlas-run-standalone', '--product',  'jira' , '-Dallow.google.tracking=false']
-    tty: true
-    ports:
-      - "2990:2990"
+#      # Better start Jira in separate container with start_jira.sh script
+#  jira:
+#    image: dr.rbkmoney.com/rbkmoney/walker/test-jira:0.1
+#    command: ['atlas-run-standalone', '--product',  'jira' , '-Dallow.google.tracking=false']
+#    tty: true
+#    ports:
+#      - "2990:2990"
 
 
 networks:

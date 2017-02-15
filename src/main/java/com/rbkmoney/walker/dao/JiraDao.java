@@ -40,6 +40,7 @@ public class JiraDao {
     public void createIssue(long eventId,
                             long claimId,
                             String partyId,
+                            String email,
                             String summary,
                             String description) throws JiraException {
         JiraClient jira = getJiraClient();
@@ -49,6 +50,7 @@ public class JiraDao {
                 .field(config.EVENT_ID, eventId)
                 .field(config.CLAIM_ID, claimId)
                 .field(config.PARTY_ID, partyId)
+                .field(config.EMAIL, email)
                 .field(Field.SUMMARY, summary)
                 .field(Field.DESCRIPTION, description)
                 .execute();

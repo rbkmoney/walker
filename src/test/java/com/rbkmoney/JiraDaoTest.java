@@ -39,7 +39,7 @@ public class JiraDaoTest {
 
     @Test
     public void jiraCreateIssue() throws JiraException {
-        jiraDao.createIssue(1000, 1000001, "partyo", "Head", "Description");
+        jiraDao.createIssue(1000, 1000001, "partyo", "party@mail.ru", "Head", "Description");
     }
 
     @Test
