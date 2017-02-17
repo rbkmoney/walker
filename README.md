@@ -38,7 +38,7 @@ email: walker@rbkmoney.com
 3. Накатить минимальную конфигурацию:
    Подключаешься к инспектору "docker exec -ti  infrastructurem_inspector_1 bash" 
    выполнить "/scripts/dominant/commit-base-fixture.sh"
-4. Запускаешь Walker
+4. Запустить Walker
 5. Для генерации событий используется HellGateMethodsTest
 6. Jira доступна по адресу localhost:2990/jira
 
