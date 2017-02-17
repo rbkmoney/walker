@@ -29,7 +29,8 @@
 # Credentials
 В джире создан аккаунт walker с email-ом:
 email: walker@rbkmoney.com 
-Пароль от Jira лежит в конфиге: jira.user.password
+Пароль от Jira по умолчанию берется из конфигурации лежит в конфиге: jira.user.password 
+На проде передается через env при старте.
  
 # Development 
 1. Поднять окружение через docker-compose в папке docker_compose
