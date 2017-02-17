@@ -42,4 +42,4 @@ email: walker@rbkmoney.com
 6. Jira доступна по адресу localhost:2990/jira
 
 test
-222
+2
