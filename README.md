@@ -1,6 +1,7 @@
 # Walker
 Сервис согласования заявок. 
 
+
 # Участники
 1. Merchant - заказчик , участник 
  * Создание заявки
@@ -30,6 +31,7 @@
 В джире создан аккаунт walker с email-ом:
 email: walker@rbkmoney.com 
 Пароль от Jira лежит в конфиге: jira.user.password
+
  
 # Development 
 1. Поднять окружение через docker-compose в папке docker_compose
@@ -40,5 +42,3 @@ email: walker@rbkmoney.com
 4. Запускаешь Walker
 5. Для генерации событий используется HellGateMethodsTest
 6. Jira доступна по адресу localhost:2990/jira
-
-
