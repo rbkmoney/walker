@@ -41,4 +41,4 @@ email: walker@rbkmoney.com
 5. Для генерации событий используется HellGateMethodsTest
 6. Jira доступна по адресу localhost:2990/jira
 
-test
+test2
