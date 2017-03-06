@@ -33,7 +33,7 @@
             </activation>
             <properties>
                 <jira.api.url>http://localhost:2990/jira</jira.api.url>
-                <jira.user.name>walker@rbkmoney.com</jira.user.name>
+                <jira.user.name>walker</jira.user.name>
                 <jira.user.password>walker</jira.user.password>
 
                 <jira.issue.type.name>Claim</jira.issue.type.name>
@@ -42,8 +42,7 @@
                 <jira.claim_id.field>customfield_10001</jira.claim_id.field>
                 <jira.party_id.field>customfield_10002</jira.party_id.field>
                 <jira.reason.field>customfield_10003</jira.reason.field>
-                <!--TODO - UPDATE-->
-                <jira.email.field>customfield_10800</jira.email.field>
+                <jira.email.field>customfield_10100</jira.email.field>
                 <bm.pooling.url>http://localhost:8023/repo</bm.pooling.url>
                 <hg.party.management.url>http://localhost:8022/v1/processing/partymgmt</hg.party.management.url>
             </properties>
