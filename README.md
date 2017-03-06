@@ -23,8 +23,8 @@
 
 # Последовательность действий пользователя 
  1. Create - создается пользователь привязанный к организации - не нужен accept от менеджмента.
- 2. CreateShop - создается claim - создается магазин. 
- 3. UpdateShop -  создается claim - изменяется магазин.
+ 2. CreateShop - создается claim - создается магазин 
+ 3. UpdateShop -  создается claim - изменяется магазин
 
  
 # Credentials
@@ -37,7 +37,6 @@
     - проект TCLAIM
     - логин t_walker
     - почта t_walker@rbkmoney.com 
-
  
 Логин и пароль от Jira передается при старте либо параметром или через ENV
 ```
@@ -45,7 +44,7 @@
  JIRA_PASSWORD=password
 ``` 
 
-
+ 
 # Development 
 1. Поднять окружение через docker-compose в папке docker_compose
 2. Поднять Jira скриптом (или раскомментить Jira в compose файлe)
