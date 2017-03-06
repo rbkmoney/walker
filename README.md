@@ -28,11 +28,23 @@
 
  
 # Credentials
-В джире создан аккаунт walker с email-ом:
-email: walker@rbkmoney.com 
-Пароль от Jira лежит в конфиге: jira.user.password
-
+В джире созданы аккаунты:
+ 1. Прод:
+    - проект CLAIM
+    - логин walker
+    - почта walker@rbkmoney.com
+ 2. Тест:
+    - проект TCLAIM
+    - логин t_walker
+    - почта t_walker@rbkmoney.com 
  
+Логин и пароль от Jira передается при старте либо параметром или через ENV
+```
+ JIRA_USER=t_walker 
+ JIRA_PASSWORD=password
+``` 
+
+
 # Development 
 1. Поднять окружение через docker-compose в папке docker_compose
 2. Поднять Jira скриптом (или раскомментить Jira в compose файлe)
