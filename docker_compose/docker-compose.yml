@@ -7,7 +7,7 @@ services:
 #      image: walker:local
 #      entrypoint: ""
 #      command: [ "java", "-Xmx512m", "-jar", "/opt/walker/walker.jar"]
-
+#
   inspector:
     image: dr.rbkmoney.com/rbkmoney/holmes:a8ec6a15ddc60a2c1dc4f3a40a756ba527b21f77
 
@@ -63,7 +63,6 @@ services:
       - POSTGRES_PASSWORD=postgres
       - SERVICE_NAME=bustermaze-db
 
-
   shumway:
     image: dr.rbkmoney.com/rbkmoney/shumway:cd00af9d70b28a7851295fca39bdeded5a3606b0
     entrypoint:
@@ -85,13 +84,13 @@ services:
       - POSTGRES_PASSWORD=postgres
       - SERVICE_NAME=shumway-db
 
-#      # Better start Jira in separate container with start_jira.sh script
-#  jira:
-#    image: dr.rbkmoney.com/rbkmoney/walker/test-jira:0.1
-#    command: ['atlas-run-standalone', '--product',  'jira' , '-Dallow.google.tracking=false']
-#    tty: true
-#    ports:
-#      - "2990:2990"
+  # Its better to start Jira in separate container
+  # docker run -t -p "2990:2990" dr.rbkmoney.com/rbkmoney/walker/test-jira:0.2
+  jira:
+    image: dr.rbkmoney.com/rbkmoney/walker/test-jira:0.2
+    tty: true
+    ports:
+      - "2990:2990"
 
 
 networks:

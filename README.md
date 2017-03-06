@@ -23,8 +23,8 @@
 
 # Последовательность действий пользователя 
  1. Create - создается пользователь привязанный к организации - не нужен accept от менеджмента.
- 2. CreateShop - создается claim - создается магазин 
- 3. UpdateShop -  создается claim - изменяется магазин
+ 2. CreateShop - создается claim - создается магазин. 
+ 3. UpdateShop -  создается claim - изменяется магазин.
 
  
 # Credentials
@@ -37,6 +37,7 @@
     - проект TCLAIM
     - логин t_walker
     - почта t_walker@rbkmoney.com 
+
  
 Логин и пароль от Jira передается при старте либо параметром или через ENV
 ```
@@ -51,6 +52,6 @@
 3. Накатить минимальную конфигурацию:
    Подключаешься к инспектору "docker exec -ti  infrastructurem_inspector_1 bash" 
    выполнить "/scripts/dominant/commit-base-fixture.sh"
-4. Запускаешь Walker
-5. Для генерации событий используется HellGateMethodsTest
+4. Запустить Walker
+5. Для генерации событий используется HellGateMethodsTest 
 6. Jira доступна по адресу localhost:2990/jira

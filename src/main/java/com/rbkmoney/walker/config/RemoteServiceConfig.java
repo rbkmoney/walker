@@ -1,6 +1,7 @@
 package com.rbkmoney.walker.config;
 
 import com.rbkmoney.damsel.payment_processing.PartyManagementSrv;
+import com.rbkmoney.woody.thrift.impl.http.THPooledClientBuilder;
 import com.rbkmoney.woody.thrift.impl.http.THSpawnClientBuilder;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,10 +23,9 @@ public class RemoteServiceConfig {
 
     @Bean
     public PartyManagementSrv.Iface partyManagementSrv() throws IOException, URISyntaxException {
-        THSpawnClientBuilder clientBuilder = new THSpawnClientBuilder()
-                .withHttpClient(HttpClientBuilder.create().build())
-                .withAddress(new URI(PARTY_MANAGEMENT_SERVICE_URL));
-        return clientBuilder.build(PartyManagementSrv.Iface.class);
+        return new THPooledClientBuilder()
+                .withAddress(new URI(PARTY_MANAGEMENT_SERVICE_URL))
+                .build(PartyManagementSrv.Iface.class);
     }
 
 }

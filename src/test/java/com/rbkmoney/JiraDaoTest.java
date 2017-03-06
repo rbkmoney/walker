@@ -33,7 +33,7 @@ public class JiraDaoTest {
 
     @Test
     public void getIssue() throws JiraException {
-        Issue issueByKey = jiraDao.getIssueByKey("CLAIM-3");
+        Issue issueByKey = jiraDao.getIssueByKey("CLAIM-5");
         System.out.println(issueByKey.getId());
     }
 
