@@ -56,8 +56,9 @@ public class JiraDaoTest {
     @Test
     public void deleteIssue() throws URISyntaxException, IOException, RestException {
         //CLAIM-8
-        JSON json = jiraDao.getJiraClient().getRestClient().delete("/rest/api/2/issue/CLAIM-9");
+        JSON json = jiraDao.getJiraClient().getRestClient().delete("/rest/api/2/issue/CLAIM-1");
         System.out.printf(String.valueOf(json));
 
     }
+
 }
