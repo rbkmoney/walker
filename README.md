@@ -23,15 +23,26 @@
 
 # Последовательность действий пользователя 
  1. Create - создается пользователь привязанный к организации - не нужен accept от менеджмента.
- 2. CreateShop - создается claim - создается магазин. 
- 3. UpdateShop -  создается claim - изменяется магазин.
+ 2. CreateShop - создается claim - создается магазин 
+ 3. UpdateShop -  создается claim - изменяется магазин
 
  
 # Credentials
-В джире создан аккаунт walker с email-ом:
-email: walker@rbkmoney.com 
-Пароль от Jira по умолчанию берется из конфигурации лежит в конфиге: jira.user.password 
-На проде передается через env при старте.
+В джире созданы аккаунты:
+ 1. Прод:
+    - проект CLAIM
+    - логин walker
+    - почта walker@rbkmoney.com
+ 2. Тест:
+    - проект TCLAIM
+    - логин t_walker
+    - почта t_walker@rbkmoney.com 
+ 
+Логин и пароль от Jira передается при старте либо параметром или через ENV
+```
+ JIRA_USER=t_walker 
+ JIRA_PASSWORD=password
+``` 
 
  
 # Development 
