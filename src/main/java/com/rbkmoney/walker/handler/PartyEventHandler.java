@@ -1,19 +1,29 @@
 package com.rbkmoney.walker.handler;
 
+import com.bazaarvoice.jolt.JsonUtilImpl;
+import com.bazaarvoice.jolt.JsonUtils;
 import com.rbkmoney.damsel.event_stock.StockEvent;
-import com.rbkmoney.damsel.payment_processing.*;
+import com.rbkmoney.damsel.payment_processing.Claim;
+import com.rbkmoney.damsel.payment_processing.Event;
+import com.rbkmoney.damsel.payment_processing.PartyModification;
+import com.rbkmoney.damsel.walker.PartyModificationUnit;
+import com.rbkmoney.geck.serializer.kit.object.ObjectHandler;
+import com.rbkmoney.geck.serializer.kit.object.ObjectProcessor;
+import com.rbkmoney.geck.serializer.kit.tbase.TBaseHandler;
+import com.rbkmoney.geck.serializer.kit.tbase.TBaseProcessor;
 import com.rbkmoney.thrift.filter.Filter;
 import com.rbkmoney.thrift.filter.PathConditionFilter;
 import com.rbkmoney.thrift.filter.rule.PathConditionRule;
-import com.rbkmoney.walker.dao.JiraDao;
-import com.rbkmoney.walker.service.DescriptionBuilder;
-import com.rbkmoney.walker.service.EnrichmentService;
-import net.rcarz.jiraclient.JiraException;
-import org.apache.thrift.TException;
+import com.rbkmoney.walker.dao.ClaimDao;
+import com.rbkmoney.walker.domain.generated.tables.records.ClaimRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
 
 
 @Component
@@ -28,90 +38,58 @@ public class PartyEventHandler implements Handler<StockEvent> {
         filter = new PathConditionFilter(new PathConditionRule(path));
     }
 
-    @Autowired
-    JiraDao jiraDao;
 
     @Autowired
-    DescriptionBuilder descriptionBuilder;
-
-    @Autowired
-    EnrichmentService enrichmentService;
+    ClaimDao claimDao;
 
     @Override
     public void handle(StockEvent value) {
-        //Must not brake event order! - Its guaranted by event-stock library.
-        Event event = value.getSourceEvent().getProcessingEvent();
-        long eventId = event.getId();
-        if (!event.getPayload().isSetPartyEvent()) {
-            return;
-        }
-        if (event.getPayload().getPartyEvent().isSetClaimCreated()) {
-            log.info("Got ClaimCreated event with EventID: {}", eventId);
-            if (event.getPayload().getPartyEvent().getClaimCreated().getStatus().isSetAccepted()) {
-                log.info("Auto accepted claim with EventID: {} -  skipped.", eventId);
-            } else {
-                createIssue(event);
+        try {
+            //Must not brake event order! - Its guaranteed by event-stock library.
+            Event event = value.getSourceEvent().getProcessingEvent();
+            long eventId = event.getId();
+            if (event.getPayload().getPartyEvent().isSetClaimCreated()) {
+                Claim claim = event.getPayload().getPartyEvent().getClaimCreated();
+                ClaimRecord claimRecord = new ClaimRecord();
+
+                claimRecord.setId(claim.getId());
+                claimRecord.setEventid(eventId);
+
+                PartyModificationUnit partyModificationUnit = convertToPartyModificationUnit(claim.getChangeset());
+                claimRecord.setChanges(toJson(partyModificationUnit));
+
+                claimDao.create(claimRecord);
             }
-        } else if (event.getPayload().getPartyEvent().isSetClaimStatusChanged()) {
-            log.info("Got ClaimStatusChanged event with EventID: {}", eventId);
-            ClaimStatusChanged claimStatusChanged = event.getPayload().getPartyEvent().getClaimStatusChanged();
-            if (claimStatusChanged.getStatus().isSetRevoked()) {
-                closeRevoked(eventId, claimStatusChanged);
-            } else if (claimStatusChanged.getStatus().isSetAccepted()) {
-                closeAccepted(eventId, claimStatusChanged);
-            } else if (claimStatusChanged.getStatus().isSetDenied()) {
-                closeDenied(eventId, claimStatusChanged);
-            } else {
-                log.error("Unsupported ClaimStatus changing for eventId : {}", eventId);
-            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
-    private void createIssue(Event processingEvent) {
-        try {
-            String partyEmail = enrichmentService.getPartyEmail(processingEvent.getSource().getParty());
-            jiraDao.createIssue(
-                    processingEvent.getId(),
-                    processingEvent.getPayload().getPartyEvent().getClaimCreated().getId(),
-                    processingEvent.getSource().getParty(),
-                    partyEmail,
-                    "Заявка " + partyEmail,
-                    descriptionBuilder.buildDescription(processingEvent.getPayload().getPartyEvent().getClaimCreated()));
-        } catch (JiraException e) {
-            log.error("Cant Create issue with event id {}", processingEvent.getId(), e);
-        } catch (TException e) {
-            log.error("Enrichment remote call error {}", processingEvent.getId(), e);
-        }
+    public String toJson(PartyModificationUnit partyModificationUnit) throws IOException {
+        Object object = new TBaseProcessor().process(partyModificationUnit, new ObjectHandler());
+        return JsonUtils.toJsonString(object);
     }
 
-    private void closeRevoked(long eventId, ClaimStatusChanged claimStatusChanged) {
-        try {
-            jiraDao.closeRevokedIssue(
-                    eventId,
-                    claimStatusChanged.getId(),
-                    claimStatusChanged.getStatus().getRevoked().getReason());
-        } catch (JiraException e) {
-            log.error("Cant close Revoked claim with id {}", claimStatusChanged.getId(), e);
+    public PartyModificationUnit convertToPartyModificationUnit(List<PartyModification> hgModifications) throws IOException {
+        LinkedList<com.rbkmoney.damsel.walker.PartyModification> walkerPartyModificationList = new LinkedList<>();
+        for (PartyModification hgModification : hgModifications) {
+            com.rbkmoney.damsel.walker.PartyModification partyModification = convertToWalkerModification(hgModification);
+            walkerPartyModificationList.add(partyModification);
         }
+        PartyModificationUnit partyModificationUnit = new PartyModificationUnit();
+        partyModificationUnit.setModifications(walkerPartyModificationList);
+        return partyModificationUnit;
     }
 
-    private void closeAccepted(long eventId, ClaimStatusChanged claimStatusChanged) {
-        try {
-            jiraDao.closeIssue(eventId, claimStatusChanged.getId());
-        } catch (JiraException e) {
-            log.error("Cant close Accepted claim with id {}", claimStatusChanged.getId(), e);
-        }
-    }
-
-    private void closeDenied(long eventId, ClaimStatusChanged claimStatusChanged) {
-        try {
-            jiraDao.closeDeniedIssue(
-                    eventId,
-                    claimStatusChanged.getId(),
-                    claimStatusChanged.getStatus().getDenied().getReason());
-        } catch (JiraException e) {
-            log.error("Cant close Denied claim with id {}", claimStatusChanged.getId(), e);
-        }
+    /**
+     * Convert from Payment_processing thrift object to Walker thrift representation
+     */
+    public com.rbkmoney.damsel.walker.PartyModification convertToWalkerModification(PartyModification hgModification) throws IOException {
+        Object hgModifObj = new TBaseProcessor().process(hgModification, new ObjectHandler());
+        String hgJson = JsonUtils.toJsonString(hgModifObj);
+        Object objFromJson = new JsonUtilImpl().jsonToObject(hgJson);
+        return new ObjectProcessor()
+                .process(objFromJson, new TBaseHandler<>(com.rbkmoney.damsel.walker.PartyModification.class));
     }
 
     @Override

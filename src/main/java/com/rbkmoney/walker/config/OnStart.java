@@ -1,4 +1,4 @@
-package com.rbkmoney.walker.service;
+package com.rbkmoney.walker.config;
 
 import com.rbkmoney.eventstock.client.EventPublisher;
 import com.rbkmoney.eventstock.client.SubscriberConfig;

@@ -1,16 +1,11 @@
 package com.rbkmoney.walker.config;
 
-import com.rbkmoney.damsel.payment_processing.PartyManagementSrv;
 import com.rbkmoney.eventstock.client.*;
 import com.rbkmoney.eventstock.client.poll.EventFlowFilter;
 import com.rbkmoney.eventstock.client.poll.PollingEventPublisherBuilder;
-import com.rbkmoney.walker.dao.JiraDao;
 import com.rbkmoney.walker.handler.Handler;
 import com.rbkmoney.walker.handler.poller.EventStockErrorHandler;
 import com.rbkmoney.walker.handler.poller.EventStockHandler;
-import com.rbkmoney.woody.thrift.impl.http.THSpawnClientBuilder;
-import net.rcarz.jiraclient.JiraException;
-import org.apache.http.impl.client.HttpClientBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,19 +13,16 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
-import org.springframework.retry.annotation.EnableRetry;
-//import org.springframework.retry.annotation.EnableRetry;
 
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.List;
+
+//import org.springframework.retry.annotation.EnableRetry;
 
 /**
  * Created by tolkonepiu on 03.08.16.
  */
 @Configuration
-@EnableRetry
 public class EventStockPollerConfig {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
@@ -46,9 +38,6 @@ public class EventStockPollerConfig {
 
     @Autowired
     List<Handler> handlers;
-
-    @Autowired
-    JiraDao jiraDao;
 
     @Bean
     public EventPublisher eventPublisher() throws IOException {
@@ -70,9 +59,10 @@ public class EventStockPollerConfig {
         EventConstraint.EventIDRange eventIDRange = new EventConstraint.EventIDRange();
         Long lastEventId = null;
         try {
-            lastEventId = jiraDao.getLastEventId();
-        } catch (JiraException e) {
-            log.error("Cant get last event id from jira", e);
+            //TODO: get LAST EVENTID FROM DB
+            lastEventId = 0L;
+        } catch (Exception e) {
+            log.error("Cant get last event id", e);
         }
         if (lastEventId != null) {
             eventIDRange.setFromExclusive(lastEventId);
