@@ -1,18 +1,12 @@
 package com.rbkmoney;
 
+import com.bazaarvoice.jolt.Diffy;
 import com.bazaarvoice.jolt.JsonUtilImpl;
 import com.bazaarvoice.jolt.JsonUtils;
 import com.bazaarvoice.jolt.utils.JoltUtils;
 import com.rbkmoney.damsel.domain.*;
 import com.rbkmoney.damsel.payment_processing.*;
-import com.rbkmoney.damsel.payment_processing.ContractModification;
-import com.rbkmoney.damsel.payment_processing.ContractModificationUnit;
-import com.rbkmoney.damsel.payment_processing.ContractParams;
-import com.rbkmoney.damsel.payment_processing.PartyModification;
-import com.rbkmoney.damsel.payment_processing.PayoutToolParams;
-import com.rbkmoney.damsel.payment_processing.ProxyModification;
-import com.rbkmoney.damsel.payment_processing.ShopModification;
-import com.rbkmoney.damsel.walker.*;
+import com.rbkmoney.damsel.walker.PartyModificationUnit;
 import com.rbkmoney.geck.serializer.kit.object.ObjectHandler;
 import com.rbkmoney.geck.serializer.kit.object.ObjectProcessor;
 import com.rbkmoney.geck.serializer.kit.tbase.TBaseHandler;
@@ -21,7 +15,8 @@ import com.rbkmoney.walker.handler.PartyEventHandler;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.LinkedList;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -67,18 +62,20 @@ public class ThriftToJsonTest {
         Object wo = JoltUtils.compactJson(new TBaseProcessor().process(partyModification, new ObjectHandler()));
         String jsonWALK = JsonUtils.toJsonString(wo);
         System.out.println(jsonHG);
-        assertEquals(jsonHG,jsonWALK);
+        assertEquals(jsonHG, jsonWALK);
     }
 
     @Test
     public void test() throws IOException {
         Claim claim = new Claim();
+        claim.setRevision(1);
         claim.setId(23);
         claim.setStatus(ClaimStatus.accepted(new ClaimAccepted("123")));
         claim.setChangeset(Arrays.asList(buildComplexModification()));
 
         PartyEvent partyEvent = new PartyEvent();
         partyEvent.setClaimCreated(claim);
+
 
         Object jobjects = JoltUtils.compactJson(new TBaseProcessor().process(partyEvent, new ObjectHandler()));
         String json = JsonUtils.toJsonString(jobjects);
@@ -93,10 +90,21 @@ public class ThriftToJsonTest {
         System.out.println(json2);
     }
 
+    public static String convertToJson(PartyModification partyModification) throws IOException {
+        Object o = JoltUtils.compactJson(new TBaseProcessor().process(partyModification, new ObjectHandler()));
+        return JsonUtils.toJsonString(o);
+    }
 
-    public PartyModification buildComplexModification() {
+    public static Object convertToObjects(PartyModification partyModification) throws IOException {
+        Object o = JoltUtils.compactJson(new TBaseProcessor().process(partyModification, new ObjectHandler()));
+        return o;
+    }
 
-        BankAccount bankAccount = new BankAccount("Аккаунт", "Degu Bank Inc", "123123123 post", "12313");
+
+    public static PartyModification buildComplexModification() {
+
+        BankAccount bankAccount1 = new BankAccount("Аккаунт", "Degu Bank Inc", "123123123 post", "12313");
+        BankAccount bankAccount2 = new BankAccount("Аккаунт2", "Not Degu Bank Inc", "333 post", "BIKBIK");
 
         RussianLegalEntity russianLegalEntity = new RussianLegalEntity();
         russianLegalEntity.setActualAddress("Улица пушкина, Дом колотушкина");
@@ -112,11 +120,11 @@ public class ThriftToJsonTest {
         entity.setRussianLegalEntity(russianLegalEntity);
 
         Contractor contractor = new Contractor();
-        contractor.setBankAccount(bankAccount);
+        contractor.setBankAccount(bankAccount1);
         contractor.setEntity(entity);
 
         PayoutToolInfo payoutToolInfo = new PayoutToolInfo();
-        payoutToolInfo.setBankAccount(bankAccount);
+        payoutToolInfo.setBankAccount(bankAccount2);
 
         PayoutToolParams payoutToolParams = new PayoutToolParams();
         payoutToolParams.setCurrency(new CurrencyRef("RUB"));
@@ -139,4 +147,32 @@ public class ThriftToJsonTest {
 
         return partyModification;
     }
+
+    @Test
+    public void testJsnPth() throws IOException {
+        PartyModification modification = buildComplexModification();
+        PartyModification modification2 = buildComplexModification();
+        modification2.getContractModification().setId("ggggg");
+        Object before = convertToObjects(modification);
+        Object after = convertToObjects(modification2);
+
+//        System.out.println(diff);
+    }
+
+    public static void buildDiffObjects(Object before, Object after) {
+        System.out.println("----------------------------------");
+        Diffy.Result diffResult = new Diffy().diff(before, after);
+        String s = JsonUtils.toPrettyJsonString(diffResult.expected);
+        String s1 = JsonUtils.toPrettyJsonString(diffResult.actual);
+        System.out.println("FROM : " + s);
+        System.out.println("TO : " + s1);
+
+    }
+
+    @Test
+    public void testJsonsd(){}
+
 }
+
+
+

@@ -1,7 +1,9 @@
 package com.rbkmoney.walker.service;
 
 import com.rbkmoney.damsel.walker.*;
+import com.rbkmoney.walker.dao.ActionDao;
 import org.apache.thrift.TException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,6 +14,8 @@ import java.util.List;
 @Service
 public class WalkerServiceImpl implements WalkerSrv.Iface {
 
+    @Autowired
+    ActionDao actionDao;
 
     @Override
     public void approveClaim(long claimID) throws TException {
@@ -54,7 +58,7 @@ public class WalkerServiceImpl implements WalkerSrv.Iface {
     }
 
     @Override
-    public List<Action> getEvents(long claimId, UserInfo user) throws TException {
+    public List<Action> getActions(long claimId, UserInfo user) throws TException {
         return null;
     }
 }

@@ -1,8 +1,6 @@
 package com.rbkmoney.walker.dao;
 
-import com.rbkmoney.damsel.shitter.PayoutStatus;
 import com.rbkmoney.damsel.walker.ClaimSearchRequest;
-import com.rbkmoney.geck.common.util.StringUtil;
 import com.rbkmoney.walker.domain.generated.tables.records.ClaimRecord;
 import org.jooq.*;
 import org.jooq.impl.DSL;
@@ -14,10 +12,7 @@ import org.springframework.util.StringUtils;
 import javax.sql.DataSource;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
-
 import static com.rbkmoney.walker.domain.generated.Tables.CLAIM;
 
 /**
@@ -42,8 +37,8 @@ public class ClaimDao extends NamedParameterJdbcDaoSupport {
         if (StringUtils.isEmpty(claimRecord.getAssigned())) {
             claimRecord.setAssigned(WALKER_USER);
         }
-        String sql = dslContext.insertInto(CLAIM, CLAIM.ID, CLAIM.EVENTID, CLAIM.ASSIGNED, CLAIM.CHANGES).
-                values(claimRecord.getId(), claimRecord.getEventid(), claimRecord.getAssigned(), claimRecord.getChanges())
+        String sql = dslContext.insertInto(CLAIM, CLAIM.ID, CLAIM.EVENT_ID, CLAIM.ASSIGNED, CLAIM.CHANGES).
+                values(claimRecord.getId(), claimRecord.getEventId(), claimRecord.getAssigned(), claimRecord.getChanges())
                 .toString();
         getJdbcTemplate().update(sql);
     }
@@ -53,8 +48,12 @@ public class ClaimDao extends NamedParameterJdbcDaoSupport {
         return claimRecord;
     }
 
-    public void update() {
-        
+    public void update(ClaimRecord claimRecord) {
+        String sql = dslContext.update(CLAIM).set(CLAIM.EVENT_ID, claimRecord.getEventId())
+                .set(CLAIM.ASSIGNED, claimRecord.getAssigned())
+                .set(CLAIM.CHANGES, claimRecord.getChanges())
+                .where(CLAIM.ID.eq(claimRecord.getId())).toString();
+        getJdbcTemplate().update(sql);
     }
 
     public List<ClaimRecord> search(ClaimSearchRequest request) {

@@ -1,5 +1,6 @@
 package com.rbkmoney.walker.config;
 
+import com.rbkmoney.walker.dao.ActionDao;
 import com.rbkmoney.walker.dao.ClaimDao;
 import com.rbkmoney.walker.domain.generated.Walk;
 import org.jooq.Schema;
@@ -17,9 +18,16 @@ public class DaoConfig {
 
     @Bean
     @DependsOn("dbInitializer")
-    public ClaimDao statisticsDao(DataSource ds) {
+    public ClaimDao claimDao(DataSource ds) {
         return new ClaimDao(ds);
     }
+
+    @Bean
+    @DependsOn("dbInitializer")
+    public ActionDao actionDao(DataSource ds) {
+        return new ActionDao(ds);
+    }
+
 
     @Bean
     public Schema dbSchema() {

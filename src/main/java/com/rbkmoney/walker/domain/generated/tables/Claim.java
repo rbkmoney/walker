@@ -34,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Claim extends TableImpl<ClaimRecord> {
 
-    private static final long serialVersionUID = -1968903568;
+    private static final long serialVersionUID = 20098667;
 
     /**
      * The reference instance of <code>walk.claim</code>
@@ -55,9 +55,9 @@ public class Claim extends TableImpl<ClaimRecord> {
     public final TableField<ClaimRecord, Long> ID = createField("id", org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
-     * The column <code>walk.claim.eventid</code>.
+     * The column <code>walk.claim.event_id</code>.
      */
-    public final TableField<ClaimRecord, Long> EVENTID = createField("eventid", org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<ClaimRecord, Long> EVENT_ID = createField("event_id", org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>walk.claim.assigned</code>.
@@ -67,7 +67,7 @@ public class Claim extends TableImpl<ClaimRecord> {
     /**
      * The column <code>walk.claim.changes</code>.
      */
-    public final TableField<ClaimRecord, Object> CHANGES = createField("changes", org.jooq.impl.DefaultDataType.getDefaultDataType("jsonb").nullable(false), this, "");
+    public final TableField<ClaimRecord, Object> CHANGES = createField("changes", org.jooq.impl.DefaultDataType.getDefaultDataType("jsonb"), this, "");
 
     /**
      * Create a <code>walk.claim</code> table reference

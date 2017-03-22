@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ClaimRecord extends UpdatableRecordImpl<ClaimRecord> implements Record4<Long, Long, String, Object> {
 
-    private static final long serialVersionUID = -1261426995;
+    private static final long serialVersionUID = -1369015140;
 
     /**
      * Setter for <code>walk.claim.id</code>.
@@ -45,16 +45,16 @@ public class ClaimRecord extends UpdatableRecordImpl<ClaimRecord> implements Rec
     }
 
     /**
-     * Setter for <code>walk.claim.eventid</code>.
+     * Setter for <code>walk.claim.event_id</code>.
      */
-    public void setEventid(Long value) {
+    public void setEventId(Long value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>walk.claim.eventid</code>.
+     * Getter for <code>walk.claim.event_id</code>.
      */
-    public Long getEventid() {
+    public Long getEventId() {
         return (Long) get(1);
     }
 
@@ -131,7 +131,7 @@ public class ClaimRecord extends UpdatableRecordImpl<ClaimRecord> implements Rec
      */
     @Override
     public Field<Long> field2() {
-        return Claim.CLAIM.EVENTID;
+        return Claim.CLAIM.EVENT_ID;
     }
 
     /**
@@ -163,7 +163,7 @@ public class ClaimRecord extends UpdatableRecordImpl<ClaimRecord> implements Rec
      */
     @Override
     public Long value2() {
-        return getEventid();
+        return getEventId();
     }
 
     /**
@@ -196,7 +196,7 @@ public class ClaimRecord extends UpdatableRecordImpl<ClaimRecord> implements Rec
      */
     @Override
     public ClaimRecord value2(Long value) {
-        setEventid(value);
+        setEventId(value);
         return this;
     }
 
@@ -244,11 +244,11 @@ public class ClaimRecord extends UpdatableRecordImpl<ClaimRecord> implements Rec
     /**
      * Create a detached, initialised ClaimRecord
      */
-    public ClaimRecord(Long id, Long eventid, String assigned, Object changes) {
+    public ClaimRecord(Long id, Long eventId, String assigned, Object changes) {
         super(Claim.CLAIM);
 
         set(0, id);
-        set(1, eventid);
+        set(1, eventId);
         set(2, assigned);
         set(3, changes);
     }

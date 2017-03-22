@@ -4,7 +4,9 @@
 package com.rbkmoney.walker.domain.generated;
 
 
+import com.rbkmoney.walker.domain.generated.tables.Action;
 import com.rbkmoney.walker.domain.generated.tables.Claim;
+import com.rbkmoney.walker.domain.generated.tables.Comment;
 
 import javax.annotation.Generated;
 
@@ -23,7 +25,17 @@ import javax.annotation.Generated;
 public class Tables {
 
     /**
+     * The table <code>walk.action</code>.
+     */
+    public static final Action ACTION = com.rbkmoney.walker.domain.generated.tables.Action.ACTION;
+
+    /**
      * The table <code>walk.claim</code>.
      */
     public static final Claim CLAIM = com.rbkmoney.walker.domain.generated.tables.Claim.CLAIM;
+
+    /**
+     * The table <code>walk.comment</code>.
+     */
+    public static final Comment COMMENT = com.rbkmoney.walker.domain.generated.tables.Comment.COMMENT;
 }

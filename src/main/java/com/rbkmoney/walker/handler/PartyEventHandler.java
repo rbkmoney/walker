@@ -5,6 +5,7 @@ import com.bazaarvoice.jolt.JsonUtils;
 import com.rbkmoney.damsel.event_stock.StockEvent;
 import com.rbkmoney.damsel.payment_processing.Claim;
 import com.rbkmoney.damsel.payment_processing.Event;
+import com.rbkmoney.damsel.payment_processing.PartyEvent;
 import com.rbkmoney.damsel.payment_processing.PartyModification;
 import com.rbkmoney.damsel.walker.PartyModificationUnit;
 import com.rbkmoney.geck.serializer.kit.object.ObjectHandler;
@@ -13,9 +14,12 @@ import com.rbkmoney.geck.serializer.kit.tbase.TBaseHandler;
 import com.rbkmoney.geck.serializer.kit.tbase.TBaseProcessor;
 import com.rbkmoney.thrift.filter.Filter;
 import com.rbkmoney.thrift.filter.PathConditionFilter;
+import com.rbkmoney.thrift.filter.condition.IsNullCondition;
 import com.rbkmoney.thrift.filter.rule.PathConditionRule;
+import com.rbkmoney.walker.dao.ActionDao;
 import com.rbkmoney.walker.dao.ClaimDao;
 import com.rbkmoney.walker.domain.generated.tables.records.ClaimRecord;
+import com.rbkmoney.walker.service.ActionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,31 +39,46 @@ public class PartyEventHandler implements Handler<StockEvent> {
     private Filter filter;
 
     public PartyEventHandler() {
-        filter = new PathConditionFilter(new PathConditionRule(path));
+        filter = new PathConditionFilter(new PathConditionRule(path, new IsNullCondition().not()));
     }
 
 
     @Autowired
-    ClaimDao claimDao;
+    private ClaimDao claimDao;
+
+    @Autowired
+    private ActionService actionService;
+
 
     @Override
     public void handle(StockEvent value) {
         try {
             //Must not brake event order! - Its guaranteed by event-stock library.
-            Event event = value.getSourceEvent().getProcessingEvent();
-            long eventId = event.getId();
-            if (event.getPayload().getPartyEvent().isSetClaimCreated()) {
-                Claim claim = event.getPayload().getPartyEvent().getClaimCreated();
-                ClaimRecord claimRecord = new ClaimRecord();
+            long eventId = value.getSourceEvent().getProcessingEvent().getId();
+            String party = value.getSourceEvent().getProcessingEvent().getSource().getParty();
+            PartyEvent partyEvent = value.getSourceEvent().getProcessingEvent().getPayload().getPartyEvent();
 
+            if (partyEvent.isSetClaimCreated()) {
+                Claim claim = partyEvent.getClaimCreated();
+                ClaimRecord claimRecord = new ClaimRecord();
                 claimRecord.setId(claim.getId());
-                claimRecord.setEventid(eventId);
+                claimRecord.setEventId(eventId);
 
                 PartyModificationUnit partyModificationUnit = convertToPartyModificationUnit(claim.getChangeset());
                 claimRecord.setChanges(toJson(partyModificationUnit));
-
                 claimDao.create(claimRecord);
+                actionService.claimCreated(claim.getChangeset(), party);
             }
+            if (partyEvent.isSetClaimStatusChanged()) {
+                //todo:
+            }
+            if (partyEvent.isSetShopBlocking()) {
+                //todo:
+            }
+            if (partyEvent.isSetShopSuspention()) {
+                //todo:
+            }
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
