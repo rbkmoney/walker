@@ -2,16 +2,18 @@ package com.rbkmoney.dao;
 
 import com.bazaarvoice.jolt.Diffy;
 import com.rbkmoney.WalkerApplicationTests;
-import com.rbkmoney.damsel.payment_processing.PartyModification;
+import com.rbkmoney.damsel.payment_processing.*;
 import com.rbkmoney.damsel.walker.ClaimSearchRequest;
 import com.rbkmoney.damsel.walker.UserInfo;
 import com.rbkmoney.walker.dao.ClaimDao;
 import com.rbkmoney.walker.domain.generated.tables.records.ClaimRecord;
+import com.rbkmoney.walker.service.ActionService;
 import net.logstash.logback.encoder.org.apache.commons.lang.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
@@ -25,6 +27,9 @@ public class ClaimDaoTest extends WalkerApplicationTests {
 
     @Autowired
     ClaimDao claimDao;
+
+    @Autowired
+    ActionService actionService;
 
     private String TEST_USER = "test_user";
 
@@ -45,11 +50,25 @@ public class ClaimDaoTest extends WalkerApplicationTests {
         assertEquals(claimRecord.getEventId(), claimRecord1.getEventId());
         assertEquals(String.valueOf(claimRecord.getChanges()), String.valueOf(claimRecord1.getChanges()));
 
-        ClaimSearchRequest claimSearchRequest = new ClaimSearchRequest(new UserInfo());
+        ClaimSearchRequest claimSearchRequest = new ClaimSearchRequest();
         claimSearchRequest.setAssigned(TEST_USER);
         claimSearchRequest.setClaimID(Collections.singleton(1L));
         List<ClaimRecord> search = claimDao.search(claimSearchRequest);
         assertEquals(1, search.size());
+    }
+
+    @Test
+    public void testUpdateStatus() {
+        ClaimStatus claimStatus = new ClaimStatus();
+        claimStatus.setAccepted(new ClaimAccepted());
+        claimDao.updateStatus(2, claimStatus);
+    }
+
+    @Test
+    public void testActions() throws IOException {
+        ClaimStatus claimStatus = new ClaimStatus();
+        claimStatus.setDenied(new ClaimDenied("because"));
+        actionService.claimStatusChanged(1L, claimStatus,"testUser");
     }
 
     @Test
@@ -70,6 +89,7 @@ public class ClaimDaoTest extends WalkerApplicationTests {
 
     private ClaimRecord buildTestClaim() {
         ClaimRecord claimRecord = new ClaimRecord();
+        claimRecord.setStatus(ClaimStatus.pending(new ClaimPending()).toString());
         claimRecord.setId(1l);
         claimRecord.setEventId(10l);
         claimRecord.setAssigned(TEST_USER);

@@ -33,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Action extends TableImpl<ActionRecord> {
 
-    private static final long serialVersionUID = -391483005;
+    private static final long serialVersionUID = 1926440762;
 
     /**
      * The reference instance of <code>walk.action</code>
@@ -79,9 +79,19 @@ public class Action extends TableImpl<ActionRecord> {
     public final TableField<ActionRecord, String> USER_EMAIL = createField("user_email", org.jooq.impl.SQLDataType.VARCHAR, this, "");
 
     /**
-     * The column <code>walk.action.modification</code>.
+     * The column <code>walk.action.type</code>.
      */
-    public final TableField<ActionRecord, Object> MODIFICATION = createField("modification", org.jooq.impl.DefaultDataType.getDefaultDataType("jsonb"), this, "");
+    public final TableField<ActionRecord, String> TYPE = createField("type", org.jooq.impl.SQLDataType.VARCHAR.nullable(false), this, "");
+
+    /**
+     * The column <code>walk.action.before</code>.
+     */
+    public final TableField<ActionRecord, String> BEFORE = createField("before", org.jooq.impl.SQLDataType.VARCHAR, this, "");
+
+    /**
+     * The column <code>walk.action.after</code>.
+     */
+    public final TableField<ActionRecord, String> AFTER = createField("after", org.jooq.impl.SQLDataType.VARCHAR.nullable(false), this, "");
 
     /**
      * Create a <code>walk.action</code> table reference

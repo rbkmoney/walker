@@ -18,6 +18,8 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.LinkedList;
 
+import static com.rbkmoney.walker.service.ThriftObjectsConvertor.convertToPartyModificationUnit;
+import static com.rbkmoney.walker.service.ThriftObjectsConvertor.convertToWalkerModification;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -47,7 +49,7 @@ public class ThriftToJsonTest {
         LinkedList<PartyModification> partyModifications = new LinkedList<>();
         partyModifications.add(buildComplexModification());
         partyModifications.add(buildComplexModification());
-        PartyModificationUnit partyModificationUnit = new PartyEventHandler().convertToPartyModificationUnit(partyModifications);
+        PartyModificationUnit partyModificationUnit = convertToPartyModificationUnit(partyModifications);
 
         assertTrue(partyModificationUnit.getModifications().get(0).isSetContractModification());
     }
@@ -58,7 +60,7 @@ public class ThriftToJsonTest {
 
         Object hgo = JoltUtils.compactJson(new TBaseProcessor().process(modification, new ObjectHandler()));
         String jsonHG = JsonUtils.toJsonString(hgo);
-        com.rbkmoney.damsel.walker.PartyModification partyModification = new PartyEventHandler().convertToWalkerModification(modification);
+        com.rbkmoney.damsel.walker.PartyModification partyModification = convertToWalkerModification(modification);
         Object wo = JoltUtils.compactJson(new TBaseProcessor().process(partyModification, new ObjectHandler()));
         String jsonWALK = JsonUtils.toJsonString(wo);
         System.out.println(jsonHG);

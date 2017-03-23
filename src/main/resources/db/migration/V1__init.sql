@@ -4,18 +4,23 @@ CREATE TABLE WALK.CLAIM (
   id       BIGINT NOT NULL,
   event_id BIGINT NOT NULL,
   assigned CHARACTER VARYING NOT NULL,
+  status   CHARACTER VARYING NOT NULL,
+  description CHARACTER VARYING,
+  reason CHARACTER VARYING,
   changes  JSONB,
   CONSTRAINT CLAIM_ID PRIMARY KEY (id)
 );
 
 CREATE TABLE WALK.ACTION (
-  id           BIGSERIAL NOT NULL,
-  claim_id     BIGINT    NOT NULL,
-  created_at   TIMESTAMP NOT NULL,
-  user_id      CHARACTER VARYING NOT NULL,
-  user_name    CHARACTER VARYING,
-  user_email   CHARACTER VARYING,
-  modification JSONB
+  id         BIGSERIAL NOT NULL,
+  claim_id   BIGINT    NOT NULL,
+  created_at TIMESTAMP NOT NULL,
+  user_id    CHARACTER VARYING NOT NULL,
+  user_name  CHARACTER VARYING,
+  user_email CHARACTER VARYING,
+  type       CHARACTER VARYING NOT NULL,
+  before     CHARACTER VARYING,
+  after      CHARACTER VARYING NOT NULL
 );
 
 

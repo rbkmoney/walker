@@ -44,12 +44,13 @@ public class ActionDaoTest extends WalkerApplicationTests {
         actionRecord.setUserId("10");
         actionRecord.setUserEmail("test@email.com");
         actionRecord.setUserName("userName");
-        actionRecord.setModification(buildModification());
+        actionRecord.setType(ActionType.claim_changed.toString());
+        actionRecord.setAfter(buildModification());
         actionDao.add(actionRecord);
 
         List<ActionRecord> actionRecords = actionDao.getActionsByClaimId(1L);
         assertTrue(actionRecords.size() == 1);
-        assertTrue(convertToModification(actionRecord.getModification()).getClaimChengsest().getAfter().getModifications().size() == 1);
+        assertTrue(actionRecords.get(0).getType().equals(ActionType.claim_changed.toString()));
     }
 
     public String buildModification() throws IOException {

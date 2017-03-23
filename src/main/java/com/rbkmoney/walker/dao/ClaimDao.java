@@ -1,5 +1,6 @@
 package com.rbkmoney.walker.dao;
 
+import com.rbkmoney.damsel.payment_processing.ClaimStatus;
 import com.rbkmoney.damsel.walker.ClaimSearchRequest;
 import com.rbkmoney.walker.domain.generated.tables.records.ClaimRecord;
 import org.jooq.*;
@@ -13,6 +14,7 @@ import javax.sql.DataSource;
 
 import java.util.List;
 import java.util.Set;
+
 import static com.rbkmoney.walker.domain.generated.Tables.CLAIM;
 
 /**
@@ -37,8 +39,14 @@ public class ClaimDao extends NamedParameterJdbcDaoSupport {
         if (StringUtils.isEmpty(claimRecord.getAssigned())) {
             claimRecord.setAssigned(WALKER_USER);
         }
-        String sql = dslContext.insertInto(CLAIM, CLAIM.ID, CLAIM.EVENT_ID, CLAIM.ASSIGNED, CLAIM.CHANGES).
-                values(claimRecord.getId(), claimRecord.getEventId(), claimRecord.getAssigned(), claimRecord.getChanges())
+        String sql = dslContext.insertInto(CLAIM)
+                .set(CLAIM.ID, claimRecord.getId())
+                .set(CLAIM.EVENT_ID, claimRecord.getEventId())
+                .set(CLAIM.ASSIGNED, claimRecord.getAssigned())
+                .set(CLAIM.STATUS, claimRecord.getStatus())
+                .set(CLAIM.DESCRIPTION, claimRecord.getDescription())
+                .set(CLAIM.REASON, claimRecord.getReason())
+                .set(CLAIM.CHANGES, claimRecord.getChanges())
                 .toString();
         getJdbcTemplate().update(sql);
     }
@@ -49,12 +57,49 @@ public class ClaimDao extends NamedParameterJdbcDaoSupport {
     }
 
     public void update(ClaimRecord claimRecord) {
-        String sql = dslContext.update(CLAIM).set(CLAIM.EVENT_ID, claimRecord.getEventId())
+        UpdateSetMoreStep<ClaimRecord> update = dslContext.update(CLAIM)
+                .set(CLAIM.EVENT_ID, claimRecord.getEventId())
                 .set(CLAIM.ASSIGNED, claimRecord.getAssigned())
+                .set(CLAIM.STATUS, claimRecord.getStatus())
                 .set(CLAIM.CHANGES, claimRecord.getChanges())
-                .where(CLAIM.ID.eq(claimRecord.getId())).toString();
+                .set(CLAIM.DESCRIPTION, claimRecord.getDescription());
+        if (StringUtils.isEmpty(claimRecord.getReason())) {
+            update.set(CLAIM.REASON, claimRecord.getReason());
+        }
+        String sql = update.where(CLAIM.ID.eq(claimRecord.getId())).toString();
         getJdbcTemplate().update(sql);
     }
+
+    public void updateStatus(long claimId, ClaimStatus claimStatus) {
+        UpdateSetMoreStep<ClaimRecord> update = dslContext.update(CLAIM)
+                .set(CLAIM.STATUS, getStatusName(claimStatus));
+        if (claimStatus.isSetRevoked()) {
+            update.set(CLAIM.REASON, claimStatus.getRevoked().getReason());
+        }
+        if (claimStatus.isSetDenied()) {
+            update.set(CLAIM.REASON, claimStatus.getDenied().getReason());
+        }
+        String sql = update.where(CLAIM.ID.eq(claimId)).toString();
+        getJdbcTemplate().update(sql);
+    }
+
+    public static String getStatusName(ClaimStatus claimStatus) {
+        if (claimStatus.isSetAccepted()) {
+            return "accepted";
+        }
+        if (claimStatus.isSetDenied()) {
+            return "denied";
+        }
+        if (claimStatus.isSetRevoked()) {
+            return "revoked";
+        }
+        if (claimStatus.isSetPending()) {
+            return "pending";
+        } else {
+            return "unknown";
+        }
+    }
+
 
     public List<ClaimRecord> search(ClaimSearchRequest request) {
         //todo: "contains" - field does not work now.

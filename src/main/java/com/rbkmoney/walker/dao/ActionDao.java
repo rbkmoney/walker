@@ -51,12 +51,14 @@ public class ActionDao extends NamedParameterJdbcDaoSupport {
             actionRecord.setCreatedAt(new Timestamp(System.currentTimeMillis()));
         }
         String sql = dslContext.insertInto(ACTION)
+                .set(ACTION.CREATED_AT,actionRecord.getCreatedAt())
                 .set(ACTION.CLAIM_ID,actionRecord.getClaimId())
+                .set(ACTION.USER_ID,actionRecord.getUserId())
                 .set(ACTION.USER_EMAIL,actionRecord.getUserEmail())
                 .set(ACTION.USER_NAME,actionRecord.getUserName())
-                .set(ACTION.MODIFICATION,actionRecord.getModification())
-                .set(ACTION.CREATED_AT,actionRecord.getCreatedAt())
-                .set(ACTION.USER_ID,actionRecord.getUserId())
+                .set(ACTION.TYPE,actionRecord.getType())
+                .set(ACTION.BEFORE,actionRecord.getBefore())
+                .set(ACTION.AFTER,actionRecord.getAfter())
                 .toString();
         getJdbcTemplate().update(sql);
     }

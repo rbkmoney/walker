@@ -1,22 +1,14 @@
 package com.rbkmoney.walker.handler;
 
-import com.bazaarvoice.jolt.JsonUtilImpl;
-import com.bazaarvoice.jolt.JsonUtils;
 import com.rbkmoney.damsel.event_stock.StockEvent;
 import com.rbkmoney.damsel.payment_processing.Claim;
-import com.rbkmoney.damsel.payment_processing.Event;
+import com.rbkmoney.damsel.payment_processing.ClaimStatus;
 import com.rbkmoney.damsel.payment_processing.PartyEvent;
-import com.rbkmoney.damsel.payment_processing.PartyModification;
 import com.rbkmoney.damsel.walker.PartyModificationUnit;
-import com.rbkmoney.geck.serializer.kit.object.ObjectHandler;
-import com.rbkmoney.geck.serializer.kit.object.ObjectProcessor;
-import com.rbkmoney.geck.serializer.kit.tbase.TBaseHandler;
-import com.rbkmoney.geck.serializer.kit.tbase.TBaseProcessor;
 import com.rbkmoney.thrift.filter.Filter;
 import com.rbkmoney.thrift.filter.PathConditionFilter;
 import com.rbkmoney.thrift.filter.condition.IsNullCondition;
 import com.rbkmoney.thrift.filter.rule.PathConditionRule;
-import com.rbkmoney.walker.dao.ActionDao;
 import com.rbkmoney.walker.dao.ClaimDao;
 import com.rbkmoney.walker.domain.generated.tables.records.ClaimRecord;
 import com.rbkmoney.walker.service.ActionService;
@@ -26,8 +18,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
+
+import static com.rbkmoney.walker.service.ThriftObjectsConvertor.convertToPartyModificationUnit;
+import static com.rbkmoney.walker.service.ThriftObjectsConvertor.convertToJson;
 
 
 @Component
@@ -55,7 +48,7 @@ public class PartyEventHandler implements Handler<StockEvent> {
         try {
             //Must not brake event order! - Its guaranteed by event-stock library.
             long eventId = value.getSourceEvent().getProcessingEvent().getId();
-            String party = value.getSourceEvent().getProcessingEvent().getSource().getParty();
+            String partyId = value.getSourceEvent().getProcessingEvent().getSource().getParty();
             PartyEvent partyEvent = value.getSourceEvent().getProcessingEvent().getPayload().getPartyEvent();
 
             if (partyEvent.isSetClaimCreated()) {
@@ -65,13 +58,26 @@ public class PartyEventHandler implements Handler<StockEvent> {
                 claimRecord.setEventId(eventId);
 
                 PartyModificationUnit partyModificationUnit = convertToPartyModificationUnit(claim.getChangeset());
-                claimRecord.setChanges(toJson(partyModificationUnit));
+                claimRecord.setChanges(convertToJson(partyModificationUnit));
                 claimDao.create(claimRecord);
-                actionService.claimCreated(claim.getChangeset(), party);
+                actionService.claimCreated(claim.getId(), claim.getChangeset(), partyId);
             }
             if (partyEvent.isSetClaimStatusChanged()) {
-                //todo:
+                long claimId = partyEvent.getClaimStatusChanged().getId();
+                ClaimStatus status = partyEvent.getClaimStatusChanged().getStatus();
+                claimDao.updateStatus(claimId, status);
+                actionService.claimStatusChanged(claimId, status, partyId);
             }
+            if(partyEvent.isSetClaimUpdated()){
+                ClaimRecord claimRecord = new ClaimRecord();
+                claimRecord.setId(partyEvent.getClaimUpdated().getId());
+                claimRecord.setEventId(eventId);
+                PartyModificationUnit partyModificationUnit = convertToPartyModificationUnit(partyEvent.getClaimUpdated().getChangeset());
+                claimRecord.setChanges(convertToJson(partyModificationUnit));
+                claimDao.update(claimRecord);
+                //todo action
+            }
+
             if (partyEvent.isSetShopBlocking()) {
                 //todo:
             }
@@ -84,32 +90,6 @@ public class PartyEventHandler implements Handler<StockEvent> {
         }
     }
 
-    public String toJson(PartyModificationUnit partyModificationUnit) throws IOException {
-        Object object = new TBaseProcessor().process(partyModificationUnit, new ObjectHandler());
-        return JsonUtils.toJsonString(object);
-    }
-
-    public PartyModificationUnit convertToPartyModificationUnit(List<PartyModification> hgModifications) throws IOException {
-        LinkedList<com.rbkmoney.damsel.walker.PartyModification> walkerPartyModificationList = new LinkedList<>();
-        for (PartyModification hgModification : hgModifications) {
-            com.rbkmoney.damsel.walker.PartyModification partyModification = convertToWalkerModification(hgModification);
-            walkerPartyModificationList.add(partyModification);
-        }
-        PartyModificationUnit partyModificationUnit = new PartyModificationUnit();
-        partyModificationUnit.setModifications(walkerPartyModificationList);
-        return partyModificationUnit;
-    }
-
-    /**
-     * Convert from Payment_processing thrift object to Walker thrift representation
-     */
-    public com.rbkmoney.damsel.walker.PartyModification convertToWalkerModification(PartyModification hgModification) throws IOException {
-        Object hgModifObj = new TBaseProcessor().process(hgModification, new ObjectHandler());
-        String hgJson = JsonUtils.toJsonString(hgModifObj);
-        Object objFromJson = new JsonUtilImpl().jsonToObject(hgJson);
-        return new ObjectProcessor()
-                .process(objFromJson, new TBaseHandler<>(com.rbkmoney.damsel.walker.PartyModification.class));
-    }
 
     @Override
     public Filter getFilter() {

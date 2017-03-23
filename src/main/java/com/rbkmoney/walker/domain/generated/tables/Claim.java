@@ -34,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Claim extends TableImpl<ClaimRecord> {
 
-    private static final long serialVersionUID = 20098667;
+    private static final long serialVersionUID = 314635749;
 
     /**
      * The reference instance of <code>walk.claim</code>
@@ -63,6 +63,21 @@ public class Claim extends TableImpl<ClaimRecord> {
      * The column <code>walk.claim.assigned</code>.
      */
     public final TableField<ClaimRecord, String> ASSIGNED = createField("assigned", org.jooq.impl.SQLDataType.VARCHAR.nullable(false), this, "");
+
+    /**
+     * The column <code>walk.claim.status</code>.
+     */
+    public final TableField<ClaimRecord, String> STATUS = createField("status", org.jooq.impl.SQLDataType.VARCHAR.nullable(false), this, "");
+
+    /**
+     * The column <code>walk.claim.description</code>.
+     */
+    public final TableField<ClaimRecord, String> DESCRIPTION = createField("description", org.jooq.impl.SQLDataType.VARCHAR, this, "");
+
+    /**
+     * The column <code>walk.claim.reason</code>.
+     */
+    public final TableField<ClaimRecord, String> REASON = createField("reason", org.jooq.impl.SQLDataType.VARCHAR, this, "");
 
     /**
      * The column <code>walk.claim.changes</code>.
