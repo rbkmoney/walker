@@ -1,5 +1,6 @@
 package com.rbkmoney.walker.service;
 
+import com.rbkmoney.damsel.payment_processing.PartyManagementSrv;
 import com.rbkmoney.damsel.walker.*;
 import com.rbkmoney.walker.dao.ActionDao;
 import org.apache.thrift.TException;
@@ -15,30 +16,34 @@ import java.util.List;
 public class WalkerServiceImpl implements WalkerSrv.Iface {
 
     @Autowired
-    ActionDao actionDao;
+    private ActionDao actionDao;
+
+    @Autowired
+    private PartyManagementSrv.Iface partyManagement;
+
 
     @Override
-    public void approveClaim(long claimID) throws TException {
+    public void acceptClaim(long claimID, UserInformation user, int revision) throws TException {
 
     }
 
     @Override
-    public void declineClaim(long claimID, UserInfo user, String reason) throws TException {
+    public void denyClaim(long claimID, UserInformation user, String reason, int revision) throws TException {
 
     }
 
     @Override
-    public ClaimInfo getClaim(long claimID, UserInfo user) throws TException {
+    public ClaimInfo getClaim(long claimID, UserInformation user) throws TException {
         return null;
     }
 
     @Override
-    public void createClaim(UserInfo user, String party_id, PartyModificationUnit changeset) throws TException {
+    public void createClaim(UserInformation user, String party_id, PartyModificationUnit changeset) throws TException {
 
     }
 
     @Override
-    public void updateClaim(long claimID, UserInfo user, PartyModificationUnit changeset) throws TException {
+    public void updateClaim(long claimID, UserInformation user, PartyModificationUnit changeset, int revision) throws TException {
 
     }
 
@@ -48,17 +53,17 @@ public class WalkerServiceImpl implements WalkerSrv.Iface {
     }
 
     @Override
-    public void addComment(long claimId, UserInfo user, String text) throws TException {
+    public void addComment(long claimId, UserInformation user, String text) throws TException {
 
     }
 
     @Override
-    public List<Comment> getComments(long claimId, UserInfo user) throws TException {
+    public List<Comment> getComments(long claimId, UserInformation user) throws TException {
         return null;
     }
 
     @Override
-    public List<Action> getActions(long claimId, UserInfo user) throws TException {
+    public List<Action> getActions(long claimId, UserInformation user) throws TException {
         return null;
     }
 }

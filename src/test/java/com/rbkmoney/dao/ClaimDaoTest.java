@@ -93,6 +93,7 @@ public class ClaimDaoTest extends WalkerApplicationTests {
         claimRecord.setId(1l);
         claimRecord.setEventId(10l);
         claimRecord.setAssigned(TEST_USER);
+        claimRecord.setRevision(10L);
         claimRecord.setChanges("{\"contract_modification\": {\"id\": \"123\", \"modification\": {\"creation\": {\"contractor\": {\"entity\": {\"russian_legal_entity\": {\"inn\": \"АЙНАНЕНАН\", \"post_address\": \"Напишимне напиши\", \"actual_address\": \"Улица пушкина, Дом колотушкина\", \"registered_name\": \"Офшор забугор инкорпарейтед\", \"registered_number\": \"Какая регистрация?\", \"representative_document\": \"Усы лапы и хвост\", \"representative_position\": \"Миссионерская\", \"representative_full_name\": \"Александра Грей\"}}, \"bank_account\": {\"account\": \"Аккаунт\", \"bank_bik\": \"12313\", \"bank_name\": \"Degu Bank Inc\", \"bank_post_account\": \"123123123 post\"}}, \"payout_tool_params\": {\"currency\": {\"symbolic_code\": \"RUB\"}, \"tool_info\": {\"bank_account\": {\"account\": \"Аккаунт\", \"bank_bik\": \"12313\", \"bank_name\": \"Degu Bank Inc\", \"bank_post_account\": \"123123123 post\"}}}}}}}");
         return claimRecord;
     }

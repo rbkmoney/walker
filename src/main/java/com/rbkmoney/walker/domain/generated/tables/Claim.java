@@ -34,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Claim extends TableImpl<ClaimRecord> {
 
-    private static final long serialVersionUID = 314635749;
+    private static final long serialVersionUID = -677341643;
 
     /**
      * The reference instance of <code>walk.claim</code>
@@ -58,6 +58,11 @@ public class Claim extends TableImpl<ClaimRecord> {
      * The column <code>walk.claim.event_id</code>.
      */
     public final TableField<ClaimRecord, Long> EVENT_ID = createField("event_id", org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+
+    /**
+     * The column <code>walk.claim.revision</code>.
+     */
+    public final TableField<ClaimRecord, Long> REVISION = createField("revision", org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>walk.claim.assigned</code>.

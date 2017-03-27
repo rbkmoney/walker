@@ -69,14 +69,14 @@ public class ActionDao extends NamedParameterJdbcDaoSupport {
     }
 
     //Object new ActionRecord().getModification()
-    public static ActionModification convertToModification(Object actionModification) throws IOException {
-        Object jsonObj = new JsonUtilImpl().jsonToObject(String.valueOf(actionModification));
-        return new ObjectProcessor().process(jsonObj, new TBaseHandler<>(ActionModification.class));
-    }
+//    public static ActionModification convertToModification(Object actionModification) throws IOException {
+//        Object jsonObj = new JsonUtilImpl().jsonToObject(String.valueOf(actionModification));
+//        return new ObjectProcessor().process(jsonObj, new TBaseHandler<>(ActionModification.class));
+//    }
 
 
-    public String toStringJson(ActionModification actionModification) throws IOException {
-        Object o = JoltUtils.compactJson(new TBaseProcessor().process(actionModification, new ObjectHandler()));
-        return JsonUtils.toJsonString(o);
-    }
+//    public String toStringJson(ActionModification actionModification) throws IOException {
+//        Object o = JoltUtils.compactJson(new TBaseProcessor().process(actionModification, new ObjectHandler()));
+//        return JsonUtils.toJsonString(o);
+//    }
 }

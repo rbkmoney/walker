@@ -11,15 +11,14 @@ import com.rbkmoney.geck.serializer.kit.object.ObjectHandler;
 import com.rbkmoney.geck.serializer.kit.object.ObjectProcessor;
 import com.rbkmoney.geck.serializer.kit.tbase.TBaseHandler;
 import com.rbkmoney.geck.serializer.kit.tbase.TBaseProcessor;
-import com.rbkmoney.walker.handler.PartyEventHandler;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.LinkedList;
 
-import static com.rbkmoney.walker.service.ThriftObjectsConvertor.convertToPartyModificationUnit;
-import static com.rbkmoney.walker.service.ThriftObjectsConvertor.convertToWalkerModification;
+import static com.rbkmoney.walker.utils.ThriftObjectsConvertor.convertToPartyModificationUnit;
+import static com.rbkmoney.walker.utils.ThriftObjectsConvertor.convertToWalkerModification;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 

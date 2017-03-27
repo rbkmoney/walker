@@ -1,4 +1,4 @@
-package com.rbkmoney.walker.service;
+package com.rbkmoney.walker.utils;
 
 import com.bazaarvoice.jolt.JsonUtilImpl;
 import com.bazaarvoice.jolt.JsonUtils;

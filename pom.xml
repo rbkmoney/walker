@@ -23,7 +23,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
-        <damsel.version>1.152-742ebd8</damsel.version>
+        <damsel.version>1.154-5b0dcde</damsel.version>
         <dockerfile.base.service.tag>f26fcc19d1941ab74f1c72dd8a408be17a769333</dockerfile.base.service.tag>
         <shared.resources.version>0.2.1</shared.resources.version>
         <bm.pooling.url>http://localhost:8023/repo</bm.pooling.url>

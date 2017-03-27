@@ -47,6 +47,7 @@ public class ClaimDao extends NamedParameterJdbcDaoSupport {
                 .set(CLAIM.DESCRIPTION, claimRecord.getDescription())
                 .set(CLAIM.REASON, claimRecord.getReason())
                 .set(CLAIM.CHANGES, claimRecord.getChanges())
+                .set(CLAIM.REVISION, claimRecord.getRevision())
                 .toString();
         getJdbcTemplate().update(sql);
     }
@@ -62,7 +63,8 @@ public class ClaimDao extends NamedParameterJdbcDaoSupport {
                 .set(CLAIM.ASSIGNED, claimRecord.getAssigned())
                 .set(CLAIM.STATUS, claimRecord.getStatus())
                 .set(CLAIM.CHANGES, claimRecord.getChanges())
-                .set(CLAIM.DESCRIPTION, claimRecord.getDescription());
+                .set(CLAIM.DESCRIPTION, claimRecord.getDescription())
+                .set(CLAIM.REVISION, claimRecord.getRevision());
         if (StringUtils.isEmpty(claimRecord.getReason())) {
             update.set(CLAIM.REASON, claimRecord.getReason());
         }
@@ -73,6 +75,7 @@ public class ClaimDao extends NamedParameterJdbcDaoSupport {
     public void updateStatus(long claimId, ClaimStatus claimStatus) {
         UpdateSetMoreStep<ClaimRecord> update = dslContext.update(CLAIM)
                 .set(CLAIM.STATUS, getStatusName(claimStatus));
+
         if (claimStatus.isSetRevoked()) {
             update.set(CLAIM.REASON, claimStatus.getRevoked().getReason());
         }

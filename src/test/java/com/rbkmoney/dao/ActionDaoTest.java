@@ -18,7 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static com.rbkmoney.ActionDiffTest.buildWalkerComplexModification;
-import static com.rbkmoney.walker.dao.ActionDao.convertToModification;
+
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
 

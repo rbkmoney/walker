@@ -19,8 +19,8 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
-import static com.rbkmoney.walker.service.ThriftObjectsConvertor.convertToPartyModificationUnit;
-import static com.rbkmoney.walker.service.ThriftObjectsConvertor.convertToJson;
+import static com.rbkmoney.walker.utils.ThriftObjectsConvertor.convertToPartyModificationUnit;
+import static com.rbkmoney.walker.utils.ThriftObjectsConvertor.convertToJson;
 
 
 @Component
@@ -50,41 +50,40 @@ public class PartyEventHandler implements Handler<StockEvent> {
             long eventId = value.getSourceEvent().getProcessingEvent().getId();
             String partyId = value.getSourceEvent().getProcessingEvent().getSource().getParty();
             PartyEvent partyEvent = value.getSourceEvent().getProcessingEvent().getPayload().getPartyEvent();
-
             if (partyEvent.isSetClaimCreated()) {
                 Claim claim = partyEvent.getClaimCreated();
                 ClaimRecord claimRecord = new ClaimRecord();
                 claimRecord.setId(claim.getId());
                 claimRecord.setEventId(eventId);
+                claimRecord.setRevision((long) claim.getRevision());
 
                 PartyModificationUnit partyModificationUnit = convertToPartyModificationUnit(claim.getChangeset());
                 claimRecord.setChanges(convertToJson(partyModificationUnit));
                 claimDao.create(claimRecord);
                 actionService.claimCreated(claim.getId(), claim.getChangeset(), partyId);
-            }
-            if (partyEvent.isSetClaimStatusChanged()) {
+            } else if (partyEvent.isSetClaimUpdated()) {
+                long claimId = partyEvent.getClaimStatusChanged().getId();
+                ClaimRecord claimRecord = new ClaimRecord();
+                claimRecord.setId(partyEvent.getClaimUpdated().getId());
+                claimRecord.setEventId(eventId);
+                //todo set revision if it come from event
+
+                PartyModificationUnit partyModificationUnit = convertToPartyModificationUnit(partyEvent.getClaimUpdated().getChangeset());
+                claimRecord.setChanges(convertToJson(partyModificationUnit));
+                claimDao.update(claimRecord);
+                actionService.claimUpdated(claimId, partyEvent.getClaimUpdated().getChangeset(), partyId);
+            } else if (partyEvent.isSetClaimStatusChanged()) {
                 long claimId = partyEvent.getClaimStatusChanged().getId();
                 ClaimStatus status = partyEvent.getClaimStatusChanged().getStatus();
                 claimDao.updateStatus(claimId, status);
                 actionService.claimStatusChanged(claimId, status, partyId);
+            } else if (partyEvent.isSetShopBlocking()) {
+                log.info("Shop Blocking event {}", eventId);
+            } else if (partyEvent.isSetShopSuspention()) {
+                log.info("Shop Suspension event", eventId);
+            } else {
+                log.error("Unsupported event type: {}", partyEvent.toString());
             }
-            if(partyEvent.isSetClaimUpdated()){
-                ClaimRecord claimRecord = new ClaimRecord();
-                claimRecord.setId(partyEvent.getClaimUpdated().getId());
-                claimRecord.setEventId(eventId);
-                PartyModificationUnit partyModificationUnit = convertToPartyModificationUnit(partyEvent.getClaimUpdated().getChangeset());
-                claimRecord.setChanges(convertToJson(partyModificationUnit));
-                claimDao.update(claimRecord);
-                //todo action
-            }
-
-            if (partyEvent.isSetShopBlocking()) {
-                //todo:
-            }
-            if (partyEvent.isSetShopSuspention()) {
-                //todo:
-            }
-
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

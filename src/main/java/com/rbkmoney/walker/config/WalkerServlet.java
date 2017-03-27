@@ -12,7 +12,7 @@ import javax.servlet.*;
 import javax.servlet.annotation.WebServlet;
 import java.io.IOException;
 
-@WebServlet("/repo")
+@WebServlet("/walker")
 public class WalkerServlet extends GenericServlet {
 
     private Servlet thriftServlet;
