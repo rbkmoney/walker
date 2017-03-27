@@ -9,6 +9,7 @@ import com.rbkmoney.geck.serializer.kit.object.ObjectHandler;
 import com.rbkmoney.geck.serializer.kit.tbase.TBaseProcessor;
 import com.rbkmoney.walker.dao.ActionDao;
 import com.rbkmoney.walker.domain.generated.tables.records.ActionRecord;
+import com.rbkmoney.walker.utils.ThriftConvertor;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import java.util.List;
 
 import static com.rbkmoney.ActionDiffTest.buildWalkerComplexModification;
 
+import static com.rbkmoney.walker.utils.ThriftConvertor.convertToJson;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
 
@@ -57,15 +59,7 @@ public class ActionDaoTest extends WalkerApplicationTests {
         PartyModificationUnit partyModificationUnit = new PartyModificationUnit();
         List<PartyModification> partyModificationList = Arrays.asList(buildWalkerComplexModification());
         partyModificationUnit.setModifications(partyModificationList);
-
-        ClaimChengsest claimChengsest = new ClaimChengsest();
-        claimChengsest.setAfter(partyModificationUnit);
-
-        ActionModification actionModification = new ActionModification();
-        actionModification.setClaimChengsest(claimChengsest);
-
-        Object o = JoltUtils.compactJson(new TBaseProcessor().process(actionModification, new ObjectHandler()));
-        return JsonUtils.toJsonString(o);
+        return ThriftConvertor.convertToJson(partyModificationUnit);
     }
 
 

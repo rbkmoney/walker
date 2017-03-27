@@ -6,14 +6,14 @@ import com.rbkmoney.damsel.walker.ActionType;
 import com.rbkmoney.damsel.walker.PartyModificationUnit;
 import com.rbkmoney.walker.dao.ActionDao;
 import com.rbkmoney.walker.domain.generated.tables.records.ActionRecord;
-import com.rbkmoney.walker.utils.ThriftObjectsConvertor;
+import com.rbkmoney.walker.utils.ThriftConvertor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.List;
 
-import static com.rbkmoney.walker.utils.ThriftObjectsConvertor.convertToJson;
+import static com.rbkmoney.walker.utils.ThriftConvertor.convertToJson;
 
 
 /**
@@ -26,7 +26,7 @@ public class ActionService {
     private ActionDao actionDao;
 
     public void claimCreated(Long claimId, List<PartyModification> changeset, String userId) throws IOException {
-        PartyModificationUnit partyModificationUnit = ThriftObjectsConvertor.convertToPartyModificationUnit(changeset);
+        PartyModificationUnit partyModificationUnit = ThriftConvertor.convertToPartyModificationUnit(changeset);
         String modificationString = convertToJson(partyModificationUnit);
 
         ActionRecord actionRecord = new ActionRecord();
@@ -38,7 +38,7 @@ public class ActionService {
     }
 
     public void claimUpdated(Long claimId, List<PartyModification> changeset, String userId) throws IOException {
-        PartyModificationUnit partyModificationUnit = ThriftObjectsConvertor.convertToPartyModificationUnit(changeset);
+        PartyModificationUnit partyModificationUnit = ThriftConvertor.convertToPartyModificationUnit(changeset);
         String modificationString = convertToJson(partyModificationUnit);
         ActionRecord actionRecord = new ActionRecord();
         actionRecord.setUserId(userId);

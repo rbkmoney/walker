@@ -19,8 +19,8 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
-import static com.rbkmoney.walker.utils.ThriftObjectsConvertor.convertToPartyModificationUnit;
-import static com.rbkmoney.walker.utils.ThriftObjectsConvertor.convertToJson;
+import static com.rbkmoney.walker.utils.ThriftConvertor.convertToPartyModificationUnit;
+import static com.rbkmoney.walker.utils.ThriftConvertor.convertToJson;
 
 
 @Component

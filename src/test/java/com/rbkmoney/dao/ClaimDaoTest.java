@@ -1,22 +1,31 @@
 package com.rbkmoney.dao;
 
 import com.bazaarvoice.jolt.Diffy;
+import com.bazaarvoice.jolt.JsonUtil;
+import com.bazaarvoice.jolt.JsonUtils;
 import com.rbkmoney.WalkerApplicationTests;
-import com.rbkmoney.damsel.payment_processing.*;
+import com.rbkmoney.damsel.payment_processing.ClaimAccepted;
+import com.rbkmoney.damsel.payment_processing.ClaimDenied;
+import com.rbkmoney.damsel.payment_processing.ClaimPending;
+import com.rbkmoney.damsel.payment_processing.ClaimStatus;
 import com.rbkmoney.damsel.walker.ClaimSearchRequest;
-import com.rbkmoney.damsel.walker.UserInfo;
+import com.rbkmoney.damsel.walker.PartyModification;
+import com.rbkmoney.damsel.walker.PartyModificationUnit;
 import com.rbkmoney.walker.dao.ClaimDao;
 import com.rbkmoney.walker.domain.generated.tables.records.ClaimRecord;
 import com.rbkmoney.walker.service.ActionService;
+import com.rbkmoney.walker.utils.ThriftConvertor;
 import net.logstash.logback.encoder.org.apache.commons.lang.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static com.rbkmoney.ActionDiffTest.buildWalkerComplexModification;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.TestCase.assertTrue;
 
@@ -41,14 +50,18 @@ public class ClaimDaoTest extends WalkerApplicationTests {
     }
 
     @Test
-    public void testInsertAndGet() {
+    public void testInsertAndGet() throws IOException {
         ClaimRecord claimRecord = buildTestClaim();
         claimDao.create(claimRecord);
         ClaimRecord claimRecord1 = claimDao.get(1);
 
         assertEquals(claimRecord.getId(), claimRecord1.getId());
         assertEquals(claimRecord.getEventId(), claimRecord1.getEventId());
-        assertEquals(String.valueOf(claimRecord.getChanges()), String.valueOf(claimRecord1.getChanges()));
+
+        Object or = JsonUtils.jsonToObject(String.valueOf(claimRecord.getChanges()));
+        Object or1 = JsonUtils.jsonToObject(String.valueOf(claimRecord1.getChanges()));
+        Diffy.Result diff = new Diffy().diff(or, or1);
+        assertTrue(diff.isEmpty());
 
         ClaimSearchRequest claimSearchRequest = new ClaimSearchRequest();
         claimSearchRequest.setAssigned(TEST_USER);
@@ -68,33 +81,39 @@ public class ClaimDaoTest extends WalkerApplicationTests {
     public void testActions() throws IOException {
         ClaimStatus claimStatus = new ClaimStatus();
         claimStatus.setDenied(new ClaimDenied("because"));
-        actionService.claimStatusChanged(1L, claimStatus,"testUser");
+        actionService.claimStatusChanged(1L, claimStatus, "testUser");
     }
 
     @Test
-    public void testSearch() {
+    public void testSearch() throws IOException {
         claimDao.create(buildTestClaim());
-
         ClaimRecord claimRecord1 = claimDao.get(1);
         claimRecord1.setEventId(123L);
-        claimRecord1.setChanges("{\"contract_modification\": {\"id\": \"222\", \"modification\": {\"creation\": {\"contractor\": {\"entity\": {\"russian_legal_entity\": {\"inn\": \"АЙНАНЕНАН\", \"post_address\": \"Напишимне напиши\", \"actual_address\": \"Улица пушкина, Дом колотушкина\", \"registered_name\": \"Офшор забугор инкорпарейтед\", \"registered_number\": \"Какая регистрация?\", \"representative_document\": \"Усы лапы и хвост\", \"representative_position\": \"Миссионерская\", \"representative_full_name\": \"Александра Грей\"}}, \"bank_account\": {\"account\": \"Аккаунт\", \"bank_bik\": \"12313\", \"bank_name\": \"Degu Bank Inc\", \"bank_post_account\": \"123123123 post\"}}, \"payout_tool_params\": {\"currency\": {\"symbolic_code\": \"RUB\"}, \"tool_info\": {\"bank_account\": {\"account\": \"Аккаунт\", \"bank_bik\": \"12313\", \"bank_name\": \"Degu Bank Inc\", \"bank_post_account\": \"AFTER_UPDATE\"}}}}}}}");
+        claimRecord1.setChanges(buildModification());
         claimDao.update(claimRecord1);
 
         ClaimRecord claimRecord2 = claimDao.get(claimRecord1.getId());
 
 
         assertEquals(Long.valueOf(123L), claimRecord2.getEventId());
-        assertTrue(StringUtils.contains(String.valueOf(claimRecord2.getChanges()), "AFTER_UPDATE"));
+//        assertTrue(StringUtils.contains(String.valueOf(claimRecord2.getChanges()), "AFTER_UPDATE"));
     }
 
-    private ClaimRecord buildTestClaim() {
+    public String buildModification() throws IOException {
+        PartyModificationUnit partyModificationUnit = new PartyModificationUnit();
+        List<PartyModification> partyModificationList = Arrays.asList(buildWalkerComplexModification());
+        partyModificationUnit.setModifications(partyModificationList);
+        return ThriftConvertor.convertToJson(partyModificationUnit);
+    }
+
+    private ClaimRecord buildTestClaim() throws IOException {
         ClaimRecord claimRecord = new ClaimRecord();
         claimRecord.setStatus(ClaimStatus.pending(new ClaimPending()).toString());
         claimRecord.setId(1l);
         claimRecord.setEventId(10l);
         claimRecord.setAssigned(TEST_USER);
         claimRecord.setRevision(10L);
-        claimRecord.setChanges("{\"contract_modification\": {\"id\": \"123\", \"modification\": {\"creation\": {\"contractor\": {\"entity\": {\"russian_legal_entity\": {\"inn\": \"АЙНАНЕНАН\", \"post_address\": \"Напишимне напиши\", \"actual_address\": \"Улица пушкина, Дом колотушкина\", \"registered_name\": \"Офшор забугор инкорпарейтед\", \"registered_number\": \"Какая регистрация?\", \"representative_document\": \"Усы лапы и хвост\", \"representative_position\": \"Миссионерская\", \"representative_full_name\": \"Александра Грей\"}}, \"bank_account\": {\"account\": \"Аккаунт\", \"bank_bik\": \"12313\", \"bank_name\": \"Degu Bank Inc\", \"bank_post_account\": \"123123123 post\"}}, \"payout_tool_params\": {\"currency\": {\"symbolic_code\": \"RUB\"}, \"tool_info\": {\"bank_account\": {\"account\": \"Аккаунт\", \"bank_bik\": \"12313\", \"bank_name\": \"Degu Bank Inc\", \"bank_post_account\": \"123123123 post\"}}}}}}}");
+        claimRecord.setChanges(buildModification());
         return claimRecord;
     }
 }

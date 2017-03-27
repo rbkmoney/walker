@@ -4,7 +4,6 @@ package com.rbkmoney.walker.dao;
 import com.bazaarvoice.jolt.JsonUtilImpl;
 import com.bazaarvoice.jolt.JsonUtils;
 import com.bazaarvoice.jolt.utils.JoltUtils;
-import com.rbkmoney.damsel.walker.ActionModification;
 import com.rbkmoney.geck.serializer.kit.object.ObjectHandler;
 import com.rbkmoney.geck.serializer.kit.object.ObjectProcessor;
 import com.rbkmoney.geck.serializer.kit.tbase.TBaseHandler;
