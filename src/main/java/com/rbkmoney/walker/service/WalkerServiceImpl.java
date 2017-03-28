@@ -10,7 +10,6 @@ import com.rbkmoney.damsel.walker.Comment;
 import com.rbkmoney.walker.dao.ActionDao;
 import com.rbkmoney.walker.dao.ClaimDao;
 import com.rbkmoney.walker.dao.CommentDao;
-import com.rbkmoney.walker.domain.generated.tables.*;
 import com.rbkmoney.walker.domain.generated.tables.records.ActionRecord;
 import com.rbkmoney.walker.domain.generated.tables.records.ClaimRecord;
 import com.rbkmoney.walker.domain.generated.tables.records.CommentRecord;
@@ -25,7 +24,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.rbkmoney.walker.utils.ThriftConvertor.convertToAction;
+
 import static com.rbkmoney.walker.utils.ThriftConvertor.convertToClaimInfo;
 import static com.rbkmoney.walker.utils.ThriftConvertor.convertToHGPartyModification;
 
@@ -64,9 +63,8 @@ public class WalkerServiceImpl implements WalkerSrv.Iface {
         try {
             return convertToClaimInfo(claimRecord);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new TException(e);
         }
-        return null;
     }
 
     @Override
@@ -74,8 +72,7 @@ public class WalkerServiceImpl implements WalkerSrv.Iface {
         try {
             partyManagement.createClaim(buildUserInfo(user), party_id, convertToHGPartyModification(changeset));
         } catch (IOException e) {
-            //todo: add correct exception to interface
-            e.printStackTrace();
+            throw new TException(e);
         }
     }
 
@@ -84,8 +81,7 @@ public class WalkerServiceImpl implements WalkerSrv.Iface {
         try {
             partyManagement.updateClaim(buildUserInfo(user), user.getUserID(), claimID, revision, convertToHGPartyModification(changeset));
         } catch (IOException e) {
-            //todo: add correct exception to interface
-            e.printStackTrace();
+            throw new TException(e);
         }
     }
 
