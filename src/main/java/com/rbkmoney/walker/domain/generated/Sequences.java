@@ -27,4 +27,9 @@ public class Sequences {
      * The sequence <code>walk.action_id_seq</code>
      */
     public static final Sequence<Long> ACTION_ID_SEQ = new SequenceImpl<Long>("action_id_seq", Walk.WALK, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
+     * The sequence <code>walk.comment_id_seq</code>
+     */
+    public static final Sequence<Long> COMMENT_ID_SEQ = new SequenceImpl<Long>("comment_id_seq", Walk.WALK, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 }

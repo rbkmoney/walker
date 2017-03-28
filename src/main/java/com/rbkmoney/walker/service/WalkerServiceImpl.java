@@ -5,11 +5,17 @@ import com.rbkmoney.damsel.payment_processing.PartyManagementSrv;
 import com.rbkmoney.damsel.payment_processing.UserInfo;
 import com.rbkmoney.damsel.payment_processing.UserType;
 import com.rbkmoney.damsel.walker.*;
+import com.rbkmoney.damsel.walker.Action;
+import com.rbkmoney.damsel.walker.Comment;
 import com.rbkmoney.walker.dao.ActionDao;
 import com.rbkmoney.walker.dao.ClaimDao;
+import com.rbkmoney.walker.dao.CommentDao;
+import com.rbkmoney.walker.domain.generated.tables.*;
 import com.rbkmoney.walker.domain.generated.tables.records.ActionRecord;
 import com.rbkmoney.walker.domain.generated.tables.records.ClaimRecord;
+import com.rbkmoney.walker.domain.generated.tables.records.CommentRecord;
 import com.rbkmoney.walker.utils.ThriftConvertor;
+import com.rbkmoney.walker.utils.TimeUtils;
 import org.apache.thrift.TException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,6 +44,9 @@ public class WalkerServiceImpl implements WalkerSrv.Iface {
     @Autowired
     private ClaimDao claimDao;
 
+
+    @Autowired
+    private CommentDao commentDao;
 
     @Override
     public void acceptClaim(long claimID, UserInformation user, int revision) throws TException {
@@ -96,12 +105,29 @@ public class WalkerServiceImpl implements WalkerSrv.Iface {
 
     @Override
     public void addComment(long claimId, UserInformation user, String text) throws TException {
-
+        CommentRecord commentRecord = new CommentRecord();
+        commentRecord.setText(text);
+        commentRecord.setClaimId(claimId);
+        commentRecord.setUserId(user.getUserID());
+        commentRecord.setUserName(user.getUserName());
+        commentRecord.setEmail(user.getEmail());
+        commentDao.add(commentRecord);
     }
 
     @Override
     public List<Comment> getComments(long claimId, UserInformation user) throws TException {
-        return null;
+        List<CommentRecord> comments = commentDao.getComments(claimId);
+        return comments.stream().map(cr -> {
+            UserInformation userInformation = new UserInformation();
+            userInformation.setEmail(cr.getEmail());
+            userInformation.setUserID(cr.getUserId());
+            userInformation.setUserName(cr.getUserName());
+            Comment comment = new Comment();
+            comment.setUser(userInformation);
+            comment.setCreatedAt(TimeUtils.timestampToString(cr.getCreatedAt()));
+            comment.setText(cr.getText());
+            return comment;
+        }).collect(Collectors.toList());
     }
 
     @Override

@@ -7,6 +7,7 @@ import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.jooq.impl.DefaultConfiguration;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
+import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -20,7 +21,6 @@ import static com.rbkmoney.walker.domain.generated.Tables.CLAIM;
 /**
  * @since 15.03.17
  **/
-@Service
 public class ClaimDao extends NamedParameterJdbcDaoSupport {
 
     public static String WALKER_USER = "WALKER";

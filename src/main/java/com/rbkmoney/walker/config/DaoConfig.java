@@ -2,6 +2,7 @@ package com.rbkmoney.walker.config;
 
 import com.rbkmoney.walker.dao.ActionDao;
 import com.rbkmoney.walker.dao.ClaimDao;
+import com.rbkmoney.walker.dao.CommentDao;
 import com.rbkmoney.walker.domain.generated.Walk;
 import org.jooq.Schema;
 import org.jooq.impl.SchemaImpl;
@@ -28,6 +29,11 @@ public class DaoConfig {
         return new ActionDao(ds);
     }
 
+    @Bean
+    @DependsOn("dbInitializer")
+    public CommentDao commentDao(DataSource ds) {
+        return new CommentDao(ds);
+    }
 
     @Bean
     public Schema dbSchema() {

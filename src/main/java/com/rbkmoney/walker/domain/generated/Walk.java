@@ -33,7 +33,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Walk extends SchemaImpl {
 
-    private static final long serialVersionUID = -1057367451;
+    private static final long serialVersionUID = -520676646;
 
     /**
      * The reference instance of <code>walk</code>
@@ -80,7 +80,8 @@ public class Walk extends SchemaImpl {
 
     private final List<Sequence<?>> getSequences0() {
         return Arrays.<Sequence<?>>asList(
-            Sequences.ACTION_ID_SEQ);
+            Sequences.ACTION_ID_SEQ,
+            Sequences.COMMENT_ID_SEQ);
     }
 
     @Override

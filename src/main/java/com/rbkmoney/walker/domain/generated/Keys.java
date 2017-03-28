@@ -6,8 +6,10 @@ package com.rbkmoney.walker.domain.generated;
 
 import com.rbkmoney.walker.domain.generated.tables.Action;
 import com.rbkmoney.walker.domain.generated.tables.Claim;
+import com.rbkmoney.walker.domain.generated.tables.Comment;
 import com.rbkmoney.walker.domain.generated.tables.records.ActionRecord;
 import com.rbkmoney.walker.domain.generated.tables.records.ClaimRecord;
+import com.rbkmoney.walker.domain.generated.tables.records.CommentRecord;
 
 import javax.annotation.Generated;
 
@@ -35,6 +37,7 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     public static final Identity<ActionRecord, Long> IDENTITY_ACTION = Identities0.IDENTITY_ACTION;
+    public static final Identity<CommentRecord, Long> IDENTITY_COMMENT = Identities0.IDENTITY_COMMENT;
 
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
@@ -53,6 +56,7 @@ public class Keys {
 
     private static class Identities0 extends AbstractKeys {
         public static Identity<ActionRecord, Long> IDENTITY_ACTION = createIdentity(Action.ACTION, Action.ACTION.ID);
+        public static Identity<CommentRecord, Long> IDENTITY_COMMENT = createIdentity(Comment.COMMENT, Comment.COMMENT.ID);
     }
 
     private static class UniqueKeys0 extends AbstractKeys {
