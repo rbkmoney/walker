@@ -1,7 +1,6 @@
 package com.rbkmoney.dao;
 
 import com.bazaarvoice.jolt.Diffy;
-import com.bazaarvoice.jolt.JsonUtil;
 import com.bazaarvoice.jolt.JsonUtils;
 import com.rbkmoney.WalkerApplicationTests;
 import com.rbkmoney.damsel.payment_processing.ClaimAccepted;
@@ -15,7 +14,6 @@ import com.rbkmoney.walker.dao.ClaimDao;
 import com.rbkmoney.walker.domain.generated.tables.records.ClaimRecord;
 import com.rbkmoney.walker.service.ActionService;
 import com.rbkmoney.walker.utils.ThriftConvertor;
-import net.logstash.logback.encoder.org.apache.commons.lang.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +38,7 @@ public class ClaimDaoTest extends WalkerApplicationTests {
     @Autowired
     ActionService actionService;
 
-    private String TEST_USER = "test_user";
+    private String TEST_USER_ID = "test_user_id";
 
     @Before
     public void before() {
@@ -64,8 +62,8 @@ public class ClaimDaoTest extends WalkerApplicationTests {
         assertTrue(diff.isEmpty());
 
         ClaimSearchRequest claimSearchRequest = new ClaimSearchRequest();
-        claimSearchRequest.setAssigned(TEST_USER);
-        claimSearchRequest.setClaimID(Collections.singleton(1L));
+        claimSearchRequest.setAssignedUserId(TEST_USER_ID);
+        claimSearchRequest.setClaimId(Collections.singleton(1L));
         List<ClaimRecord> search = claimDao.search(claimSearchRequest);
         assertEquals(1, search.size());
     }
@@ -81,7 +79,7 @@ public class ClaimDaoTest extends WalkerApplicationTests {
     public void testActions() throws IOException {
         ClaimStatus claimStatus = new ClaimStatus();
         claimStatus.setDenied(new ClaimDenied("because"));
-        actionService.claimStatusChanged(1L, claimStatus, "testUser");
+        actionService.claimStatusChanged(1L, claimStatus, TEST_USER_ID);
     }
 
     @Test
@@ -111,7 +109,7 @@ public class ClaimDaoTest extends WalkerApplicationTests {
         claimRecord.setStatus(ClaimStatus.pending(new ClaimPending()).toString());
         claimRecord.setId(1l);
         claimRecord.setEventId(10l);
-        claimRecord.setAssigned(TEST_USER);
+        claimRecord.setAssignedUserId(TEST_USER_ID);
         claimRecord.setRevision(10L);
         claimRecord.setChanges(buildModification());
         return claimRecord;

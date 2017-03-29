@@ -58,14 +58,18 @@ public class WalkerServiceImpl implements WalkerSrv.Iface {
     }
 
     @Override
-    public ClaimInfo getClaim(long claimID, UserInformation user) throws TException {
-        ClaimRecord claimRecord = claimDao.get(claimID);
+    public ClaimInfo getClaim(long claim_id) throws ClaimNotFound, TException {
+        ClaimRecord claimRecord = claimDao.get(claim_id);
+        if (claimRecord == null) {
+            throw new ClaimNotFound();
+        }
         try {
             return convertToClaimInfo(claimRecord);
         } catch (IOException e) {
             throw new TException(e);
         }
     }
+
 
     @Override
     public void createClaim(UserInformation user, String party_id, PartyModificationUnit changeset) throws TException {
@@ -111,8 +115,8 @@ public class WalkerServiceImpl implements WalkerSrv.Iface {
     }
 
     @Override
-    public List<Comment> getComments(long claimId, UserInformation user) throws TException {
-        List<CommentRecord> comments = commentDao.getComments(claimId);
+    public List<Comment> getComments(long claim_id) throws TException {
+        List<CommentRecord> comments = commentDao.getComments(claim_id);
         return comments.stream().map(cr -> {
             UserInformation userInformation = new UserInformation();
             userInformation.setEmail(cr.getEmail());
@@ -127,11 +131,10 @@ public class WalkerServiceImpl implements WalkerSrv.Iface {
     }
 
     @Override
-    public List<Action> getActions(long claimId, UserInformation user) throws TException {
-        List<ActionRecord> actionRecords = actionDao.getActionsByClaimId(claimId);
+    public List<Action> getActions(long claim_id) throws TException {
+        List<ActionRecord> actionRecords = actionDao.getActionsByClaimId(claim_id);
         return actionRecords.stream().map(ThriftConvertor::convertToAction).collect(Collectors.toList());
     }
-
 
     private UserInfo buildUserInfo(UserInformation user) {
         UserInfo userInfo = new UserInfo();

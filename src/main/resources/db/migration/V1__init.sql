@@ -1,14 +1,14 @@
 CREATE SCHEMA IF NOT EXISTS WALK;
 
 CREATE TABLE WALK.CLAIM (
-  id          BIGINT NOT NULL,
-  event_id    BIGINT NOT NULL,
-  revision    BIGINT NOT NULL,
-  assigned    CHARACTER VARYING NOT NULL,
-  status      CHARACTER VARYING NOT NULL,
-  description CHARACTER VARYING,
-  reason      CHARACTER VARYING,
-  changes     JSONB,
+  id               BIGINT NOT NULL,
+  event_id         BIGINT NOT NULL,
+  revision         BIGINT NOT NULL,
+  assigned_user_id CHARACTER VARYING NOT NULL,
+  status           CHARACTER VARYING NOT NULL,
+  description      CHARACTER VARYING,
+  reason           CHARACTER VARYING,
+  changes          JSONB,
   CONSTRAINT CLAIM_ID PRIMARY KEY (id)
 );
 

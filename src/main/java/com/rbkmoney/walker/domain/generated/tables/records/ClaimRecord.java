@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ClaimRecord extends UpdatableRecordImpl<ClaimRecord> implements Record8<Long, Long, Long, String, String, String, String, Object> {
 
-    private static final long serialVersionUID = -2063512322;
+    private static final long serialVersionUID = 1820011386;
 
     /**
      * Setter for <code>walk.claim.id</code>.
@@ -73,16 +73,16 @@ public class ClaimRecord extends UpdatableRecordImpl<ClaimRecord> implements Rec
     }
 
     /**
-     * Setter for <code>walk.claim.assigned</code>.
+     * Setter for <code>walk.claim.assigned_user_id</code>.
      */
-    public void setAssigned(String value) {
+    public void setAssignedUserId(String value) {
         set(3, value);
     }
 
     /**
-     * Getter for <code>walk.claim.assigned</code>.
+     * Getter for <code>walk.claim.assigned_user_id</code>.
      */
-    public String getAssigned() {
+    public String getAssignedUserId() {
         return (String) get(3);
     }
 
@@ -203,7 +203,7 @@ public class ClaimRecord extends UpdatableRecordImpl<ClaimRecord> implements Rec
      */
     @Override
     public Field<String> field4() {
-        return Claim.CLAIM.ASSIGNED;
+        return Claim.CLAIM.ASSIGNED_USER_ID;
     }
 
     /**
@@ -267,7 +267,7 @@ public class ClaimRecord extends UpdatableRecordImpl<ClaimRecord> implements Rec
      */
     @Override
     public String value4() {
-        return getAssigned();
+        return getAssignedUserId();
     }
 
     /**
@@ -334,7 +334,7 @@ public class ClaimRecord extends UpdatableRecordImpl<ClaimRecord> implements Rec
      */
     @Override
     public ClaimRecord value4(String value) {
-        setAssigned(value);
+        setAssignedUserId(value);
         return this;
     }
 
@@ -404,13 +404,13 @@ public class ClaimRecord extends UpdatableRecordImpl<ClaimRecord> implements Rec
     /**
      * Create a detached, initialised ClaimRecord
      */
-    public ClaimRecord(Long id, Long eventId, Long revision, String assigned, String status, String description, String reason, Object changes) {
+    public ClaimRecord(Long id, Long eventId, Long revision, String assignedUserId, String status, String description, String reason, Object changes) {
         super(Claim.CLAIM);
 
         set(0, id);
         set(1, eventId);
         set(2, revision);
-        set(3, assigned);
+        set(3, assignedUserId);
         set(4, status);
         set(5, description);
         set(6, reason);

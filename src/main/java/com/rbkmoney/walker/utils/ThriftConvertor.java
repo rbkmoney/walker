@@ -80,9 +80,9 @@ public class ThriftConvertor {
 
     public static ClaimInfo convertToClaimInfo(ClaimRecord claimRecord) throws IOException {
         ClaimInfo claimInfo = new ClaimInfo();
-        claimInfo.setClaimID(claimRecord.getId());
+        claimInfo.setClaimId(claimRecord.getId());
         claimInfo.setStatus(claimRecord.getStatus());
-        claimInfo.setAssignedUserID(claimRecord.getAssigned());
+        claimInfo.setAssignedUserId(claimRecord.getAssignedUserId());
         claimInfo.setDescription(claimRecord.getDescription());
         claimInfo.setReason(claimRecord.getReason());
         claimInfo.setRevision(claimRecord.getRevision().toString());

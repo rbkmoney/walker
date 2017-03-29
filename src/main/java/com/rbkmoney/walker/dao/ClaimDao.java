@@ -7,8 +7,6 @@ import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.jooq.impl.DefaultConfiguration;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
-import org.springframework.stereotype.Repository;
-import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import javax.sql.DataSource;
@@ -23,7 +21,7 @@ import static com.rbkmoney.walker.domain.generated.Tables.CLAIM;
  **/
 public class ClaimDao extends NamedParameterJdbcDaoSupport {
 
-    public static String WALKER_USER = "WALKER";
+    public static String WALKER_USER_ID = "0";
 
     private DSLContext dslContext;
 
@@ -36,13 +34,13 @@ public class ClaimDao extends NamedParameterJdbcDaoSupport {
     }
 
     public void create(ClaimRecord claimRecord) {
-        if (StringUtils.isEmpty(claimRecord.getAssigned())) {
-            claimRecord.setAssigned(WALKER_USER);
+        if (StringUtils.isEmpty(claimRecord.getAssignedUserId())) {
+            claimRecord.setAssignedUserId(WALKER_USER_ID);
         }
         String sql = dslContext.insertInto(CLAIM)
                 .set(CLAIM.ID, claimRecord.getId())
                 .set(CLAIM.EVENT_ID, claimRecord.getEventId())
-                .set(CLAIM.ASSIGNED, claimRecord.getAssigned())
+                .set(CLAIM.ASSIGNED_USER_ID, claimRecord.getAssignedUserId())
                 .set(CLAIM.STATUS, claimRecord.getStatus())
                 .set(CLAIM.DESCRIPTION, claimRecord.getDescription())
                 .set(CLAIM.REASON, claimRecord.getReason())
@@ -60,7 +58,7 @@ public class ClaimDao extends NamedParameterJdbcDaoSupport {
     public void update(ClaimRecord claimRecord) {
         UpdateSetMoreStep<ClaimRecord> update = dslContext.update(CLAIM)
                 .set(CLAIM.EVENT_ID, claimRecord.getEventId())
-                .set(CLAIM.ASSIGNED, claimRecord.getAssigned())
+                .set(CLAIM.ASSIGNED_USER_ID, claimRecord.getAssignedUserId())
                 .set(CLAIM.STATUS, claimRecord.getStatus())
                 .set(CLAIM.CHANGES, claimRecord.getChanges())
                 .set(CLAIM.DESCRIPTION, claimRecord.getDescription())
@@ -108,12 +106,12 @@ public class ClaimDao extends NamedParameterJdbcDaoSupport {
         //todo: "contains" - field does not work now.
         SelectQuery query = dslContext.selectQuery();
         query.addFrom(CLAIM);
-        Set<Long> claimIDs = request.getClaimID();
+        Set<Long> claimIDs = request.getClaimId();
         if (claimIDs != null) {
             query.addConditions(CLAIM.ID.in(claimIDs));
         }
-        if (request.getAssigned() != null) {
-            query.addConditions(CLAIM.ASSIGNED.eq(request.getAssigned()));
+        if (request.getAssignedUserId() != null) {
+            query.addConditions(CLAIM.ASSIGNED_USER_ID.eq(request.getAssignedUserId()));
         }
         return query.fetch().into(ClaimRecord.class);
     }
