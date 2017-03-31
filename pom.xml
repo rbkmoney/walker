@@ -19,20 +19,18 @@
 
     <properties>
         <project.maintainer>Alexey Semenkov a.semenkov@rbkmoney.com</project.maintainer>
-        <server.port>8080</server.port>
+        <server.port>8022</server.port>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
-        <damsel.version>1.157-0488ad5</damsel.version>
+        <postgresql.jdbc.version>9.4.1210</postgresql.jdbc.version>
         <dockerfile.base.service.tag>f26fcc19d1941ab74f1c72dd8a408be17a769333</dockerfile.base.service.tag>
         <shared.resources.version>0.2.1</shared.resources.version>
-        <bm.pooling.url>http://localhost:8023/repo</bm.pooling.url>
-        <hg.party.management.url>http://localhost:8022/v1/processing/partymgmt</hg.party.management.url>
         <db.url>jdbc:postgresql://localhost:5432/walk</db.url>
         <db.user>postgres</db.user>
         <db.password>postgres</db.password>
         <db.schema>walk</db.schema>
-        <postgresql.jdbc.version>9.4.1210</postgresql.jdbc.version>
+        <damsel.version>1.157-0488ad5</damsel.version>
     </properties>
 
     <dependencies>
@@ -135,6 +133,21 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>1.1.8</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>testcontainers</artifactId>
+            <version>1.1.8</version>
+            <scope>test</scope>
+        </dependency>
+
+
     </dependencies>
 
     <build>

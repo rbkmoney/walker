@@ -1,6 +1,6 @@
 package com.rbkmoney.dao;
 
-import com.rbkmoney.WalkerApplicationTests;
+import com.rbkmoney.AbstractIntegrationTest;
 import com.rbkmoney.walker.dao.ClaimDao;
 import com.rbkmoney.walker.dao.CommentDao;
 import com.rbkmoney.walker.domain.generated.tables.records.ActionRecord;
@@ -17,7 +17,7 @@ import static org.junit.Assert.assertEquals;
 /**
  * @since 28.03.17
  **/
-public class CommentDaoTest extends WalkerApplicationTests {
+public class CommentDaoTest extends AbstractIntegrationTest {
 
     @Autowired
     CommentDao commentDao;

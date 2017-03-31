@@ -1,12 +1,8 @@
 package com.rbkmoney.dao;
 
-import com.bazaarvoice.jolt.JsonUtils;
-import com.bazaarvoice.jolt.utils.JoltUtils;
-import com.rbkmoney.WalkerApplicationTests;
+import com.rbkmoney.AbstractIntegrationTest;
 import com.rbkmoney.damsel.walker.*;
 import com.rbkmoney.damsel.walker.PartyModification;
-import com.rbkmoney.geck.serializer.kit.object.ObjectHandler;
-import com.rbkmoney.geck.serializer.kit.tbase.TBaseProcessor;
 import com.rbkmoney.walker.dao.ActionDao;
 import com.rbkmoney.walker.domain.generated.tables.records.ActionRecord;
 import com.rbkmoney.walker.utils.ThriftConvertor;
@@ -27,7 +23,7 @@ import static org.junit.Assert.assertEquals;
 /**
  * @since 20.03.17
  **/
-public class ActionDaoTest extends WalkerApplicationTests {
+public class ActionDaoTest extends AbstractIntegrationTest {
 
     @Autowired
     private ActionDao actionDao;

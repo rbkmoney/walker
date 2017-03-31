@@ -2,7 +2,8 @@ package com.rbkmoney.dao;
 
 import com.bazaarvoice.jolt.Diffy;
 import com.bazaarvoice.jolt.JsonUtils;
-import com.rbkmoney.WalkerApplicationTests;
+
+import com.rbkmoney.AbstractIntegrationTest;
 import com.rbkmoney.damsel.payment_processing.ClaimAccepted;
 import com.rbkmoney.damsel.payment_processing.ClaimDenied;
 import com.rbkmoney.damsel.payment_processing.ClaimPending;
@@ -30,7 +31,7 @@ import static junit.framework.TestCase.assertTrue;
 /**
  * @since 17.03.17
  **/
-public class ClaimDaoTest extends WalkerApplicationTests {
+public class ClaimDaoTest extends AbstractIntegrationTest {
 
     @Autowired
     ClaimDao claimDao;
