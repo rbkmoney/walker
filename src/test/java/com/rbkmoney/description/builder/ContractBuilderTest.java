@@ -113,7 +113,7 @@ public class ContractBuilderTest {
     public void testAdjustmentModification() {
         String description = descriptionBuilder.buildDescription(buildContractAdjustmentCreation());
         System.out.println(" ContractModificationAdjustment : \n" + description);
-        assertEquals(true, description.contains("* Заключен: 01.02.2034"));
+        assertEquals(true, description.contains("* Действует до: 01.02.2034"));
     }
 
     private Claim buildContractAdjustmentCreation() {
