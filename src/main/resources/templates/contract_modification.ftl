@@ -12,7 +12,8 @@ h5. Операция: Изменение контракта
 * Поправки к договору
 * Идентификатор контракта:  ${contract_modification_unit.id}
 * Идентификатор: ${contract_modification_unit.modification.adjustmentCreation.id}
-* Заключен: ${contract_modification_unit.modification.adjustmentCreation.validUntil}
+* Действует с: ${(contract_modification_unit.modification.adjustmentCreation.validSince)!"-"}
+* Действует до: ${(contract_modification_unit.modification.adjustmentCreation.validUntil)!"-"}
 </#if>
 <#if (contract_modification_unit.getModification().isSetPayoutToolCreation())!false>
 h6. Способ вывода средств
