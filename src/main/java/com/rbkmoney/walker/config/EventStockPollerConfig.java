@@ -3,6 +3,7 @@ package com.rbkmoney.walker.config;
 import com.rbkmoney.eventstock.client.*;
 import com.rbkmoney.eventstock.client.poll.EventFlowFilter;
 import com.rbkmoney.eventstock.client.poll.PollingEventPublisherBuilder;
+import com.rbkmoney.walker.dao.ClaimDao;
 import com.rbkmoney.walker.handler.Handler;
 import com.rbkmoney.walker.handler.poller.EventStockErrorHandler;
 import com.rbkmoney.walker.handler.poller.EventStockHandler;
@@ -16,8 +17,6 @@ import org.springframework.core.io.Resource;
 
 import java.io.IOException;
 import java.util.List;
-
-//import org.springframework.retry.annotation.EnableRetry;
 
 /**
  * Created by tolkonepiu on 03.08.16.
@@ -39,6 +38,9 @@ public class EventStockPollerConfig {
     @Autowired
     List<Handler> handlers;
 
+    @Autowired
+    ClaimDao claimDao;
+
     @Bean
     public EventPublisher eventPublisher() throws IOException {
         return new PollingEventPublisherBuilder()
@@ -59,8 +61,7 @@ public class EventStockPollerConfig {
         EventConstraint.EventIDRange eventIDRange = new EventConstraint.EventIDRange();
         Long lastEventId = null;
         try {
-            //TODO: get LAST EVENTID FROM DB
-            lastEventId = 0L;
+            lastEventId = claimDao.getLastEventId();
         } catch (Exception e) {
             log.error("Cant get last event id", e);
         }

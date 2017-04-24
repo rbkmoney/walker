@@ -53,19 +53,19 @@ public class WalkerServiceImpl implements WalkerSrv.Iface {
 
     @Override
     public void acceptClaim(long claimID, UserInformation user, int revision) throws TException {
-        log.debug("Try to accept Claim with id {}", claimID);
+        log.info("Try to accept Claim with id {}", claimID);
         partyManagement.acceptClaim(buildUserInfo(user), user.getUserID(), claimID, revision);
     }
 
     @Override
     public void denyClaim(long claimID, UserInformation user, String reason, int revision) throws TException {
-        log.debug("Try to deny Claim with id {}", claimID);
+        log.info("Try to deny Claim with id {}", claimID);
         partyManagement.denyClaim(buildUserInfo(user), user.getUserID(), claimID, revision, reason);
     }
 
     @Override
     public ClaimInfo getClaim(long claim_id) throws ClaimNotFound, TException {
-        log.debug("Try to get Claim with id {}", claim_id);
+        log.info("Try to get Claim with id {}", claim_id);
         ClaimRecord claimRecord = claimDao.get(claim_id);
         if (claimRecord == null) {
             throw new ClaimNotFound();
@@ -81,7 +81,7 @@ public class WalkerServiceImpl implements WalkerSrv.Iface {
     @Override
     public void createClaim(UserInformation user, String party_id, PartyModificationUnit changeset) throws TException {
         try {
-            log.debug("Try to create Claim with party id {}", party_id);
+            log.info("Try to create Claim with party id {}", party_id);
             partyManagement.createClaim(buildUserInfo(user), party_id, convertToHGPartyModification(changeset));
         } catch (IOException e) {
             throw new TException(e);
@@ -91,7 +91,7 @@ public class WalkerServiceImpl implements WalkerSrv.Iface {
     @Override
     public void updateClaim(long claimID, UserInformation user, PartyModificationUnit changeset, int revision) throws TException {
         try {
-            log.debug("Try to update Claim with id {}", claimID);
+            log.info("Try to update Claim with id {}", claimID);
             partyManagement.updateClaim(buildUserInfo(user), user.getUserID(), claimID, revision, convertToHGPartyModification(changeset));
         } catch (IOException e) {
             throw new TException(e);
@@ -101,7 +101,7 @@ public class WalkerServiceImpl implements WalkerSrv.Iface {
     @Override
     public List<ClaimInfo> searchClaims(ClaimSearchRequest request) throws TException {
         try {
-            log.debug("Try to search Claim's {}", request);
+            log.info("Try to search Claim's {}", request);
             List<ClaimRecord> searchResult = claimDao.search(request);
             LinkedList<ClaimInfo> result = new LinkedList<ClaimInfo>();
             for (ClaimRecord claimRecord : searchResult) {
