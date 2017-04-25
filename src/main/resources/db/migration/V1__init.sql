@@ -4,6 +4,7 @@ CREATE TABLE WALK.CLAIM (
   id               BIGINT NOT NULL,
   event_id         BIGINT NOT NULL,
   revision         BIGINT NOT NULL,
+  party_id         CHARACTER VARYING NOT NULL,
   assigned_user_id CHARACTER VARYING NOT NULL,
   status           CHARACTER VARYING NOT NULL,
   description      CHARACTER VARYING,

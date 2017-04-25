@@ -71,8 +71,10 @@ public class ThriftToJsonTest {
         Claim claim = new Claim();
         claim.setRevision(1);
         claim.setId(23);
-        claim.setStatus(ClaimStatus.accepted(new ClaimAccepted("123")));
+        claim.setStatus(ClaimStatus.accepted(new ClaimAccepted()));
         claim.setChangeset(Arrays.asList(buildComplexModification()));
+        claim.setCreatedAt("TEST DATE");
+        claim.setStatus(ClaimStatus.pending(new ClaimPending()));
 
         PartyEvent partyEvent = new PartyEvent();
         partyEvent.setClaimCreated(claim);
@@ -116,13 +118,13 @@ public class ThriftToJsonTest {
         russianLegalEntity.setRepresentativeDocument("Усы лапы и хвост");
         russianLegalEntity.setRepresentativePosition("Миссионерская");
         russianLegalEntity.setRepresentativeFullName("Александра Грей");
+        russianLegalEntity.setBankAccount(bankAccount1);
 
-        Entity entity = new Entity();
-        entity.setRussianLegalEntity(russianLegalEntity);
+        LegalEntity legalEntity = new LegalEntity();
 
+        legalEntity.setRussianLegalEntity(russianLegalEntity);
         Contractor contractor = new Contractor();
-        contractor.setBankAccount(bankAccount1);
-        contractor.setEntity(entity);
+        contractor.setLegalEntity(legalEntity);
 
         PayoutToolInfo payoutToolInfo = new PayoutToolInfo();
         payoutToolInfo.setBankAccount(bankAccount2);
@@ -133,8 +135,6 @@ public class ThriftToJsonTest {
 
         ContractParams contractParams = new ContractParams();
         contractParams.setContractor(contractor);
-        contractParams.setPayoutToolParams(payoutToolParams);
-
 
         ContractModification contractModification = new ContractModification();
         contractModification.setCreation(contractParams);
@@ -171,7 +171,8 @@ public class ThriftToJsonTest {
     }
 
     @Test
-    public void testJsonsd(){}
+    public void testJsonsd() {
+    }
 
 }
 

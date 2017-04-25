@@ -55,6 +55,7 @@ public class ClaimDao extends NamedParameterJdbcDaoSupport {
                 .set(CLAIM.EVENT_ID, claimRecord.getEventId())
                 .set(CLAIM.ASSIGNED_USER_ID, claimRecord.getAssignedUserId())
                 .set(CLAIM.STATUS, claimRecord.getStatus())
+                .set(CLAIM.PARTY_ID, claimRecord.getPartyId())
                 .set(CLAIM.DESCRIPTION, claimRecord.getDescription())
                 .set(CLAIM.REASON, claimRecord.getReason())
                 .set(CLAIM.CHANGES, claimRecord.getChanges())
@@ -73,6 +74,7 @@ public class ClaimDao extends NamedParameterJdbcDaoSupport {
                 .set(CLAIM.EVENT_ID, claimRecord.getEventId())
                 .set(CLAIM.ASSIGNED_USER_ID, claimRecord.getAssignedUserId())
                 .set(CLAIM.STATUS, claimRecord.getStatus())
+                .set(CLAIM.PARTY_ID, claimRecord.getPartyId())
                 .set(CLAIM.CHANGES, claimRecord.getChanges())
                 .set(CLAIM.DESCRIPTION, claimRecord.getDescription())
                 .set(CLAIM.REVISION, claimRecord.getRevision());

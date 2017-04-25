@@ -56,6 +56,7 @@ public class ClaimDaoTest extends AbstractIntegrationTest {
 
         assertEquals(claimRecord.getId(), claimRecord1.getId());
         assertEquals(claimRecord.getEventId(), claimRecord1.getEventId());
+        assertEquals(claimRecord.getPartyId(), claimRecord1.getPartyId());
 
         Object or = JsonUtils.jsonToObject(String.valueOf(claimRecord.getChanges()));
         Object or1 = JsonUtils.jsonToObject(String.valueOf(claimRecord1.getChanges()));
@@ -112,6 +113,7 @@ public class ClaimDaoTest extends AbstractIntegrationTest {
         claimRecord.setEventId(10l);
         claimRecord.setAssignedUserId(TEST_USER_ID);
         claimRecord.setRevision(10L);
+        claimRecord.setPartyId("partyId");
         claimRecord.setChanges(buildModification());
         return claimRecord;
     }

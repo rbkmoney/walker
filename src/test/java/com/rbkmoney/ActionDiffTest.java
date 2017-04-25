@@ -55,13 +55,15 @@ public class ActionDiffTest {
         russianLegalEntity.setRepresentativeDocument("Усы лапы и хвост");
         russianLegalEntity.setRepresentativePosition("Миссионерская");
         russianLegalEntity.setRepresentativeFullName("Александра Грей");
+        russianLegalEntity.setBankAccount(bankAccount2);
 
-        Entity entity = new Entity();
-        entity.setRussianLegalEntity(russianLegalEntity);
+
+        LegalEntity legalEntity = new LegalEntity();
+
+        legalEntity.setRussianLegalEntity(russianLegalEntity);
 
         Contractor contractor = new Contractor();
-        contractor.setBankAccount(bankAccount1);
-        contractor.setEntity(entity);
+        contractor.setLegalEntity(legalEntity);
 
         PayoutToolInfo payoutToolInfo = new PayoutToolInfo();
         payoutToolInfo.setBankAccount(bankAccount2);
@@ -72,7 +74,7 @@ public class ActionDiffTest {
 
         ContractParams contractParams = new ContractParams();
         contractParams.setContractor(contractor);
-        contractParams.setPayoutToolParams(payoutToolParams);
+//        contractParams.setPayoutToolParams(payoutToolParams);
 
 
         ContractModification contractModification = new ContractModification();

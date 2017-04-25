@@ -56,6 +56,7 @@ public class PartyEventHandler implements Handler<StockEvent> {
                 claimRecord.setId(claim.getId());
                 claimRecord.setEventId(eventId);
                 claimRecord.setRevision((long) claim.getRevision());
+                claimRecord.setPartyId(partyId);
 
                 PartyModificationUnit partyModificationUnit = convertToPartyModificationUnit(claim.getChangeset());
                 claimRecord.setChanges(convertToJson(partyModificationUnit));
@@ -66,6 +67,7 @@ public class PartyEventHandler implements Handler<StockEvent> {
                 ClaimRecord claimRecord = new ClaimRecord();
                 claimRecord.setId(partyEvent.getClaimUpdated().getId());
                 claimRecord.setEventId(eventId);
+                claimRecord.setPartyId(partyId);
                 //todo set revision if it come from event
 
                 PartyModificationUnit partyModificationUnit = convertToPartyModificationUnit(partyEvent.getClaimUpdated().getChangeset());
@@ -79,7 +81,7 @@ public class PartyEventHandler implements Handler<StockEvent> {
                 actionService.claimStatusChanged(claimId, status, partyId);
             } else if (partyEvent.isSetShopBlocking()) {
                 log.info("Shop Blocking event {}", eventId);
-            } else if (partyEvent.isSetShopSuspention()) {
+            } else if (partyEvent.isSetShopSuspension()) {
                 log.info("Shop Suspension event", eventId);
             } else {
                 log.error("Unsupported event type: {}", partyEvent.toString());
