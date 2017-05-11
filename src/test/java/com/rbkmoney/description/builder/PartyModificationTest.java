@@ -107,7 +107,6 @@ public class PartyModificationTest {
         return buildClaim(shopModification);
     }
 
-
     public static Claim buildClaim(ShopModification shopModification) {
         ShopModificationUnit shopModificationUnit = new ShopModificationUnit();
         shopModificationUnit.setModification(shopModification);
@@ -121,4 +120,42 @@ public class PartyModificationTest {
         claim.setId(1000001).setChangeset(partyModificationChangeSet);
         return claim;
     }
+
+    @Test
+    public void buildLongDescriptionTest() {
+        String description = descriptionBuilder.buildDescription(buildTooLongAccountClaim());
+        System.out.println(description);
+        assertEquals(true, description.contains("Description too long. Shorten."));
+    }
+
+    private Claim buildTooLongAccountClaim() {
+        ShopAccount shopAccount = new ShopAccount();
+        shopAccount.setCurrency(new CurrencyRef("BTC"));
+        shopAccount.setGuarantee(111);
+        shopAccount.setSettlement(222);
+
+        ShopAccountCreated shopAccountCreated = new ShopAccountCreated();
+        shopAccountCreated.setAccount(shopAccount);
+
+        ShopModification shopModification = new ShopModification();
+        shopModification.setAccountCreated(shopAccountCreated);
+        return buildTooLongClaim(shopModification);
+    }
+
+    public static Claim buildTooLongClaim(ShopModification shopModification) {
+        ShopModificationUnit shopModificationUnit = new ShopModificationUnit();
+        shopModificationUnit.setModification(shopModification);
+
+        PartyModification partyModification = new PartyModification();
+        partyModification.setShopModification(shopModificationUnit);
+
+        ArrayList<PartyModification> partyModificationChangeSet = new ArrayList<>();
+        for (int i = 0; i < 210; i++) {
+            partyModificationChangeSet.add(partyModification);
+        }
+        Claim claim = new Claim();
+        claim.setId(1000001).setChangeset(partyModificationChangeSet);
+        return claim;
+    }
+
 }

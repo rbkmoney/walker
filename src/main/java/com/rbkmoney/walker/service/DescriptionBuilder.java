@@ -70,6 +70,12 @@ public class DescriptionBuilder {
                 }
                 description += "\n ";
             }
+            if (description.length() > 10000) {
+                log.error("Claim description too long for ClaimId: {}. Will be shorten to 10000 symbols. ", claim.getId());
+                String substring = description.substring(0, 10000);
+                substring += "\n ... Description too long. Shorten.";
+                description = substring;
+            }
         } catch (NullPointerException | TemplateException | IOException e) {
             description += "\n Cant build correct Description. " + claim.toString()
                     + " Error: " + e.getMessage();

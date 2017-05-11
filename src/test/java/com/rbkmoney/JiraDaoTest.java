@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.IOException;
@@ -17,7 +18,11 @@ import java.util.List;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = TestJiraConfig.class)
+@TestPropertySource(locations="classpath:test.properties")
 @Ignore
+/**
+ * Some test methods if you want to play with local Jira
+ */
 public class JiraDaoTest {
 
     @Autowired
@@ -39,8 +44,14 @@ public class JiraDaoTest {
 
     @Test
     public void jiraCreateIssue() throws JiraException {
-        jiraDao.createIssue(1000, 1000001, "partyo", "party@mail.ru", "Head", "Description");
+        jiraDao.createIssue(1000, 2, "partyo1", "party@mail.ru", "Head", "Description");
     }
+
+    @Test
+    public void closeJiraIssue() throws JiraException {
+        jiraDao.closeIssue(1001,2,"partyo1");
+    }
+
 
     @Test
     public void getFinishedIssues() throws JiraException {

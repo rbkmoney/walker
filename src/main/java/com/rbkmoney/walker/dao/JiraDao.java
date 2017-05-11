@@ -58,18 +58,18 @@ public class JiraDao {
     }
 
     @Retryable(maxAttempts = 20, backoff = @Backoff(multiplier = 2, maxDelay = maxDelayMls), value = JiraException.class)
-    public void closeIssue(long eventId, long claimId) throws JiraException {
+    public void closeIssue(long eventId, long claimId, String partyId) throws JiraException {
         log.info("Try to close issue");
-        Issue issue = getIssueByClaimId(claimId);
+        Issue issue = getIssueByClaimAndPartyId(claimId, partyId);
         issue.update().field(config.EVENT_ID, eventId).execute();
         issue.transition().execute(CLOSE);
         log.info("Issue closed {}, ClaimId {}", issue.getKey(), claimId);
     }
 
     @Retryable(maxAttempts = 20, backoff = @Backoff(multiplier = 2, maxDelay = maxDelayMls), value = JiraException.class)
-    public void closeRevokedIssue(long eventId, long claimId, String reason) throws JiraException {
+    public void closeRevokedIssue(long eventId, long claimId, String partyId, String reason) throws JiraException {
         log.info("Try to close revoked issue with ClaimID: {}", claimId);
-        Issue issue = getIssueByClaimId(claimId);
+        Issue issue = getIssueByClaimAndPartyId(claimId, partyId);
         issue.update()
                 .field(config.EVENT_ID, eventId)
                 .field(config.REASON, "Revoked with reason: " + reason)
@@ -80,9 +80,9 @@ public class JiraDao {
     }
 
     @Retryable(maxAttempts = 20, backoff = @Backoff(multiplier = 2, maxDelay = maxDelayMls), value = JiraException.class)
-    public void closeDeniedIssue(long eventId, long claimId, String reason) throws JiraException {
+    public void closeDeniedIssue(long eventId, long claimId, String partyId, String reason) throws JiraException {
         log.info("Try to close denied issue with ClaimID: ", claimId);
-        Issue issue = getIssueByClaimId(claimId);
+        Issue issue = getIssueByClaimAndPartyId(claimId, partyId);
         issue.update()
                 .field(config.EVENT_ID, eventId)
                 .field(config.REASON, "Denied with reason: " + reason)
@@ -110,9 +110,14 @@ public class JiraDao {
                 + " AND status in ( " + APPROVED + " , " + DENIED + " ) ORDER BY EventID ", 100);
     }
 
-    private Issue getIssueByClaimId(long claimId) throws JiraException {
+    private Issue getIssueByClaimAndPartyId(long claimId, String partyId) throws JiraException {
         JiraClient jira = getJiraClient();
-        return jira.searchIssues("project = " + config.PROJECT_KEY_NAME + " AND ClaimID ~ " + claimId, 1).issues.get(0);
+        List<Issue> issues = jira.searchIssues(
+                "project = " + config.PROJECT_KEY_NAME + " AND PartyID ~ " + partyId + " AND ClaimID ~ " + claimId, 1).issues;
+        if (issues.isEmpty()) {
+            throw new JiraException("Cant get issue from Jira with ClaimID " + claimId + " and PartyId " + partyId);
+        }
+        return issues.get(0);
     }
 
     //library cant work in multithread mode
