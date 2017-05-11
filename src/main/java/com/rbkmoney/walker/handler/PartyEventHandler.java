@@ -45,6 +45,12 @@ public class PartyEventHandler implements Handler<StockEvent> {
         if (!event.getPayload().isSetPartyEvent()) {
             return;
         }
+
+        String partyId = event.getSource().getParty();
+        if (partyId.equals("39d17eca-0239-4ed8-8e32-dc78cf589135")) {
+            log.error("Claim for party withId 39d17eca-0239-4ed8-8e32-dc78cf589135 will be ignored, eventId: {}", event.getId());
+            return;
+        }
         if (event.getPayload().getPartyEvent().isSetClaimCreated()) {
             log.info("Got ClaimCreated event with EventID: {}", eventId);
             if (event.getPayload().getPartyEvent().getClaimCreated().getStatus().isSetAccepted()) {
@@ -53,7 +59,7 @@ public class PartyEventHandler implements Handler<StockEvent> {
                 createIssue(event);
             }
         } else if (event.getPayload().getPartyEvent().isSetClaimStatusChanged()) {
-            String partyId = event.getSource().getParty();
+
             log.info("Got ClaimStatusChanged event with EventID: {}", eventId);
             ClaimStatusChanged claimStatusChanged = event.getPayload().getPartyEvent().getClaimStatusChanged();
             if (claimStatusChanged.getStatus().isSetRevoked()) {
