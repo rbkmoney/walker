@@ -53,14 +53,15 @@ public class PartyEventHandler implements Handler<StockEvent> {
                 createIssue(event);
             }
         } else if (event.getPayload().getPartyEvent().isSetClaimStatusChanged()) {
+            String partyId = event.getSource().getParty();
             log.info("Got ClaimStatusChanged event with EventID: {}", eventId);
             ClaimStatusChanged claimStatusChanged = event.getPayload().getPartyEvent().getClaimStatusChanged();
             if (claimStatusChanged.getStatus().isSetRevoked()) {
-                closeRevoked(eventId, claimStatusChanged);
+                closeRevoked(eventId, partyId, claimStatusChanged);
             } else if (claimStatusChanged.getStatus().isSetAccepted()) {
-                closeAccepted(eventId, claimStatusChanged);
+                closeAccepted(eventId, partyId, claimStatusChanged);
             } else if (claimStatusChanged.getStatus().isSetDenied()) {
-                closeDenied(eventId, claimStatusChanged);
+                closeDenied(eventId, partyId, claimStatusChanged);
             } else {
                 log.error("Unsupported ClaimStatus changing for eventId : {}", eventId);
             }
@@ -84,30 +85,32 @@ public class PartyEventHandler implements Handler<StockEvent> {
         }
     }
 
-    private void closeRevoked(long eventId, ClaimStatusChanged claimStatusChanged) {
+    private void closeRevoked(long eventId, String partyId, ClaimStatusChanged claimStatusChanged) {
         try {
             jiraDao.closeRevokedIssue(
                     eventId,
                     claimStatusChanged.getId(),
+                    partyId,
                     claimStatusChanged.getStatus().getRevoked().getReason());
         } catch (JiraException e) {
             log.error("Cant close Revoked claim with id {}", claimStatusChanged.getId(), e);
         }
     }
 
-    private void closeAccepted(long eventId, ClaimStatusChanged claimStatusChanged) {
+    private void closeAccepted(long eventId, String partyId, ClaimStatusChanged claimStatusChanged) {
         try {
-            jiraDao.closeIssue(eventId, claimStatusChanged.getId());
+            jiraDao.closeIssue(eventId, claimStatusChanged.getId(), partyId);
         } catch (JiraException e) {
             log.error("Cant close Accepted claim with id {}", claimStatusChanged.getId(), e);
         }
     }
 
-    private void closeDenied(long eventId, ClaimStatusChanged claimStatusChanged) {
+    private void closeDenied(long eventId, String partyId, ClaimStatusChanged claimStatusChanged) {
         try {
             jiraDao.closeDeniedIssue(
                     eventId,
                     claimStatusChanged.getId(),
+                    partyId,
                     claimStatusChanged.getStatus().getDenied().getReason());
         } catch (JiraException e) {
             log.error("Cant close Denied claim with id {}", claimStatusChanged.getId(), e);
