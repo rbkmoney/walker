@@ -23,7 +23,7 @@ import java.util.List;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = TestJiraConfig.class)
 @TestPropertySource(locations = "classpath:test.properties")
-//@Ignore
+@Ignore
 /**
  * Some test methods if you want to play with local Jira
  */
