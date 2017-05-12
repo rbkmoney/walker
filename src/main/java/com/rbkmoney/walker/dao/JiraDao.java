@@ -30,13 +30,13 @@ public class JiraDao {
         return jira.getIssueTypes();
     }
 
-    @Retryable(maxAttempts = 20, backoff = @Backoff(multiplier = 2, maxDelay = maxDelayMls), value = JiraException.class)
+    @Retryable(maxAttempts = 10, backoff = @Backoff(multiplier = 2, maxDelay = maxDelayMls), value = JiraException.class)
     public Issue getIssueByKey(String key) throws JiraException {
         JiraClient jira = getJiraClient();
         return jira.getIssue(key);
     }
 
-    @Retryable(maxAttempts = 20, backoff = @Backoff(multiplier = 2, maxDelay = maxDelayMls), value = JiraException.class)
+    @Retryable(maxAttempts = 10, backoff = @Backoff(multiplier = 2, maxDelay = maxDelayMls), value = JiraException.class)
     public void createIssue(long eventId,
                             long claimId,
                             String partyId,
@@ -44,7 +44,7 @@ public class JiraDao {
                             String summary,
                             String description) throws JiraException {
         JiraClient jira = getJiraClient();
-        log.info("Try to create issue with ClaimID: {}", claimId);
+        log.info("Try to create issue with ClaimID: {}, PartyId: {}", claimId, partyId);
         Issue issue = jira.createIssue(config.PROJECT_KEY_NAME, config.ISSUE_TYPE_NAME)
                 .field(Field.ASSIGNEE, config.user_name)
                 .field(config.EVENT_ID, eventId)
@@ -54,21 +54,21 @@ public class JiraDao {
                 .field(Field.SUMMARY, summary)
                 .field(Field.DESCRIPTION, description)
                 .execute();
-        log.info("Created issue {}, ClaimID: {}", issue.getKey(), claimId);
+        log.info("Created issue {}, ClaimID: {}, PartyId: {}", issue.getKey(), claimId, partyId);
     }
 
-    @Retryable(maxAttempts = 20, backoff = @Backoff(multiplier = 2, maxDelay = maxDelayMls), value = JiraException.class)
+    @Retryable(maxAttempts = 10, backoff = @Backoff(multiplier = 2, maxDelay = maxDelayMls), value = JiraException.class)
     public void closeIssue(long eventId, long claimId, String partyId) throws JiraException {
-        log.info("Try to close issue");
+        log.info("Try to close issue ClaimId: {}, PartyId: {}", claimId, partyId);
         Issue issue = getIssueByClaimAndPartyId(claimId, partyId);
         issue.update().field(config.EVENT_ID, eventId).execute();
         issue.transition().execute(CLOSE);
-        log.info("Issue closed {}, ClaimId {}", issue.getKey(), claimId);
+        log.info("Issue closed {}, ClaimId {}, PartyId: {}", issue.getKey(), claimId, partyId);
     }
 
-    @Retryable(maxAttempts = 20, backoff = @Backoff(multiplier = 2, maxDelay = maxDelayMls), value = JiraException.class)
+    @Retryable(maxAttempts = 10, backoff = @Backoff(multiplier = 2, maxDelay = maxDelayMls), value = JiraException.class)
     public void closeRevokedIssue(long eventId, long claimId, String partyId, String reason) throws JiraException {
-        log.info("Try to close revoked issue with ClaimID: {}", claimId);
+        log.info("Try to close revoked issue with ClaimID: {}, PartyId: {}", claimId, partyId);
         Issue issue = getIssueByClaimAndPartyId(claimId, partyId);
         issue.update()
                 .field(config.EVENT_ID, eventId)
@@ -76,12 +76,12 @@ public class JiraDao {
                 .field(Field.ASSIGNEE, "walker")
                 .execute();
         issue.transition().execute(REVOKE);
-        log.info("Issue {} with ClaimID {} - revoked and closed", issue.getKey(), claimId);
+        log.info("Issue {} with ClaimID: {}, PartyId: {} - revoked and closed", issue.getKey(), claimId, partyId);
     }
 
-    @Retryable(maxAttempts = 20, backoff = @Backoff(multiplier = 2, maxDelay = maxDelayMls), value = JiraException.class)
+    @Retryable(maxAttempts = 10, backoff = @Backoff(multiplier = 2, maxDelay = maxDelayMls), value = JiraException.class)
     public void closeDeniedIssue(long eventId, long claimId, String partyId, String reason) throws JiraException {
-        log.info("Try to close denied issue with ClaimID: ", claimId);
+        log.info("Try to close denied issue with ClaimID: {}, PartyId: {}", claimId);
         Issue issue = getIssueByClaimAndPartyId(claimId, partyId);
         issue.update()
                 .field(config.EVENT_ID, eventId)
@@ -89,7 +89,7 @@ public class JiraDao {
                 .field(Field.ASSIGNEE, "walker")
                 .execute();
         issue.transition().execute(CLOSE);
-        log.info("Issue {} with ClaimID {} - denied and closed", issue.getKey(), claimId);
+        log.info("Issue {} with ClaimID {} - denied and closed, PartyId: {}", issue.getKey(), claimId, partyId);
     }
 
     public long getLastEventId() throws JiraException {
