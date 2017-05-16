@@ -140,5 +140,34 @@ public class ContractBuilderTest {
         return claim;
     }
 
+    @Test
+    public void testLegalAgreementBinding() {
+        String description = descriptionBuilder.buildDescription(buildLegalAgreementBinding());
+        System.out.println(" ContractModificationAdjustment : \n" + description);
+        assertEquals(true, description.contains("Идентификатор договора: № 1231.232"));
+    }
+
+    private Claim buildLegalAgreementBinding() {
+        LegalAgreement legalAgreement = new LegalAgreement();
+        legalAgreement.setLegalAgreementId("№ 1231.232");
+        legalAgreement.setSignedAt("01.01.2038");
+
+        ContractModification contractModification = new ContractModification();
+        contractModification.setLegalAgreementBinding(legalAgreement);
+
+        ContractModificationUnit contractModificationUnit = new ContractModificationUnit();
+        contractModificationUnit.setModification(contractModification);
+        contractModificationUnit.setId(1);
+
+        PartyModification partyModification = new PartyModification();
+        partyModification.setContractModification(contractModificationUnit);
+
+        ArrayList<PartyModification> partyModificationChangeSet = new ArrayList<>();
+        partyModificationChangeSet.add(partyModification);
+        Claim claim = new Claim();
+        claim.setId(1000001).setChangeset(partyModificationChangeSet);
+        return claim;
+    }
+
 
 }

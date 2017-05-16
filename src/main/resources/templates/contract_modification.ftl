@@ -26,3 +26,9 @@ h6. Способ вывода средств
 * Корреспондентский счет: ${(payoutTool.payoutToolInfo.bankAccount.bankPostAccount)!"-"}
 * БИК банка: ${(payoutTool.payoutToolInfo.bankAccount.bankBik)!"-"}
 </#if>
+<#if (contract_modification_unit.getModification().isSetLegalAgreementBinding())!false>
+h6. Юридическое соглашение
+    <#assign legalAgreementBinding = contract_modification_unit.modification.getLegalAgreementBinding()>
+* Дата заключения: ${legalAgreementBinding.signedAt}
+* Идентификатор договора: ${legalAgreementBinding.legalAgreementId}
+</#if>
