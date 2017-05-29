@@ -41,12 +41,14 @@ public class JiraPoller {
             Issue.SearchResult finishedIssues = jiraDao.getFinishedIssues();
             for (Issue issue : finishedIssues.issues) {
                 if (issue.getStatus().getName().equals(JiraConfig.APPROVED)) {
+                    log.info("Try to Accept claim in HG. Issue: {} , PartyID: {}", issue.getKey(), issue.getField(jiraConfig.PARTY_ID));
                     partyManagement.acceptClaim(
                             new UserInfo(issue.getAssignee().getEmail(), UserType.service_user(new ServiceUser())), //todo what id we need to keep in system?
                             String.valueOf(issue.getField(jiraConfig.PARTY_ID)),
                             Long.valueOf(String.valueOf(issue.getField(jiraConfig.CLAIM_ID))));
                     log.info("Accept claim in HG. Issue: {} ClaimID: {} ", issue.getKey(), issue.getField(jiraConfig.CLAIM_ID));
                 } else if (issue.getStatus().getName().equals(JiraConfig.DENIED)) {
+                    log.info("Try to Deny claim in HG. Issue: {} , PartyID: {}", issue.getKey(), issue.getField(jiraConfig.PARTY_ID));
                     partyManagement.denyClaim(
                             new UserInfo(issue.getAssignee().getEmail(), UserType.service_user(new ServiceUser())), //todo what id we need to keep in system?
                             String.valueOf(issue.getField(jiraConfig.PARTY_ID)),
@@ -59,7 +61,7 @@ public class JiraPoller {
         } catch (JiraException e) {
             log.error("Jira connection exception while pooling ", e);
         } catch (InvalidClaimStatus e) {
-            log.warn("Invalid claim status exception. {}", e.getStatus().getFieldValue().toString());
+            log.warn("Invalid claim status exception. {}", e.getStatus().getFieldValue().toString(), e);
         } catch (TException e) {
             log.error("Party Management service access error ", e);
         }
