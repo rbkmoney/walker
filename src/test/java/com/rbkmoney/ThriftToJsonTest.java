@@ -4,9 +4,13 @@ import com.bazaarvoice.jolt.Diffy;
 import com.bazaarvoice.jolt.JsonUtilImpl;
 import com.bazaarvoice.jolt.JsonUtils;
 import com.bazaarvoice.jolt.utils.JoltUtils;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rbkmoney.damsel.domain.*;
 import com.rbkmoney.damsel.payment_processing.*;
 import com.rbkmoney.damsel.walker.PartyModificationUnit;
+import com.rbkmoney.geck.serializer.kit.json.JsonHandler;
+import com.rbkmoney.geck.serializer.kit.json.JsonProcessor;
 import com.rbkmoney.geck.serializer.kit.object.ObjectHandler;
 import com.rbkmoney.geck.serializer.kit.object.ObjectProcessor;
 import com.rbkmoney.geck.serializer.kit.tbase.TBaseHandler;
@@ -17,8 +21,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.LinkedList;
 
-import static com.rbkmoney.walker.utils.ThriftConvertor.convertToPartyModificationUnit;
-import static com.rbkmoney.walker.utils.ThriftConvertor.convertToWalkerModification;
+import static com.rbkmoney.walker.utils.ThriftConvertor.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -30,17 +33,13 @@ public class ThriftToJsonTest {
 
     @Test
     public void thriftToJsonComplex() throws IOException {
-        Object jobjects = JoltUtils.compactJson(new TBaseProcessor().process(buildComplexModification(), new ObjectHandler()));
-        String json = JsonUtils.toJsonString(jobjects);
+        PartyModification partyModification = buildComplexModification();
+        String json1 = convertToJson(partyModification);
 
-        Object jsonObj = new JsonUtilImpl().jsonToObject(json);
-        PartyModification modification = new ObjectProcessor().process(jsonObj, new TBaseHandler<>(PartyModification.class));
+        PartyModification partyModification1 = fromJsonPartyModification(json1);
+        String json2 = convertToJson(partyModification1);
 
-        Object o = JoltUtils.compactJson(new TBaseProcessor().process(modification, new ObjectHandler()));
-        String json2 = JsonUtils.toJsonString(o);
-
-        System.out.println(json);
-        assertEquals(json, json2);
+        assertEquals(json1, json2);
     }
 
     @Test
@@ -54,20 +53,7 @@ public class ThriftToJsonTest {
     }
 
     @Test
-    public void testModificationConverter() throws IOException {
-        PartyModification modification = buildComplexModification();
-
-        Object hgo = JoltUtils.compactJson(new TBaseProcessor().process(modification, new ObjectHandler()));
-        String jsonHG = JsonUtils.toJsonString(hgo);
-        com.rbkmoney.damsel.walker.PartyModification partyModification = convertToWalkerModification(modification);
-        Object wo = JoltUtils.compactJson(new TBaseProcessor().process(partyModification, new ObjectHandler()));
-        String jsonWALK = JsonUtils.toJsonString(wo);
-        System.out.println(jsonHG);
-        assertEquals(jsonHG, jsonWALK);
-    }
-
-    @Test
-    public void test() throws IOException {
+    public void testEventConvert() throws IOException {
         Claim claim = new Claim();
         claim.setRevision(1);
         claim.setId(23);
@@ -79,30 +65,13 @@ public class ThriftToJsonTest {
         PartyEvent partyEvent = new PartyEvent();
         partyEvent.setClaimCreated(claim);
 
+        String json1 = convertToJson(partyEvent);
+        PartyEvent partyEvent1 = fromJsonPartyEvent(json1);
 
-        Object jobjects = JoltUtils.compactJson(new TBaseProcessor().process(partyEvent, new ObjectHandler()));
-        String json = JsonUtils.toJsonString(jobjects);
+        String json2 = convertToJson(partyEvent1);
 
-        Object jsonObj = new JsonUtilImpl().jsonToObject(json);
-        PartyEvent modification = new ObjectProcessor().process(jsonObj, new TBaseHandler<>(PartyEvent.class));
-
-        Object o = JoltUtils.compactJson(new TBaseProcessor().process(modification, new ObjectHandler()));
-        String json2 = JsonUtils.toJsonString(o);
-
-        System.out.println(json);
-        System.out.println(json2);
+        assertEquals(json1,json2);
     }
-
-    public static String convertToJson(PartyModification partyModification) throws IOException {
-        Object o = JoltUtils.compactJson(new TBaseProcessor().process(partyModification, new ObjectHandler()));
-        return JsonUtils.toJsonString(o);
-    }
-
-    public static Object convertToObjects(PartyModification partyModification) throws IOException {
-        Object o = JoltUtils.compactJson(new TBaseProcessor().process(partyModification, new ObjectHandler()));
-        return o;
-    }
-
 
     public static PartyModification buildComplexModification() {
 
@@ -149,17 +118,6 @@ public class ThriftToJsonTest {
         return partyModification;
     }
 
-    @Test
-    public void testJsnPth() throws IOException {
-        PartyModification modification = buildComplexModification();
-        PartyModification modification2 = buildComplexModification();
-        modification2.getContractModification().setId("ggggg");
-        Object before = convertToObjects(modification);
-        Object after = convertToObjects(modification2);
-
-//        System.out.println(diff);
-    }
-
     public static void buildDiffObjects(Object before, Object after) {
         System.out.println("----------------------------------");
         Diffy.Result diffResult = new Diffy().diff(before, after);
@@ -167,11 +125,6 @@ public class ThriftToJsonTest {
         String s1 = JsonUtils.toPrettyJsonString(diffResult.actual);
         System.out.println("FROM : " + s);
         System.out.println("TO : " + s1);
-
-    }
-
-    @Test
-    public void testJsonsd() {
     }
 
 }

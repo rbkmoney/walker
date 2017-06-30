@@ -2,9 +2,14 @@ package com.rbkmoney.walker.utils;
 
 import com.bazaarvoice.jolt.JsonUtilImpl;
 import com.bazaarvoice.jolt.JsonUtils;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rbkmoney.damsel.payment_processing.ClaimStatus;
+import com.rbkmoney.damsel.payment_processing.PartyEvent;
 import com.rbkmoney.damsel.payment_processing.PartyModification;
 import com.rbkmoney.damsel.walker.*;
+import com.rbkmoney.geck.serializer.kit.json.JsonHandler;
+import com.rbkmoney.geck.serializer.kit.json.JsonProcessor;
 import com.rbkmoney.geck.serializer.kit.object.ObjectHandler;
 import com.rbkmoney.geck.serializer.kit.object.ObjectProcessor;
 import com.rbkmoney.geck.serializer.kit.tbase.TBaseHandler;
@@ -22,51 +27,38 @@ import java.util.List;
  **/
 public class ThriftConvertor {
 
-    public static String convertToJson(PartyModificationUnit partyModificationUnit) throws IOException {
-        Object object = new TBaseProcessor().process(partyModificationUnit, new ObjectHandler());
-        return JsonUtils.toJsonString(object);
+    public static ObjectMapper mapper = new ObjectMapper();
+
+    public static String convertToJson(TBase tBase) throws IOException {
+        String json = new TBaseProcessor().process(tBase, new JsonHandler()).toString();
+        return json;
     }
 
-    public static String convertToJson(TBase claimStatus) throws IOException {
-        Object object = new TBaseProcessor().process(claimStatus, new ObjectHandler());
-        return JsonUtils.toJsonString(object);
+    public static PartyModificationUnit fromJsonPartyModificationUnit(String json) throws IOException {
+        JsonNode jsonNode = mapper.readTree(json);
+        return new JsonProcessor().process(jsonNode, new TBaseHandler<>(PartyModificationUnit.class));
+    }
+
+    public static PartyModification fromJsonPartyModification(String json) throws IOException {
+        JsonNode jsonNode = mapper.readTree(json);
+        return new JsonProcessor().process(jsonNode, new TBaseHandler<>(PartyModification.class));
+    }
+
+
+    public static PartyEvent fromJsonPartyEvent(String json) throws IOException {
+        JsonNode jsonNode = mapper.readTree(json);
+        return new JsonProcessor().process(jsonNode, new TBaseHandler<>(PartyEvent.class));
     }
 
 
     public static PartyModificationUnit convertToPartyModificationUnit(List<PartyModification> hgModifications) throws IOException {
-        LinkedList<com.rbkmoney.damsel.walker.PartyModification> walkerPartyModificationList = new LinkedList<>();
-        for (PartyModification hgModification : hgModifications) {
-            com.rbkmoney.damsel.walker.PartyModification partyModification = convertToWalkerModification(hgModification);
-            walkerPartyModificationList.add(partyModification);
-        }
         PartyModificationUnit partyModificationUnit = new PartyModificationUnit();
-        partyModificationUnit.setModifications(walkerPartyModificationList);
+        partyModificationUnit.setModifications(hgModifications);
         return partyModificationUnit;
     }
 
-    /**
-     * Convert from Payment_processing thrift object to Walker thrift representation
-     */
-    public static com.rbkmoney.damsel.walker.PartyModification convertToWalkerModification(PartyModification hgModification) throws IOException {
-        Object hgModifObj = new TBaseProcessor().process(hgModification, new ObjectHandler());
-        String hgJson = JsonUtils.toJsonString(hgModifObj);
-        Object objFromJson = new JsonUtilImpl().jsonToObject(hgJson);
-        return new ObjectProcessor()
-                .process(objFromJson, new TBaseHandler<>(com.rbkmoney.damsel.walker.PartyModification.class));
-    }
-
     public static List<PartyModification> convertToHGPartyModification(PartyModificationUnit partyModificationUnit) throws IOException {
-        LinkedList<PartyModification> partyModifications = new LinkedList<>();
-        //looks like its very slow ...
-        for (com.rbkmoney.damsel.walker.PartyModification modification : partyModificationUnit.getModifications()) {
-            Object modifObj = new TBaseProcessor().process(modification, new ObjectHandler());
-            String modifObjJson = JsonUtils.toJsonString(modifObj);
-            Object objFromJson = new JsonUtilImpl().jsonToObject(modifObjJson);
-            PartyModification hgModification = new ObjectProcessor()
-                    .process(objFromJson, new TBaseHandler<>(PartyModification.class));
-            partyModifications.add(hgModification);
-        }
-        return partyModifications;
+        return partyModificationUnit.getModifications();
     }
 
     public static Action convertToAction(ActionRecord actionRecord) {

@@ -4,12 +4,8 @@ import com.bazaarvoice.jolt.Diffy;
 import com.bazaarvoice.jolt.JsonUtils;
 
 import com.rbkmoney.AbstractIntegrationTest;
-import com.rbkmoney.damsel.payment_processing.ClaimAccepted;
-import com.rbkmoney.damsel.payment_processing.ClaimDenied;
-import com.rbkmoney.damsel.payment_processing.ClaimPending;
-import com.rbkmoney.damsel.payment_processing.ClaimStatus;
+import com.rbkmoney.damsel.payment_processing.*;
 import com.rbkmoney.damsel.walker.ClaimSearchRequest;
-import com.rbkmoney.damsel.walker.PartyModification;
 import com.rbkmoney.damsel.walker.PartyModificationUnit;
 import com.rbkmoney.walker.dao.ClaimDao;
 import com.rbkmoney.walker.domain.generated.tables.records.ClaimRecord;

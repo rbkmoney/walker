@@ -1,8 +1,9 @@
 package com.rbkmoney.dao;
 
 import com.rbkmoney.AbstractIntegrationTest;
+import com.rbkmoney.damsel.payment_processing.PartyModification;
 import com.rbkmoney.damsel.walker.*;
-import com.rbkmoney.damsel.walker.PartyModification;
+
 import com.rbkmoney.walker.dao.ActionDao;
 import com.rbkmoney.walker.domain.generated.tables.records.ActionRecord;
 import com.rbkmoney.walker.utils.ThriftConvertor;
