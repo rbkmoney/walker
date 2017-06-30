@@ -20,7 +20,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static com.rbkmoney.ActionDiffTest.buildWalkerComplexModification;
+import static com.rbkmoney.utils.ActionDiffTest.buildWalkerComplexModification;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.TestCase.assertTrue;
 

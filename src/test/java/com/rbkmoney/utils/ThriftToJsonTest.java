@@ -1,4 +1,4 @@
-package com.rbkmoney;
+package com.rbkmoney.utils;
 
 import com.bazaarvoice.jolt.Diffy;
 import com.bazaarvoice.jolt.JsonUtilImpl;

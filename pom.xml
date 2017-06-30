@@ -54,11 +54,7 @@
             <artifactId>spring-boot-admin-starter-client</artifactId>
             <version>1.4.6</version>
         </dependency>
-        <dependency>
-            <groupId>com.rbkmoney.logback</groupId>
-            <artifactId>nop-rolling</artifactId>
-            <version>1.0.1</version>
-        </dependency>
+
         <dependency>
             <groupId>net.logstash.logback</groupId>
             <artifactId>logstash-logback-encoder</artifactId>
@@ -78,23 +74,17 @@
             <artifactId>flyway-core</artifactId>
             <version>4.1.2</version>
         </dependency>
-        <dependency>
-            <groupId>de.danielbechler</groupId>
-            <artifactId>java-object-diff</artifactId>
-            <version>0.94</version>
-        </dependency>
 
         <!--RBK libs-->
         <dependency>
             <groupId>com.rbkmoney</groupId>
             <artifactId>eventstock-client</artifactId>
-            <version>1.0.6</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.rbkmoney.thrift</groupId>
-                    <artifactId>libthrift</artifactId>
-                </exclusion>
-            </exclusions>
+            <version>1.1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.rbkmoney.logback</groupId>
+            <artifactId>nop-rolling</artifactId>
+            <version>1.0.1</version>
         </dependency>
         <dependency>
             <groupId>com.rbkmoney</groupId>

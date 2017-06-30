@@ -25,10 +25,6 @@ public class WalkerServlet extends GenericServlet {
 
         super.init(config);
         thriftServlet = new THServiceBuilder()
-                .withEventListener(
-                        new CompositeServiceEventListener(
-                                new ServiceEventLogListener(),
-                                new HttpServiceEventLogListener()))
                 .build(WalkerSrv.Iface.class, requestHandler);
     }
 

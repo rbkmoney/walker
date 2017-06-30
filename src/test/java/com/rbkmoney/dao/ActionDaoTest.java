@@ -15,9 +15,8 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.rbkmoney.ActionDiffTest.buildWalkerComplexModification;
+import static com.rbkmoney.utils.ActionDiffTest.buildWalkerComplexModification;
 
-import static com.rbkmoney.walker.utils.ThriftConvertor.convertToJson;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
 

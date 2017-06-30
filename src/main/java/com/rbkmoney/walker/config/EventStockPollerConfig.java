@@ -5,7 +5,6 @@ import com.rbkmoney.eventstock.client.poll.EventFlowFilter;
 import com.rbkmoney.eventstock.client.poll.PollingEventPublisherBuilder;
 import com.rbkmoney.walker.dao.ClaimDao;
 import com.rbkmoney.walker.handler.Handler;
-import com.rbkmoney.walker.handler.poller.EventStockErrorHandler;
 import com.rbkmoney.walker.handler.poller.EventStockHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,7 +45,6 @@ public class EventStockPollerConfig {
         return new PollingEventPublisherBuilder()
                 .withURI(bmUri.getURI())
                 .withEventHandler(new EventStockHandler(handlers))
-                .withErrorHandler(new EventStockErrorHandler())
                 .withMaxPoolSize(maxPoolSize)
                 .withPollDelay(pollDelay)
                 .build();

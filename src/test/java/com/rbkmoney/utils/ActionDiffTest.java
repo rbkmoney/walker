@@ -1,4 +1,4 @@
-package com.rbkmoney;
+package com.rbkmoney.utils;
 
 import com.bazaarvoice.jolt.utils.JoltUtils;
 import com.rbkmoney.damsel.domain.*;
@@ -15,7 +15,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-import static com.rbkmoney.ThriftToJsonTest.buildDiffObjects;
+import static com.rbkmoney.utils.ThriftToJsonTest.buildDiffObjects;
 
 /**
  * @since 21.03.17

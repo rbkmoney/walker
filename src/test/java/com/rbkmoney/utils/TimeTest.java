@@ -1,4 +1,4 @@
-package com.rbkmoney;
+package com.rbkmoney.utils;
 
 import org.junit.Test;
 
