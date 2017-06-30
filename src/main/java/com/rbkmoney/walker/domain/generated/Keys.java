@@ -5,16 +5,13 @@ package com.rbkmoney.walker.domain.generated;
 
 
 import com.rbkmoney.walker.domain.generated.tables.Action;
-import com.rbkmoney.walker.domain.generated.tables.Claim;
 import com.rbkmoney.walker.domain.generated.tables.Comment;
 import com.rbkmoney.walker.domain.generated.tables.records.ActionRecord;
-import com.rbkmoney.walker.domain.generated.tables.records.ClaimRecord;
 import com.rbkmoney.walker.domain.generated.tables.records.CommentRecord;
 
 import javax.annotation.Generated;
 
 import org.jooq.Identity;
-import org.jooq.UniqueKey;
 import org.jooq.impl.AbstractKeys;
 
 
@@ -43,7 +40,6 @@ public class Keys {
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
 
-    public static final UniqueKey<ClaimRecord> CLAIM_ID = UniqueKeys0.CLAIM_ID;
 
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
@@ -57,9 +53,5 @@ public class Keys {
     private static class Identities0 extends AbstractKeys {
         public static Identity<ActionRecord, Long> IDENTITY_ACTION = createIdentity(Action.ACTION, Action.ACTION.ID);
         public static Identity<CommentRecord, Long> IDENTITY_COMMENT = createIdentity(Comment.COMMENT, Comment.COMMENT.ID);
-    }
-
-    private static class UniqueKeys0 extends AbstractKeys {
-        public static final UniqueKey<ClaimRecord> CLAIM_ID = createUniqueKey(Claim.CLAIM, "claim_id", Claim.CLAIM.ID);
     }
 }

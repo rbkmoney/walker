@@ -36,6 +36,7 @@ public class CommentDao extends NamedParameterJdbcDaoSupport {
         }
         String sql = dslContext.insertInto(COMMENT)
                 .set(COMMENT.CLAIM_ID, commentRecord.getClaimId())
+                .set(COMMENT.PARTY_ID, commentRecord.getPartyId())
                 .set(COMMENT.CREATED_AT, commentRecord.getCreatedAt())
                 .set(COMMENT.EMAIL, commentRecord.getEmail())
                 .set(COMMENT.USER_NAME, commentRecord.getUserName())

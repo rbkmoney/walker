@@ -37,6 +37,8 @@ public class ClaimDaoTest extends AbstractIntegrationTest {
 
     private String TEST_USER_ID = "test_user_id";
 
+    String PARTY_ID = "test-party-id";
+
     @Before
     public void before() {
         claimDao.getJdbcTemplate().execute(
@@ -46,16 +48,16 @@ public class ClaimDaoTest extends AbstractIntegrationTest {
 
     @Test
     public void testInsertAndGet() throws IOException {
-        ClaimRecord claimRecord = buildTestClaim();
-        claimDao.create(claimRecord);
-        ClaimRecord claimRecord1 = claimDao.get(1);
+        ClaimRecord claimRecord1 = buildTestClaim();
+        claimDao.create(claimRecord1);
+        ClaimRecord claimRecord2 = claimDao.get(PARTY_ID, 1);
 
-        assertEquals(claimRecord.getId(), claimRecord1.getId());
-        assertEquals(claimRecord.getEventId(), claimRecord1.getEventId());
-        assertEquals(claimRecord.getPartyId(), claimRecord1.getPartyId());
+        assertEquals(claimRecord1.getId(), claimRecord2.getId());
+        assertEquals(claimRecord1.getEventId(), claimRecord2.getEventId());
+        assertEquals(claimRecord1.getPartyId(), claimRecord2.getPartyId());
 
-        Object or = JsonUtils.jsonToObject(String.valueOf(claimRecord.getChanges()));
-        Object or1 = JsonUtils.jsonToObject(String.valueOf(claimRecord1.getChanges()));
+        Object or = JsonUtils.jsonToObject(String.valueOf(claimRecord1.getChanges()));
+        Object or1 = JsonUtils.jsonToObject(String.valueOf(claimRecord2.getChanges()));
         Diffy.Result diff = new Diffy().diff(or, or1);
         assertTrue(diff.isEmpty());
 
@@ -77,18 +79,18 @@ public class ClaimDaoTest extends AbstractIntegrationTest {
     public void testActions() throws IOException {
         ClaimStatus claimStatus = new ClaimStatus();
         claimStatus.setDenied(new ClaimDenied("because"));
-        actionService.claimStatusChanged(1L, claimStatus, TEST_USER_ID);
+        actionService.claimStatusChanged(PARTY_ID,1L, claimStatus, TEST_USER_ID);
     }
 
     @Test
     public void testSearch() throws IOException {
         claimDao.create(buildTestClaim());
-        ClaimRecord claimRecord1 = claimDao.get(1);
+        ClaimRecord claimRecord1 = claimDao.get(PARTY_ID, 1);
         claimRecord1.setEventId(123L);
         claimRecord1.setChanges(buildModification());
         claimDao.update(claimRecord1);
 
-        ClaimRecord claimRecord2 = claimDao.get(claimRecord1.getId());
+        ClaimRecord claimRecord2 = claimDao.get(PARTY_ID, claimRecord1.getId());
 
 
         assertEquals(Long.valueOf(123L), claimRecord2.getEventId());
@@ -109,7 +111,7 @@ public class ClaimDaoTest extends AbstractIntegrationTest {
         claimRecord.setEventId(10l);
         claimRecord.setAssignedUserId(TEST_USER_ID);
         claimRecord.setRevision(10L);
-        claimRecord.setPartyId("partyId");
+        claimRecord.setPartyId(PARTY_ID);
         claimRecord.setChanges(buildModification());
         return claimRecord;
     }

@@ -1,22 +1,26 @@
 CREATE SCHEMA IF NOT EXISTS WALK;
 
 CREATE TABLE WALK.CLAIM (
-  id               BIGINT NOT NULL,
-  event_id         BIGINT NOT NULL,
-  revision         BIGINT NOT NULL,
+  id               BIGINT            NOT NULL,
+  event_id         BIGINT            NOT NULL,
+  revision         BIGINT            NOT NULL,
   party_id         CHARACTER VARYING NOT NULL,
   assigned_user_id CHARACTER VARYING NOT NULL,
   status           CHARACTER VARYING NOT NULL,
   description      CHARACTER VARYING,
   reason           CHARACTER VARYING,
-  changes          JSONB,
-  CONSTRAINT CLAIM_ID PRIMARY KEY (id)
+  damsel_version   CHARACTER VARYING NOT NULL,
+  changes          JSONB
 );
 
+CREATE INDEX walk_claim_id_party
+  ON WALK.CLAIM (party_id, id);
+
 CREATE TABLE WALK.ACTION (
-  id         BIGSERIAL NOT NULL,
-  claim_id   BIGINT    NOT NULL,
-  created_at TIMESTAMP NOT NULL,
+  id         BIGSERIAL         NOT NULL,
+  claim_id   BIGINT            NOT NULL,
+  party_id   CHARACTER VARYING NOT NULL,
+  created_at TIMESTAMP         NOT NULL,
   user_id    CHARACTER VARYING NOT NULL,
   user_name  CHARACTER VARYING,
   user_email CHARACTER VARYING,
@@ -27,11 +31,13 @@ CREATE TABLE WALK.ACTION (
 
 
 CREATE TABLE WALK.COMMENT (
-  id         BIGSERIAL NOT NULL,
-  claim_id   BIGINT    NOT NULL,
+  id         BIGSERIAL         NOT NULL,
+  claim_id   BIGINT            NOT NULL,
+  party_id   CHARACTER VARYING NOT NULL,
   text       CHARACTER VARYING NOT NULL,
-  created_at TIMESTAMP NOT NULL,
+  created_at TIMESTAMP         NOT NULL,
   user_id    CHARACTER VARYING NOT NULL,
   user_name  CHARACTER VARYING,
   email      CHARACTER VARYING
 );
+

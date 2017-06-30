@@ -67,7 +67,7 @@ public class WalkerServiceImpl implements WalkerSrv.Iface {
     @Override
     public ClaimInfo getClaim(String party_id, long claim_id) throws ClaimNotFound, TException {
         log.info("Try to get Claim with id {}, PartyId: {}", claim_id, party_id);
-        ClaimRecord claimRecord = claimDao.get(claim_id);
+        ClaimRecord claimRecord = claimDao.get(party_id, claim_id);
         //todo throw notfound
         if (claimRecord == null) {
             throw new ClaimNotFound();
@@ -82,7 +82,7 @@ public class WalkerServiceImpl implements WalkerSrv.Iface {
     @Override
     public void createClaim(UserInformation user, String party_id, PartyModificationUnit changeset) throws TException {
         try {
-            log.info("Try to create Claim with party id {}", party_id);
+            log.info("Try to create Claim with party_id: {} and user: {}", party_id, user.toString());
             partyManagement.createClaim(buildUserInfo(user), party_id, convertToHGPartyModification(changeset));
         } catch (IOException e) {
             throw new TException(e);

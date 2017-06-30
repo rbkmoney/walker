@@ -51,6 +51,7 @@ public class ActionDao extends NamedParameterJdbcDaoSupport {
         }
         String sql = dslContext.insertInto(ACTION)
                 .set(ACTION.CREATED_AT,actionRecord.getCreatedAt())
+                .set(ACTION.PARTY_ID,actionRecord.getPartyId())
                 .set(ACTION.CLAIM_ID,actionRecord.getClaimId())
                 .set(ACTION.USER_ID,actionRecord.getUserId())
                 .set(ACTION.USER_EMAIL,actionRecord.getUserEmail())
@@ -67,15 +68,4 @@ public class ActionDao extends NamedParameterJdbcDaoSupport {
         return fetch.stream().collect(Collectors.toList());
     }
 
-    //Object new ActionRecord().getModification()
-//    public static ActionModification convertToModification(Object actionModification) throws IOException {
-//        Object jsonObj = new JsonUtilImpl().jsonToObject(String.valueOf(actionModification));
-//        return new ObjectProcessor().process(jsonObj, new TBaseHandler<>(ActionModification.class));
-//    }
-
-
-//    public String toStringJson(ActionModification actionModification) throws IOException {
-//        Object o = JoltUtils.compactJson(new TBaseProcessor().process(actionModification, new ObjectHandler()));
-//        return JsonUtils.toJsonString(o);
-//    }
 }

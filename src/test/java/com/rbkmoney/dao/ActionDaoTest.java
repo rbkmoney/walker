@@ -28,6 +28,8 @@ public class ActionDaoTest extends AbstractIntegrationTest {
     @Autowired
     private ActionDao actionDao;
 
+    String PARTY_ID="test-party-id";
+
     @Before
     public void before() {
         actionDao.getJdbcTemplate().execute(
@@ -44,6 +46,7 @@ public class ActionDaoTest extends AbstractIntegrationTest {
         actionRecord.setUserName("userName");
         actionRecord.setType(ActionType.claim_changed.toString());
         actionRecord.setAfter(buildModification());
+        actionRecord.setPartyId(PARTY_ID);
         actionDao.add(actionRecord);
 
         List<ActionRecord> actionRecords = actionDao.getActionsByClaimId(1L);

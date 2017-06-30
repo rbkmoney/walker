@@ -4,12 +4,8 @@
 package com.rbkmoney.walker.domain.generated.tables;
 
 
-import com.rbkmoney.walker.domain.generated.Keys;
 import com.rbkmoney.walker.domain.generated.Walk;
 import com.rbkmoney.walker.domain.generated.tables.records.ClaimRecord;
-
-import java.util.Arrays;
-import java.util.List;
 
 import javax.annotation.Generated;
 
@@ -17,7 +13,6 @@ import org.jooq.Field;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
-import org.jooq.UniqueKey;
 import org.jooq.impl.TableImpl;
 
 
@@ -34,7 +29,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Claim extends TableImpl<ClaimRecord> {
 
-    private static final long serialVersionUID = 1270991579;
+    private static final long serialVersionUID = 252698365;
 
     /**
      * The reference instance of <code>walk.claim</code>
@@ -90,6 +85,11 @@ public class Claim extends TableImpl<ClaimRecord> {
     public final TableField<ClaimRecord, String> REASON = createField("reason", org.jooq.impl.SQLDataType.VARCHAR, this, "");
 
     /**
+     * The column <code>walk.claim.damsel_version</code>.
+     */
+    public final TableField<ClaimRecord, String> DAMSEL_VERSION = createField("damsel_version", org.jooq.impl.SQLDataType.VARCHAR.nullable(false), this, "");
+
+    /**
      * The column <code>walk.claim.changes</code>.
      */
     public final TableField<ClaimRecord, Object> CHANGES = createField("changes", org.jooq.impl.DefaultDataType.getDefaultDataType("jsonb"), this, "");
@@ -122,22 +122,6 @@ public class Claim extends TableImpl<ClaimRecord> {
     @Override
     public Schema getSchema() {
         return Walk.WALK;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public UniqueKey<ClaimRecord> getPrimaryKey() {
-        return Keys.CLAIM_ID;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<UniqueKey<ClaimRecord>> getKeys() {
-        return Arrays.<UniqueKey<ClaimRecord>>asList(Keys.CLAIM_ID);
     }
 
     /**

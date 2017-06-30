@@ -25,7 +25,7 @@ public class ActionService {
     @Autowired
     private ActionDao actionDao;
 
-    public void claimCreated(Long claimId, List<PartyModification> changeset, String userId) throws IOException {
+    public void claimCreated(String partyId, Long claimId, List<PartyModification> changeset, String userId) throws IOException {
         PartyModificationUnit partyModificationUnit = ThriftConvertor.convertToPartyModificationUnit(changeset);
         String modificationString = convertToJson(partyModificationUnit);
 
@@ -34,13 +34,15 @@ public class ActionService {
         actionRecord.setType(ActionType.claim_changed.toString());
         actionRecord.setClaimId(claimId);
         actionRecord.setAfter(modificationString);
+        actionRecord.setPartyId(partyId);
         actionDao.add(actionRecord);
     }
 
-    public void claimUpdated(Long claimId, List<PartyModification> changeset, String userId) throws IOException {
+    public void claimUpdated(String partyId, Long claimId, List<PartyModification> changeset, String userId) throws IOException {
         PartyModificationUnit partyModificationUnit = ThriftConvertor.convertToPartyModificationUnit(changeset);
         String modificationString = convertToJson(partyModificationUnit);
         ActionRecord actionRecord = new ActionRecord();
+        actionRecord.setPartyId(partyId);
         actionRecord.setUserId(userId);
         actionRecord.setType(ActionType.claim_changed.toString());
         actionRecord.setClaimId(claimId);
@@ -48,13 +50,15 @@ public class ActionService {
         actionDao.add(actionRecord);
     }
 
-    public void claimStatusChanged(Long claimId, ClaimStatus claimStatus, String userId) throws IOException {
+    public void claimStatusChanged(String partyId, Long claimId, ClaimStatus claimStatus, String userId) throws IOException {
         String json = convertToJson(claimStatus);
         ActionRecord actionRecord = new ActionRecord();
+        actionRecord.setPartyId(partyId);
         actionRecord.setType(ActionType.status_changed.toString());
         actionRecord.setAfter(json);
         actionRecord.setClaimId(claimId);
         actionRecord.setUserId(userId);
+
         actionDao.add(actionRecord);
     }
 

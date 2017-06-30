@@ -36,6 +36,7 @@ public class CommentDaoTest extends AbstractIntegrationTest {
         commentRecord.setUserId("2");
         commentRecord.setClaimId(1L);
         commentRecord.setText("Буууу");
+        commentRecord.setPartyId("test-party-id");
 
         commentDao.add(commentRecord);
         List<CommentRecord> comments = commentDao.getComments(1L);

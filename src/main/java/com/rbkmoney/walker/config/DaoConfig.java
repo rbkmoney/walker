@@ -6,6 +6,7 @@ import com.rbkmoney.walker.dao.CommentDao;
 import com.rbkmoney.walker.domain.generated.Walk;
 import org.jooq.Schema;
 import org.jooq.impl.SchemaImpl;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
@@ -17,10 +18,13 @@ import static com.rbkmoney.walker.domain.generated.Walk.WALK;
 @Configuration
 public class DaoConfig {
 
+    @Value("${info.damsel.version}")
+    public String damselVersion;
+
     @Bean
     @DependsOn("dbInitializer")
     public ClaimDao claimDao(DataSource ds) {
-        return new ClaimDao(ds);
+        return new ClaimDao(ds, damselVersion);
     }
 
     @Bean

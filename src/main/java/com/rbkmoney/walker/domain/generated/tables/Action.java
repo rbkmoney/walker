@@ -33,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Action extends TableImpl<ActionRecord> {
 
-    private static final long serialVersionUID = 1926440762;
+    private static final long serialVersionUID = -814400604;
 
     /**
      * The reference instance of <code>walk.action</code>
@@ -57,6 +57,11 @@ public class Action extends TableImpl<ActionRecord> {
      * The column <code>walk.action.claim_id</code>.
      */
     public final TableField<ActionRecord, Long> CLAIM_ID = createField("claim_id", org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+
+    /**
+     * The column <code>walk.action.party_id</code>.
+     */
+    public final TableField<ActionRecord, String> PARTY_ID = createField("party_id", org.jooq.impl.SQLDataType.VARCHAR.nullable(false), this, "");
 
     /**
      * The column <code>walk.action.created_at</code>.

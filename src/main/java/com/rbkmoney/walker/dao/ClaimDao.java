@@ -30,7 +30,10 @@ public class ClaimDao extends NamedParameterJdbcDaoSupport {
 
     Logger log = LoggerFactory.getLogger(this.getClass());
 
-    public ClaimDao(DataSource ds) {
+    private String damselVersion;
+
+    public ClaimDao(DataSource ds, String damselVersion) {
+        this.damselVersion = damselVersion;
         setDataSource(ds);
         Configuration configuration = new DefaultConfiguration();
         configuration.set(SQLDialect.POSTGRES);
@@ -52,6 +55,7 @@ public class ClaimDao extends NamedParameterJdbcDaoSupport {
         }
         String sql = dslContext.insertInto(CLAIM)
                 .set(CLAIM.ID, claimRecord.getId())
+                .set(CLAIM.PARTY_ID, claimRecord.getPartyId())
                 .set(CLAIM.EVENT_ID, claimRecord.getEventId())
                 .set(CLAIM.ASSIGNED_USER_ID, claimRecord.getAssignedUserId())
                 .set(CLAIM.STATUS, claimRecord.getStatus())
@@ -60,12 +64,15 @@ public class ClaimDao extends NamedParameterJdbcDaoSupport {
                 .set(CLAIM.REASON, claimRecord.getReason())
                 .set(CLAIM.CHANGES, claimRecord.getChanges())
                 .set(CLAIM.REVISION, claimRecord.getRevision())
+                .set(CLAIM.DAMSEL_VERSION, damselVersion)
                 .toString();
         getJdbcTemplate().update(sql);
     }
 
-    public ClaimRecord get(long id) {
-        ClaimRecord claimRecord = dslContext.selectFrom(CLAIM).where(CLAIM.ID.eq(id)).fetchOne();
+    public ClaimRecord get(String partyId, long claimId) {
+        ClaimRecord claimRecord = dslContext.selectFrom(CLAIM)
+                .where(CLAIM.ID.eq(claimId)).and(CLAIM.PARTY_ID.eq(partyId))
+                .fetchOne();
         return claimRecord;
     }
 
@@ -77,7 +84,8 @@ public class ClaimDao extends NamedParameterJdbcDaoSupport {
                 .set(CLAIM.PARTY_ID, claimRecord.getPartyId())
                 .set(CLAIM.CHANGES, claimRecord.getChanges())
                 .set(CLAIM.DESCRIPTION, claimRecord.getDescription())
-                .set(CLAIM.REVISION, claimRecord.getRevision());
+                .set(CLAIM.REVISION, claimRecord.getRevision())
+                .set(CLAIM.DAMSEL_VERSION, damselVersion);
         if (StringUtils.isEmpty(claimRecord.getReason())) {
             update.set(CLAIM.REASON, claimRecord.getReason());
         }
@@ -122,6 +130,9 @@ public class ClaimDao extends NamedParameterJdbcDaoSupport {
         SelectQuery query = dslContext.selectQuery();
         query.addFrom(CLAIM);
         Set<Long> claimIDs = request.getClaimId();
+        if (request.getPartyId() != null) {
+            query.addConditions(CLAIM.PARTY_ID.eq(request.getPartyId()));
+        }
         if (claimIDs != null) {
             query.addConditions(CLAIM.ID.in(claimIDs));
         }

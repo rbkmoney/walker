@@ -57,11 +57,12 @@ public class PartyEventHandler implements Handler<StockEvent> {
                 claimRecord.setEventId(eventId);
                 claimRecord.setRevision((long) claim.getRevision());
                 claimRecord.setPartyId(partyId);
+                claimRecord.setDescription("Заявка от участника с PartyId "+ partyId);
 
                 PartyModificationUnit partyModificationUnit = convertToPartyModificationUnit(claim.getChangeset());
                 claimRecord.setChanges(convertToJson(partyModificationUnit));
                 claimDao.create(claimRecord);
-                actionService.claimCreated(claim.getId(), claim.getChangeset(), partyId);
+                actionService.claimCreated(partyId, claim.getId(), claim.getChangeset(), "event");
             } else if (partyEvent.isSetClaimUpdated()) {
                 long claimId = partyEvent.getClaimStatusChanged().getId();
                 ClaimRecord claimRecord = new ClaimRecord();
@@ -73,12 +74,12 @@ public class PartyEventHandler implements Handler<StockEvent> {
                 PartyModificationUnit partyModificationUnit = convertToPartyModificationUnit(partyEvent.getClaimUpdated().getChangeset());
                 claimRecord.setChanges(convertToJson(partyModificationUnit));
                 claimDao.update(claimRecord);
-                actionService.claimUpdated(claimId, partyEvent.getClaimUpdated().getChangeset(), partyId);
+                actionService.claimUpdated(partyId, claimId, partyEvent.getClaimUpdated().getChangeset(), "event");
             } else if (partyEvent.isSetClaimStatusChanged()) {
                 long claimId = partyEvent.getClaimStatusChanged().getId();
                 ClaimStatus status = partyEvent.getClaimStatusChanged().getStatus();
                 claimDao.updateStatus(claimId, status);
-                actionService.claimStatusChanged(claimId, status, partyId);
+                actionService.claimStatusChanged(partyId, claimId, status, "event");
             } else if (partyEvent.isSetShopBlocking()) {
                 log.info("Shop Blocking event {}", eventId);
             } else if (partyEvent.isSetShopSuspension()) {

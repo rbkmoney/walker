@@ -79,8 +79,7 @@ public class ThriftConvertor {
         claimInfo.setReason(claimRecord.getReason());
         claimInfo.setRevision(claimRecord.getRevision().toString());
 
-        Object objFromJson = new JsonUtilImpl().jsonToObject(String.valueOf(claimRecord.getChanges()));
-        PartyModificationUnit partyModificationUnit = new ObjectProcessor().process(objFromJson, new TBaseHandler<>(PartyModificationUnit.class));
+        PartyModificationUnit partyModificationUnit = fromJsonPartyModificationUnit(String.valueOf(claimRecord.getChanges()));;
         claimInfo.setModifications(partyModificationUnit);
         return claimInfo;
     }

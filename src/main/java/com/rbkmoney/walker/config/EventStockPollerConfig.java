@@ -33,7 +33,6 @@ public class EventStockPollerConfig {
     @Value("${bm.pooling.maxPoolSize}")
     int maxPoolSize;
 
-
     @Autowired
     List<Handler> handlers;
 
