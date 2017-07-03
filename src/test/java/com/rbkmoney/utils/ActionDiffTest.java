@@ -60,7 +60,6 @@ public class ActionDiffTest {
 
 
         LegalEntity legalEntity = new LegalEntity();
-
         legalEntity.setRussianLegalEntity(russianLegalEntity);
 
         Contractor contractor = new Contractor();

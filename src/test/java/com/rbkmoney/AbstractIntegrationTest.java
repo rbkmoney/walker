@@ -24,20 +24,20 @@ import org.testcontainers.containers.PostgreSQLContainer;
 @ContextConfiguration(classes = WalkerApplication.class, initializers = AbstractIntegrationTest.Initializer.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class AbstractIntegrationTest {
-//    @ClassRule
-//    public static PostgreSQLContainer postgres = new PostgreSQLContainer("postgres:9.6");
+    @ClassRule
+    public static PostgreSQLContainer postgres = new PostgreSQLContainer("postgres:9.6");
 
     public static class Initializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
         @Override
         public void initialize(ConfigurableApplicationContext configurableApplicationContext) {
-//            EnvironmentTestUtils.addEnvironment("testcontainers", configurableApplicationContext.getEnvironment(),
-//                    "spring.datasource.url=" + postgres.getJdbcUrl(),
-//                    "spring.datasource.username=" + postgres.getUsername(),
-//                    "spring.datasource.password=" + postgres.getPassword(),
-//                    "flyway.url=" + postgres.getJdbcUrl(),
-//                    "flyway.user=" + postgres.getUsername(),
-//                    "flyway.password=" + postgres.getPassword()
-//            );
+            EnvironmentTestUtils.addEnvironment("testcontainers", configurableApplicationContext.getEnvironment(),
+                    "spring.datasource.url=" + postgres.getJdbcUrl(),
+                    "spring.datasource.username=" + postgres.getUsername(),
+                    "spring.datasource.password=" + postgres.getPassword(),
+                    "flyway.url=" + postgres.getJdbcUrl(),
+                    "flyway.user=" + postgres.getUsername(),
+                    "flyway.password=" + postgres.getPassword()
+            );
         }
     }
     @Value("${local.server.port}")
