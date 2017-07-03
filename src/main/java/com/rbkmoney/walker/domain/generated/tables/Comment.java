@@ -8,7 +8,7 @@ import com.rbkmoney.walker.domain.generated.Keys;
 import com.rbkmoney.walker.domain.generated.Walk;
 import com.rbkmoney.walker.domain.generated.tables.records.CommentRecord;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 import javax.annotation.Generated;
 
@@ -33,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Comment extends TableImpl<CommentRecord> {
 
-    private static final long serialVersionUID = 274251529;
+    private static final long serialVersionUID = 1245352460;
 
     /**
      * The reference instance of <code>walk.comment</code>
@@ -71,7 +71,7 @@ public class Comment extends TableImpl<CommentRecord> {
     /**
      * The column <code>walk.comment.created_at</code>.
      */
-    public final TableField<CommentRecord, Timestamp> CREATED_AT = createField("created_at", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false), this, "");
+    public final TableField<CommentRecord, LocalDateTime> CREATED_AT = createField("created_at", org.jooq.impl.SQLDataType.LOCALDATETIME.nullable(false).defaultValue(org.jooq.impl.DSL.field("now()", org.jooq.impl.SQLDataType.LOCALDATETIME)), this, "");
 
     /**
      * The column <code>walk.comment.user_id</code>.

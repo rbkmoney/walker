@@ -30,7 +30,7 @@
         <db.user>postgres</db.user>
         <db.password>postgres</db.password>
         <db.schema>walk</db.schema>
-        <damsel.version>1.180-82b3cf3-epic</damsel.version>
+        <damsel.version>1.181-b427df6-epic</damsel.version>
     </properties>
 
     <dependencies>
@@ -104,7 +104,7 @@
         <dependency>
             <groupId>com.rbkmoney</groupId>
             <artifactId>dbinit</artifactId>
-            <version>1.0.8</version>
+            <version>1.0.9</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -203,6 +203,9 @@
                         <password>${db.password}</password>
                     </jdbc>
                     <generator>
+                        <generate>
+                            <javaTimeTypes>true</javaTimeTypes>
+                        </generate>
                         <database>
                             <name>org.jooq.util.postgres.PostgresDatabase</name>
                             <includes>.*</includes>

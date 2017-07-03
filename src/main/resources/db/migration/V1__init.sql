@@ -10,17 +10,19 @@ CREATE TABLE WALK.CLAIM (
   description      CHARACTER VARYING,
   reason           CHARACTER VARYING,
   damsel_version   CHARACTER VARYING NOT NULL,
-  changes          JSONB
+  changes          JSONB,
+  created_at       TIMESTAMP         NOT NULL DEFAULT NOW(),
+  updated_at       TIMESTAMP         NOT NULL DEFAULT NOW()
 );
 
-CREATE INDEX walk_claim_id_party
+CREATE UNIQUE INDEX walk_claim_id_party
   ON WALK.CLAIM (party_id, id);
 
 CREATE TABLE WALK.ACTION (
   id         BIGSERIAL         NOT NULL,
   claim_id   BIGINT            NOT NULL,
   party_id   CHARACTER VARYING NOT NULL,
-  created_at TIMESTAMP         NOT NULL,
+  created_at TIMESTAMP         NOT NULL DEFAULT NOW(),
   user_id    CHARACTER VARYING NOT NULL,
   user_name  CHARACTER VARYING,
   user_email CHARACTER VARYING,
@@ -35,7 +37,7 @@ CREATE TABLE WALK.COMMENT (
   claim_id   BIGINT            NOT NULL,
   party_id   CHARACTER VARYING NOT NULL,
   text       CHARACTER VARYING NOT NULL,
-  created_at TIMESTAMP         NOT NULL,
+  created_at TIMESTAMP         NOT NULL DEFAULT NOW(),
   user_id    CHARACTER VARYING NOT NULL,
   user_name  CHARACTER VARYING,
   email      CHARACTER VARYING

@@ -22,11 +22,12 @@ public class CommentDaoTest extends AbstractIntegrationTest {
     @Autowired
     CommentDao commentDao;
 
+    String PARTY_ID = "test-party-id";
 
     @Before
     public void before() {
         commentDao.getJdbcTemplate().execute(
-                "TRUNCATE TABLE walk.claim CONTINUE IDENTITY RESTRICT;"
+                "TRUNCATE TABLE walk.comment CONTINUE IDENTITY RESTRICT;"
         );
     }
 
@@ -36,12 +37,18 @@ public class CommentDaoTest extends AbstractIntegrationTest {
         commentRecord.setUserId("2");
         commentRecord.setClaimId(1L);
         commentRecord.setText("Буууу");
-        commentRecord.setPartyId("test-party-id");
+        commentRecord.setPartyId(PARTY_ID);
 
         commentDao.add(commentRecord);
-        List<CommentRecord> comments = commentDao.getComments(1L);
-        assertEquals(comments.get(0).getText(), "Буууу");
-        assertEquals(comments.get(0).getClaimId(), (Long) 1L);
+
+        commentRecord.setClaimId(2L);
+        commentDao.add(commentRecord);
+
+        List<CommentRecord> comments = commentDao.getComments(PARTY_ID, 1L);
+
+        assertEquals(1, comments.size());
+        assertEquals("Буууу", comments.get(0).getText());
+        assertEquals((Long) 1L, comments.get(0).getClaimId());
     }
 
 

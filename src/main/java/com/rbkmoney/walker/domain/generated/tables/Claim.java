@@ -7,6 +7,8 @@ package com.rbkmoney.walker.domain.generated.tables;
 import com.rbkmoney.walker.domain.generated.Walk;
 import com.rbkmoney.walker.domain.generated.tables.records.ClaimRecord;
 
+import java.time.LocalDateTime;
+
 import javax.annotation.Generated;
 
 import org.jooq.Field;
@@ -29,7 +31,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Claim extends TableImpl<ClaimRecord> {
 
-    private static final long serialVersionUID = 252698365;
+    private static final long serialVersionUID = -1757453205;
 
     /**
      * The reference instance of <code>walk.claim</code>
@@ -93,6 +95,16 @@ public class Claim extends TableImpl<ClaimRecord> {
      * The column <code>walk.claim.changes</code>.
      */
     public final TableField<ClaimRecord, Object> CHANGES = createField("changes", org.jooq.impl.DefaultDataType.getDefaultDataType("jsonb"), this, "");
+
+    /**
+     * The column <code>walk.claim.created_at</code>.
+     */
+    public final TableField<ClaimRecord, LocalDateTime> CREATED_AT = createField("created_at", org.jooq.impl.SQLDataType.LOCALDATETIME.nullable(false).defaultValue(org.jooq.impl.DSL.field("now()", org.jooq.impl.SQLDataType.LOCALDATETIME)), this, "");
+
+    /**
+     * The column <code>walk.claim.updated_at</code>.
+     */
+    public final TableField<ClaimRecord, LocalDateTime> UPDATED_AT = createField("updated_at", org.jooq.impl.SQLDataType.LOCALDATETIME.nullable(false).defaultValue(org.jooq.impl.DSL.field("now()", org.jooq.impl.SQLDataType.LOCALDATETIME)), this, "");
 
     /**
      * Create a <code>walk.claim</code> table reference

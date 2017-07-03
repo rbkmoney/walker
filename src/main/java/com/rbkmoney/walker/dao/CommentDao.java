@@ -11,6 +11,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
 
 import javax.sql.DataSource;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.rbkmoney.walker.domain.generated.Tables.COMMENT;
@@ -31,25 +32,14 @@ public class CommentDao extends NamedParameterJdbcDaoSupport {
     }
 
     public void add(CommentRecord commentRecord) {
-        if (commentRecord.getCreatedAt() == null) {
-            commentRecord.setCreatedAt(new Timestamp(System.currentTimeMillis()));
-        }
-        String sql = dslContext.insertInto(COMMENT)
-                .set(COMMENT.CLAIM_ID, commentRecord.getClaimId())
-                .set(COMMENT.PARTY_ID, commentRecord.getPartyId())
-                .set(COMMENT.CREATED_AT, commentRecord.getCreatedAt())
-                .set(COMMENT.EMAIL, commentRecord.getEmail())
-                .set(COMMENT.USER_NAME, commentRecord.getUserName())
-                .set(COMMENT.USER_ID, commentRecord.getUserId())
-                .set(COMMENT.TEXT, commentRecord.getText())
-                .toString();
-        getJdbcTemplate().update(sql);
+        dslContext.insertInto(COMMENT)
+                .set(commentRecord).execute();
     }
 
-    public List<CommentRecord> getComments(Long claimId) {
+    public List<CommentRecord> getComments(String partyId, Long claimId) {
         SelectQuery query = dslContext.selectQuery();
         query.addFrom(COMMENT);
-        query.addConditions(COMMENT.CLAIM_ID.eq(claimId));
+        query.addConditions(COMMENT.CLAIM_ID.eq(claimId).and(COMMENT.PARTY_ID.eq(partyId)));
         return query.fetch().into(CommentRecord.class);
     }
 }

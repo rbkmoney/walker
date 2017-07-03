@@ -22,6 +22,8 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
+import static com.rbkmoney.walker.utils.TimeUtils.toIsoInstantString;
+
 /**
  * @since 23.03.17
  **/
@@ -63,7 +65,7 @@ public class ThriftConvertor {
 
     public static Action convertToAction(ActionRecord actionRecord) {
         Action action = new Action();
-        action.setCreatedAt(TimeUtils.timestampToString(actionRecord.getCreatedAt()));
+        action.setCreatedAt(toIsoInstantString(actionRecord.getCreatedAt()));
         action.setUser(new UserInformation(actionRecord.getUserId()));
         action.setType(ActionType.valueOf(actionRecord.getType()));
         action.setAfter(actionRecord.getAfter());
@@ -72,14 +74,18 @@ public class ThriftConvertor {
 
     public static ClaimInfo convertToClaimInfo(ClaimRecord claimRecord) throws IOException {
         ClaimInfo claimInfo = new ClaimInfo();
+        claimInfo.setPartyId(claimRecord.getPartyId());
         claimInfo.setClaimId(claimRecord.getId());
         claimInfo.setStatus(claimRecord.getStatus());
         claimInfo.setAssignedUserId(claimRecord.getAssignedUserId());
         claimInfo.setDescription(claimRecord.getDescription());
         claimInfo.setReason(claimRecord.getReason());
         claimInfo.setRevision(claimRecord.getRevision().toString());
+        claimInfo.setCreatedAt(TimeUtils.toIsoInstantString(claimRecord.getCreatedAt()));
+        claimInfo.setUpdatedAt(TimeUtils.toIsoInstantString(claimRecord.getUpdatedAt()));
 
-        PartyModificationUnit partyModificationUnit = fromJsonPartyModificationUnit(String.valueOf(claimRecord.getChanges()));;
+        PartyModificationUnit partyModificationUnit = fromJsonPartyModificationUnit(String.valueOf(claimRecord.getChanges()));
+        ;
         claimInfo.setModifications(partyModificationUnit);
         return claimInfo;
     }

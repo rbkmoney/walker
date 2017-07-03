@@ -19,6 +19,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
+import static com.rbkmoney.walker.dao.ClaimDao.getStatusName;
 import static com.rbkmoney.walker.utils.ThriftConvertor.convertToPartyModificationUnit;
 import static com.rbkmoney.walker.utils.ThriftConvertor.convertToJson;
 
@@ -57,7 +58,8 @@ public class PartyEventHandler implements Handler<StockEvent> {
                 claimRecord.setEventId(eventId);
                 claimRecord.setRevision((long) claim.getRevision());
                 claimRecord.setPartyId(partyId);
-                claimRecord.setDescription("Заявка от участника с PartyId "+ partyId);
+                claimRecord.setStatus(getStatusName(claim.getStatus()));
+                claimRecord.setDescription("Заявка " + claim.getId() + " от участника с PartyId " + partyId);
 
                 PartyModificationUnit partyModificationUnit = convertToPartyModificationUnit(claim.getChangeset());
                 claimRecord.setChanges(convertToJson(partyModificationUnit));
@@ -78,7 +80,7 @@ public class PartyEventHandler implements Handler<StockEvent> {
             } else if (partyEvent.isSetClaimStatusChanged()) {
                 long claimId = partyEvent.getClaimStatusChanged().getId();
                 ClaimStatus status = partyEvent.getClaimStatusChanged().getStatus();
-                claimDao.updateStatus(claimId, status);
+                claimDao.updateStatus(partyId, claimId, status);
                 actionService.claimStatusChanged(partyId, claimId, status, "event");
             } else if (partyEvent.isSetShopBlocking()) {
                 log.info("Shop Blocking event {}", eventId);

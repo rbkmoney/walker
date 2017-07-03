@@ -46,25 +46,14 @@ public class ActionDao extends NamedParameterJdbcDaoSupport {
     }
 
     public void add(ActionRecord actionRecord) {
-        if (actionRecord.getCreatedAt() == null) {
-            actionRecord.setCreatedAt(new Timestamp(System.currentTimeMillis()));
-        }
-        String sql = dslContext.insertInto(ACTION)
-                .set(ACTION.CREATED_AT,actionRecord.getCreatedAt())
-                .set(ACTION.PARTY_ID,actionRecord.getPartyId())
-                .set(ACTION.CLAIM_ID,actionRecord.getClaimId())
-                .set(ACTION.USER_ID,actionRecord.getUserId())
-                .set(ACTION.USER_EMAIL,actionRecord.getUserEmail())
-                .set(ACTION.USER_NAME,actionRecord.getUserName())
-                .set(ACTION.TYPE,actionRecord.getType())
-                .set(ACTION.BEFORE,actionRecord.getBefore())
-                .set(ACTION.AFTER,actionRecord.getAfter())
-                .toString();
-        getJdbcTemplate().update(sql);
+        dslContext.insertInto(ACTION).set(actionRecord).execute();
     }
 
-    public List<ActionRecord> getActionsByClaimId(Long claimId) {
-        Result<ActionRecord> fetch = dslContext.selectFrom(ACTION).where(ACTION.CLAIM_ID.eq(claimId)).fetch();
+    public List<ActionRecord> getActions(String partyId, Long claimId) {
+        Result<ActionRecord> fetch = dslContext
+                .selectFrom(ACTION)
+                .where(ACTION.CLAIM_ID.eq(claimId).and(ACTION.PARTY_ID.eq(partyId)))
+                .fetch();
         return fetch.stream().collect(Collectors.toList());
     }
 

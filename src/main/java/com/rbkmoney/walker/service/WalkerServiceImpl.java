@@ -15,7 +15,6 @@ import com.rbkmoney.walker.domain.generated.tables.records.ActionRecord;
 import com.rbkmoney.walker.domain.generated.tables.records.ClaimRecord;
 import com.rbkmoney.walker.domain.generated.tables.records.CommentRecord;
 import com.rbkmoney.walker.utils.ThriftConvertor;
-import com.rbkmoney.walker.utils.TimeUtils;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +29,7 @@ import java.util.stream.Collectors;
 
 import static com.rbkmoney.walker.utils.ThriftConvertor.convertToClaimInfo;
 import static com.rbkmoney.walker.utils.ThriftConvertor.convertToHGPartyModification;
+import static com.rbkmoney.walker.utils.TimeUtils.toIsoInstantString;
 
 /**
  * @since 15.03.17
@@ -119,6 +119,7 @@ public class WalkerServiceImpl implements WalkerSrv.Iface {
     public void addComment(String party_id, long claim_id, UserInformation user, String text) throws TException {
         log.debug("Try to add comment to Claim with id: {}, PartyId: {}", claim_id, party_id);
         CommentRecord commentRecord = new CommentRecord();
+        commentRecord.setPartyId(party_id);
         commentRecord.setText(text);
         commentRecord.setClaimId(claim_id);
         commentRecord.setUserId(user.getUserID());
@@ -130,7 +131,7 @@ public class WalkerServiceImpl implements WalkerSrv.Iface {
     @Override
     public List<Comment> getComments(String party_id, long claim_id) throws TException {
         log.debug("Try to get comments to Claim with id {}, PartyId {}", claim_id, party_id);
-        List<CommentRecord> comments = commentDao.getComments(claim_id);
+        List<CommentRecord> comments = commentDao.getComments(party_id, claim_id);
         return comments.stream().map(cr -> {
             UserInformation userInformation = new UserInformation();
             userInformation.setEmail(cr.getEmail());
@@ -138,7 +139,7 @@ public class WalkerServiceImpl implements WalkerSrv.Iface {
             userInformation.setUserName(cr.getUserName());
             Comment comment = new Comment();
             comment.setUser(userInformation);
-            comment.setCreatedAt(TimeUtils.timestampToString(cr.getCreatedAt()));
+            comment.setCreatedAt(toIsoInstantString(cr.getCreatedAt()));
             comment.setText(cr.getText());
             return comment;
         }).collect(Collectors.toList());
@@ -147,7 +148,7 @@ public class WalkerServiceImpl implements WalkerSrv.Iface {
     @Override
     public List<Action> getActions(String party_id, long claim_id) throws TException {
         log.debug("Try to get actions to Claim with id {}, PartyId: {}", claim_id, party_id);
-        List<ActionRecord> actionRecords = actionDao.getActionsByClaimId(claim_id);
+        List<ActionRecord> actionRecords = actionDao.getActions(party_id, claim_id);
         return actionRecords.stream().map(ThriftConvertor::convertToAction).collect(Collectors.toList());
     }
 

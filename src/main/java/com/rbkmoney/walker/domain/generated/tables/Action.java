@@ -8,7 +8,7 @@ import com.rbkmoney.walker.domain.generated.Keys;
 import com.rbkmoney.walker.domain.generated.Walk;
 import com.rbkmoney.walker.domain.generated.tables.records.ActionRecord;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 import javax.annotation.Generated;
 
@@ -33,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Action extends TableImpl<ActionRecord> {
 
-    private static final long serialVersionUID = -814400604;
+    private static final long serialVersionUID = -136360477;
 
     /**
      * The reference instance of <code>walk.action</code>
@@ -66,7 +66,7 @@ public class Action extends TableImpl<ActionRecord> {
     /**
      * The column <code>walk.action.created_at</code>.
      */
-    public final TableField<ActionRecord, Timestamp> CREATED_AT = createField("created_at", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false), this, "");
+    public final TableField<ActionRecord, LocalDateTime> CREATED_AT = createField("created_at", org.jooq.impl.SQLDataType.LOCALDATETIME.nullable(false).defaultValue(org.jooq.impl.DSL.field("now()", org.jooq.impl.SQLDataType.LOCALDATETIME)), this, "");
 
     /**
      * The column <code>walk.action.user_id</code>.

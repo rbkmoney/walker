@@ -36,6 +36,7 @@ public class ClaimDaoTest extends AbstractIntegrationTest {
     ActionService actionService;
 
     private String TEST_USER_ID = "test_user_id";
+    private long CLAIM_ID = 1;
 
     String PARTY_ID = "test-party-id";
 
@@ -48,9 +49,9 @@ public class ClaimDaoTest extends AbstractIntegrationTest {
 
     @Test
     public void testInsertAndGet() throws IOException {
-        ClaimRecord claimRecord1 = buildTestClaim();
+        ClaimRecord claimRecord1 = buildTestClaim(PARTY_ID, CLAIM_ID);
         claimDao.create(claimRecord1);
-        ClaimRecord claimRecord2 = claimDao.get(PARTY_ID, 1);
+        ClaimRecord claimRecord2 = claimDao.get(PARTY_ID, CLAIM_ID);
 
         assertEquals(claimRecord1.getId(), claimRecord2.getId());
         assertEquals(claimRecord1.getEventId(), claimRecord2.getEventId());
@@ -60,41 +61,34 @@ public class ClaimDaoTest extends AbstractIntegrationTest {
         Object or1 = JsonUtils.jsonToObject(String.valueOf(claimRecord2.getChanges()));
         Diffy.Result diff = new Diffy().diff(or, or1);
         assertTrue(diff.isEmpty());
-
-        ClaimSearchRequest claimSearchRequest = new ClaimSearchRequest();
-        claimSearchRequest.setAssignedUserId(TEST_USER_ID);
-        claimSearchRequest.setClaimId(Collections.singleton(1L));
-        List<ClaimRecord> search = claimDao.search(claimSearchRequest);
-        assertEquals(1, search.size());
     }
 
     @Test
-    public void testUpdateStatus() {
+    public void testUpdateStatus() throws IOException {
+        long claimId = CLAIM_ID + 1;
+        ClaimRecord claimRecord1 = buildTestClaim(PARTY_ID, claimId);
+        claimDao.create(claimRecord1);
+
         ClaimStatus claimStatus = new ClaimStatus();
         claimStatus.setAccepted(new ClaimAccepted());
-        claimDao.updateStatus(2, claimStatus);
+        claimDao.updateStatus(PARTY_ID, claimId, claimStatus);
+        ClaimRecord claimRecord = claimDao.get(PARTY_ID, claimId);
+        assertEquals("accepted", claimRecord.getStatus());
     }
 
-    @Test
-    public void testActions() throws IOException {
-        ClaimStatus claimStatus = new ClaimStatus();
-        claimStatus.setDenied(new ClaimDenied("because"));
-        actionService.claimStatusChanged(PARTY_ID,1L, claimStatus, TEST_USER_ID);
-    }
 
     @Test
     public void testSearch() throws IOException {
-        claimDao.create(buildTestClaim());
-        ClaimRecord claimRecord1 = claimDao.get(PARTY_ID, 1);
-        claimRecord1.setEventId(123L);
-        claimRecord1.setChanges(buildModification());
-        claimDao.update(claimRecord1);
+        claimDao.create(buildTestClaim(PARTY_ID, CLAIM_ID + 2));
+        claimDao.create(buildTestClaim(PARTY_ID, CLAIM_ID + 3));
 
-        ClaimRecord claimRecord2 = claimDao.get(PARTY_ID, claimRecord1.getId());
-
-
-        assertEquals(Long.valueOf(123L), claimRecord2.getEventId());
-//        assertTrue(StringUtils.contains(String.valueOf(claimRecord2.getChanges()), "AFTER_UPDATE"));
+        ClaimSearchRequest claimSearchRequest = new ClaimSearchRequest();
+        claimSearchRequest.setAssignedUserId(TEST_USER_ID);
+        claimSearchRequest.setPartyId(PARTY_ID);
+        claimSearchRequest.setClaimId(Collections.singleton(CLAIM_ID + 2));
+        claimSearchRequest.setClaimStatus("pending");
+        List<ClaimRecord> search = claimDao.search(claimSearchRequest);
+        assertEquals(1, search.size());
     }
 
     public String buildModification() throws IOException {
@@ -104,14 +98,14 @@ public class ClaimDaoTest extends AbstractIntegrationTest {
         return ThriftConvertor.convertToJson(partyModificationUnit);
     }
 
-    private ClaimRecord buildTestClaim() throws IOException {
+    private ClaimRecord buildTestClaim(String partyId, long claimId) throws IOException {
         ClaimRecord claimRecord = new ClaimRecord();
         claimRecord.setStatus(ClaimStatus.pending(new ClaimPending()).toString());
-        claimRecord.setId(1l);
+        claimRecord.setId(claimId);
         claimRecord.setEventId(10l);
         claimRecord.setAssignedUserId(TEST_USER_ID);
         claimRecord.setRevision(10L);
-        claimRecord.setPartyId(PARTY_ID);
+        claimRecord.setPartyId(partyId);
         claimRecord.setChanges(buildModification());
         return claimRecord;
     }

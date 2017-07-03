@@ -13,6 +13,7 @@ import org.springframework.util.StringUtils;
 
 import javax.sql.DataSource;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
@@ -64,6 +65,7 @@ public class ClaimDao extends NamedParameterJdbcDaoSupport {
                 .set(CLAIM.REASON, claimRecord.getReason())
                 .set(CLAIM.CHANGES, claimRecord.getChanges())
                 .set(CLAIM.REVISION, claimRecord.getRevision())
+                .set(CLAIM.UPDATED_AT, LocalDateTime.now())
                 .set(CLAIM.DAMSEL_VERSION, damselVersion)
                 .toString();
         getJdbcTemplate().update(sql);
@@ -85,6 +87,7 @@ public class ClaimDao extends NamedParameterJdbcDaoSupport {
                 .set(CLAIM.CHANGES, claimRecord.getChanges())
                 .set(CLAIM.DESCRIPTION, claimRecord.getDescription())
                 .set(CLAIM.REVISION, claimRecord.getRevision())
+                .set(CLAIM.UPDATED_AT, LocalDateTime.now())
                 .set(CLAIM.DAMSEL_VERSION, damselVersion);
         if (StringUtils.isEmpty(claimRecord.getReason())) {
             update.set(CLAIM.REASON, claimRecord.getReason());
@@ -93,8 +96,9 @@ public class ClaimDao extends NamedParameterJdbcDaoSupport {
         getJdbcTemplate().update(sql);
     }
 
-    public void updateStatus(long claimId, ClaimStatus claimStatus) {
+    public void updateStatus(String partyId, long claimId, ClaimStatus claimStatus) {
         UpdateSetMoreStep<ClaimRecord> update = dslContext.update(CLAIM)
+                .set(CLAIM.UPDATED_AT, LocalDateTime.now())
                 .set(CLAIM.STATUS, getStatusName(claimStatus));
 
         if (claimStatus.isSetRevoked()) {
@@ -103,7 +107,7 @@ public class ClaimDao extends NamedParameterJdbcDaoSupport {
         if (claimStatus.isSetDenied()) {
             update.set(CLAIM.REASON, claimStatus.getDenied().getReason());
         }
-        String sql = update.where(CLAIM.ID.eq(claimId)).toString();
+        String sql = update.where(CLAIM.ID.eq(claimId).and(CLAIM.PARTY_ID.eq(partyId))).toString();
         getJdbcTemplate().update(sql);
     }
 
