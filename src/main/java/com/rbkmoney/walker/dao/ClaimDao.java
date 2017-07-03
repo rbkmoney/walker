@@ -133,6 +133,7 @@ public class ClaimDao extends NamedParameterJdbcDaoSupport {
         //todo: "contains" - field does not work now.
         SelectQuery query = dslContext.selectQuery();
         query.addFrom(CLAIM);
+        query.addLimit(100);
         Set<Long> claimIDs = request.getClaimId();
         if (request.getPartyId() != null) {
             query.addConditions(CLAIM.PARTY_ID.eq(request.getPartyId()));
