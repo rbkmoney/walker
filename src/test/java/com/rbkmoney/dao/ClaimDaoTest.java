@@ -109,4 +109,10 @@ public class ClaimDaoTest extends AbstractIntegrationTest {
         claimRecord.setChanges(buildModification());
         return claimRecord;
     }
+
+    @Test
+    public void testprint() throws IOException {
+        String json = buildModification();
+        System.out.println(json);
+    }
 }
