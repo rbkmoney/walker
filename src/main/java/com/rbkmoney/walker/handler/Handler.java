@@ -1,6 +1,7 @@
 package com.rbkmoney.walker.handler;
 
-import com.rbkmoney.thrift.filter.Filter;
+
+import com.rbkmoney.geck.filter.Filter;
 
 /**
  * Created by tolkonepiu on 03.08.16.

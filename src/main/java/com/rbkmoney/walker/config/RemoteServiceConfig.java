@@ -28,11 +28,6 @@ public class RemoteServiceConfig {
     public PartyManagementSrv.Iface partyManagementSrv() throws IOException, URISyntaxException {
         return new THPooledClientBuilder()
                 .withAddress(new URI(PARTY_MANAGEMENT_SERVICE_URL))
-                .withEventListener(
-                        new CompositeClientEventListener(
-                                new ClientEventLogListener(),
-                                new HttpClientEventLogListener())
-                )
                 .build(PartyManagementSrv.Iface.class);
     }
 
