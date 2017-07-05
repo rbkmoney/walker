@@ -54,3 +54,5 @@
 4. Запустить Walker
 5. Для генерации событий используется HellGateMethodsTest 
 6. Jira доступна по адресу localhost:2990/jira
+
+// есть какаято рпоблема с генерацией domain - нужно дописать ".nullable(false)" для поля Claim.changes

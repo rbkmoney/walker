@@ -11,7 +11,7 @@ build('walker', 'java-maven') {
             def mvn_command_arguments = ' --batch-mode --settings  $SETTINGS_XML -P ci ' +
                     " -Dgit.branch=${env.BRANCH_NAME} " +
                     " ${mvnArgs}"
-            if (env.BRANCH_NAME == 'master') {
+            if (env.BRANCH_NAME == 'master' || env.BRANCH_NAME.startsWith('epic')) {
                 sh 'mvn deploy' + mvn_command_arguments
             } else {
                 sh 'mvn package' + mvn_command_arguments

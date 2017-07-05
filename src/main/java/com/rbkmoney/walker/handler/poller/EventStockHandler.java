@@ -1,6 +1,7 @@
 package com.rbkmoney.walker.handler.poller;
 
 import com.rbkmoney.damsel.event_stock.StockEvent;
+import com.rbkmoney.eventstock.client.EventAction;
 import com.rbkmoney.eventstock.client.EventHandler;
 import com.rbkmoney.walker.handler.Handler;
 import org.slf4j.Logger;
@@ -22,17 +23,13 @@ public class EventStockHandler implements EventHandler<StockEvent> {
     }
 
     @Override
-    public void handleEvent(StockEvent stockEvent, String subsKey) {
+    public EventAction handle(StockEvent event, String subsKey) {
         for (Handler handler : handlers) {
-            if (handler.accept(stockEvent)) {
-                handler.handle(stockEvent);
+            if (handler.accept(event)) {
+                handler.handle(event);
                 break;
             }
         }
-    }
-
-    @Override
-    public void handleNoMoreElements(String subsKey) {
-        log.info("HandleNoMoreElements Called");
+        return EventAction.CONTINUE;
     }
 }
