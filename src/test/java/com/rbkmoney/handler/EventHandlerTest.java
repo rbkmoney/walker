@@ -25,6 +25,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
 
@@ -82,18 +83,18 @@ public class EventHandlerTest extends AbstractIntegrationTest {
         claim.setStatus(ClaimStatus.pending(new ClaimPending()));
         claim.setId(CLAIM_ID);
 
-        PartyEvent emptyPartyEvent = new PartyEvent();
-        PartyEvent partyEvent = new MockTBaseProcessor(MockMode.REQUIRED_ONLY).process(emptyPartyEvent, new TBaseHandler<>(PartyEvent.class));
-        partyEvent.setClaimCreated(claim);
+        PartyChange emptyPartyChange = new PartyChange();
+        PartyChange partyChange = new MockTBaseProcessor(MockMode.REQUIRED_ONLY).process(emptyPartyChange, new TBaseHandler<>(PartyChange.class));
+        partyChange.setClaimCreated(claim);
 
         EventSource eventSource = new EventSource();
-        eventSource.setParty(PARTY_ID);
+        eventSource.setPartyId(PARTY_ID);
 
         StockEvent emptyStockEvent = new StockEvent();
         StockEvent stockEvent = new MockTBaseProcessor(MockMode.REQUIRED_ONLY).process(emptyStockEvent, new TBaseHandler<>(StockEvent.class));
 
         stockEvent.getSourceEvent().getProcessingEvent().setSource(eventSource);
-        stockEvent.getSourceEvent().getProcessingEvent().getPayload().setPartyEvent(partyEvent);
+        stockEvent.getSourceEvent().getProcessingEvent().getPayload().setPartyChanges(Collections.singletonList(partyChange));
 
 //        printJson(stockEvent);
         return stockEvent;
@@ -106,20 +107,22 @@ public class EventHandlerTest extends AbstractIntegrationTest {
         claimStatusChanged.setRevision(123);
         claimStatusChanged.setChangedAt(TimeUtils.toIsoInstantString(LocalDateTime.now()));
 
-        PartyEvent emptyPartyEvent = new PartyEvent();
-        PartyEvent partyEvent = new MockTBaseProcessor(MockMode.REQUIRED_ONLY).process(emptyPartyEvent, new TBaseHandler<>(PartyEvent.class));
-        partyEvent.setClaimStatusChanged(claimStatusChanged);
+        PartyChange emptyPartyEvent = new PartyChange();
+        PartyChange partyChange = new MockTBaseProcessor(MockMode.REQUIRED_ONLY).process(emptyPartyEvent, new TBaseHandler<>(PartyChange.class));
+        partyChange.setClaimStatusChanged(claimStatusChanged);
 
         EventSource eventSource = new EventSource();
-        eventSource.setParty(PARTY_ID);
+        eventSource.setPartyId(PARTY_ID);
 
         StockEvent emptyStockEvent = new StockEvent();
-        StockEvent stockEvent = new MockTBaseProcessor(MockMode.REQUIRED_ONLY).process(emptyStockEvent, new TBaseHandler<>(StockEvent.class));
+        MockTBaseProcessor mockTBaseProcessor = new MockTBaseProcessor(MockMode.REQUIRED_ONLY);
+        mockTBaseProcessor.addFieldHandler((handler -> handler.value("2016-01-24T10:15:30Z")), "created_at");
+        StockEvent stockEvent = mockTBaseProcessor.process(emptyStockEvent, new TBaseHandler<>(StockEvent.class));
 
         stockEvent.getSourceEvent().getProcessingEvent().setSource(eventSource);
-        stockEvent.getSourceEvent().getProcessingEvent().getPayload().setPartyEvent(partyEvent);
+        stockEvent.getSourceEvent().getProcessingEvent().getPayload().setPartyChanges(Collections.singletonList(partyChange));
 
-//        printJson(stockEvent);
+        printJson(stockEvent);
         return stockEvent;
     }
 

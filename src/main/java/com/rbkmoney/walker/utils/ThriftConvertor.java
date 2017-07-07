@@ -1,17 +1,12 @@
 package com.rbkmoney.walker.utils;
 
-import com.bazaarvoice.jolt.JsonUtilImpl;
-import com.bazaarvoice.jolt.JsonUtils;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.rbkmoney.damsel.payment_processing.ClaimStatus;
-import com.rbkmoney.damsel.payment_processing.PartyEvent;
+import com.rbkmoney.damsel.payment_processing.PartyChange;
 import com.rbkmoney.damsel.payment_processing.PartyModification;
 import com.rbkmoney.damsel.walker.*;
 import com.rbkmoney.geck.serializer.kit.json.JsonHandler;
 import com.rbkmoney.geck.serializer.kit.json.JsonProcessor;
-import com.rbkmoney.geck.serializer.kit.object.ObjectHandler;
-import com.rbkmoney.geck.serializer.kit.object.ObjectProcessor;
 import com.rbkmoney.geck.serializer.kit.tbase.TBaseHandler;
 import com.rbkmoney.geck.serializer.kit.tbase.TBaseProcessor;
 import com.rbkmoney.walker.domain.generated.tables.records.ActionRecord;
@@ -19,7 +14,6 @@ import com.rbkmoney.walker.domain.generated.tables.records.ClaimRecord;
 import org.apache.thrift.TBase;
 
 import java.io.IOException;
-import java.util.LinkedList;
 import java.util.List;
 
 import static com.rbkmoney.walker.utils.TimeUtils.toIsoInstantString;
@@ -47,9 +41,9 @@ public class ThriftConvertor {
     }
 
 
-    public static PartyEvent fromJsonPartyEvent(String json) throws IOException {
+    public static PartyChange fromJsonPartyEvent(String json) throws IOException {
         JsonNode jsonNode = mapper.readTree(json);
-        return new JsonProcessor().process(jsonNode, new TBaseHandler<>(PartyEvent.class));
+        return new JsonProcessor().process(jsonNode, new TBaseHandler<>(PartyChange.class));
     }
 
 

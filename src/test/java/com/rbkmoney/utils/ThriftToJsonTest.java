@@ -62,11 +62,11 @@ public class ThriftToJsonTest {
         claim.setCreatedAt("TEST DATE");
         claim.setStatus(ClaimStatus.pending(new ClaimPending()));
 
-        PartyEvent partyEvent = new PartyEvent();
+        PartyChange partyEvent = new PartyChange();
         partyEvent.setClaimCreated(claim);
 
         String json1 = convertToJson(partyEvent);
-        PartyEvent partyEvent1 = fromJsonPartyEvent(json1);
+        PartyChange partyEvent1 = fromJsonPartyEvent(json1);
 
         String json2 = convertToJson(partyEvent1);
 
