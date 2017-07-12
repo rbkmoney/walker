@@ -93,7 +93,7 @@ public class WalkerServiceImpl implements WalkerSrv.Iface {
     public void updateClaim(String party_id, long claim_id, UserInformation user, PartyModificationUnit changeset, int revision) throws ClaimNotFound, InvalidClaimStatus, InvalidClaimRevision, ChangesetConflict, InvalidRequest, TException {
         try {
             log.info("Try to update Claim with id {} PartyId: {}", claim_id, party_id);
-            partyManagement.updateClaim(buildUserInfo(user), user.getUserID(), claim_id, revision, convertToHGPartyModification(changeset));
+            partyManagement.updateClaim(buildUserInfo(user), party_id, claim_id, revision, convertToHGPartyModification(changeset));
         } catch (IOException e) {
             throw new TException(e);
         }
