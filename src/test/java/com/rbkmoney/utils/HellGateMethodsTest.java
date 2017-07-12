@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 
 
 @RunWith(SpringRunner.class)
-@Ignore
+//@Ignore
 public class HellGateMethodsTest {
 
     private PartyManagementSrv.Iface partyManagement;
@@ -38,7 +38,7 @@ public class HellGateMethodsTest {
     private static String EVENT_SINK_SERVICE_URL = "http://hellgate:8022/v1/processing/eventsink";
 
     String userId = "Vinni Puh";
-    String partyId = "281220eb-a4ef-4d03-b666-bdec4b26c5f7";
+    String partyId = "test-281220eb-a4ef-4d03-b666-bdec4b26c5f7";
     String shopName = "Honey Bunny Winny 1";
     String categoryName = "Sweet Honey";
     String categoryDescription = "Best honey in region. Just try it!";

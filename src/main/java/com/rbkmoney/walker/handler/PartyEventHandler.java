@@ -29,7 +29,7 @@ import static com.rbkmoney.walker.utils.ThriftConvertor.convertToJson;
 public class PartyEventHandler implements Handler<StockEvent> {
     Logger log = LoggerFactory.getLogger(this.getClass());
 
-    private String path = "source_event.processing_event.payload.party_event";
+    private String path = "source_event.processing_event.payload.party_changes";
 
     private Filter filter;
 
