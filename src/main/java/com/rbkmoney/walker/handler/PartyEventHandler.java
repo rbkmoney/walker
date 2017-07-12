@@ -55,6 +55,7 @@ public class PartyEventHandler implements Handler<StockEvent> {
             for (PartyChange partyChange : partyChanges) {
                 if (partyChange.isSetClaimCreated()) {
                     Claim claim = partyChange.getClaimCreated();
+                    log.info("Got claim created PartyId: {}, ClaimId: {}", partyId, claim.getId());
                     ClaimRecord claimRecord = new ClaimRecord();
                     claimRecord.setId(claim.getId());
                     claimRecord.setEventId(eventId);
@@ -68,7 +69,8 @@ public class PartyEventHandler implements Handler<StockEvent> {
                     claimDao.create(claimRecord);
                     actionService.claimCreated(partyId, claim.getId(), claim.getChangeset(), "event");
                 } else if (partyChange.isSetClaimUpdated()) {
-                    long claimId = partyChange.getClaimStatusChanged().getId();
+                    long claimId = partyChange.getClaimUpdated().getId();
+                    log.info("Got claim updated PartyId: {}, ClaimId: {}", partyId, claimId);
                     ClaimRecord claimRecord = new ClaimRecord();
                     claimRecord.setId(partyChange.getClaimUpdated().getId());
                     claimRecord.setEventId(eventId);
@@ -82,6 +84,7 @@ public class PartyEventHandler implements Handler<StockEvent> {
                 } else if (partyChange.isSetClaimStatusChanged()) {
                     long claimId = partyChange.getClaimStatusChanged().getId();
                     ClaimStatus status = partyChange.getClaimStatusChanged().getStatus();
+                    log.info("Got claim status changed Status: {}, PartyId: {}, ClaimId: {}", status.toString(), partyId, claimId);
                     claimDao.updateStatus(partyId, claimId, status);
                     actionService.claimStatusChanged(partyId, claimId, status, "event");
                 } else if (partyChange.isSetShopBlocking()) {
