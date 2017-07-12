@@ -53,15 +53,15 @@ public class WalkerServiceImpl implements WalkerSrv.Iface {
     private CommentDao commentDao;
 
     @Override
-    public void acceptClaim(String party_id, long claim_id, UserInformation user, int revision) throws ClaimNotFound, InvalidClaimStatus, InvalidClaimRevision, TException {
+    public void acceptClaim(String party_id, long claim_id, UserInformation user, int revision) throws TException {
         log.info("Try to accept PartyId: {} , Claim with id: {}", party_id, claim_id);
-        partyManagement.acceptClaim(buildUserInfo(user), user.getUserID(), claim_id, revision);
+        partyManagement.acceptClaim(buildUserInfo(user), party_id, claim_id, revision);
     }
 
     @Override
-    public void denyClaim(String party_id, long claim_id, UserInformation user, String reason, int revision) throws ClaimNotFound, InvalidClaimStatus, InvalidClaimRevision, TException {
-        log.info("Try to deny PartyId: {} , Claim with id {}", claim_id, claim_id);
-        partyManagement.denyClaim(buildUserInfo(user), user.getUserID(), claim_id, revision, reason);
+    public void denyClaim(String party_id, long claim_id, UserInformation user, String reason, int revision) throws TException {
+        log.info("Try to deny PartyId: {} , Claim with id {}", party_id, claim_id);
+        partyManagement.denyClaim(buildUserInfo(user), party_id, claim_id, revision, reason);
     }
 
     @Override

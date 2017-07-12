@@ -38,13 +38,13 @@ public class HellGateMethodsTest {
     private static String EVENT_SINK_SERVICE_URL = "http://hellgate:8022/v1/processing/eventsink";
 
     String userId = "Vinni Puh";
-    String partyId = "test-281220eb-a4ef-4d03-b666-bdec4b26c5f7";
+    String partyId = "281220eb-a4ef-4d03-b666-bdec4b26c5f7";
     String shopName = "Honey Bunny Winny 1";
     String categoryName = "Sweet Honey";
     String categoryDescription = "Best honey in region. Just try it!";
     String contractId = "contactrId";
     String shopId = "2";
-    String claimId = "3";
+    String claimId = "4";
     private UserInfo userInfo;
 
     @Before
@@ -78,6 +78,8 @@ public class HellGateMethodsTest {
     @Test
     public void getParty() throws TException {
         Party party = partyManagement.get(new UserInfo("id", UserType.service_user(new ServiceUser())), partyId);
+        Claim claim = partyManagement.getClaim(userInfo, partyId, 3);
+        System.out.println(claim.toString());
         System.out.println("### Email: " + party.getContactInfo().getEmail());
     }
 
