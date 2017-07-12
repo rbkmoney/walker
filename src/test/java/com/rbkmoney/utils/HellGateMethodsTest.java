@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 
 
 @RunWith(SpringRunner.class)
-//@Ignore
+@Ignore
 public class HellGateMethodsTest {
 
     private PartyManagementSrv.Iface partyManagement;
