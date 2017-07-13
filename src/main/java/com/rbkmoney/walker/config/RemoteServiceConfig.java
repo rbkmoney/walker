@@ -26,7 +26,7 @@ public class RemoteServiceConfig {
 
     @Bean
     public PartyManagementSrv.Iface partyManagementSrv() throws IOException, URISyntaxException {
-        return new THPooledClientBuilder()
+        return new THSpawnClientBuilder()
                 .withAddress(new URI(PARTY_MANAGEMENT_SERVICE_URL))
                 .build(PartyManagementSrv.Iface.class);
     }

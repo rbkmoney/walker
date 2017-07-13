@@ -37,12 +37,13 @@ public class HellGateMethodsTest {
     private static String PARTY_MANAGEMENT_SERVICE_URL = "http://hellgate:8022/v1/processing/partymgmt";
     private static String EVENT_SINK_SERVICE_URL = "http://hellgate:8022/v1/processing/eventsink";
 
-    String userId = "Vinni Puh";
-    String partyId = "281220eb-a4ef-4d03-b666-bdec4b26c5f7";
+    String userId = "1";
+    String email = "info@bfsfera.org.ru";
+    String partyId = "6954b4d1-f39f-4cc1-8843-eae834e6f849";
     String shopName = "Honey Bunny Winny 1";
     String categoryName = "Sweet Honey";
     String categoryDescription = "Best honey in region. Just try it!";
-    String contractId = "contactrId";
+    String contractId = "contactrId5";
     String shopId = "2";
     String claimId = "4";
     private UserInfo userInfo;
@@ -70,7 +71,7 @@ public class HellGateMethodsTest {
     @Test
     public void createUser() throws TException {
         PartyParams partyParams = new PartyParams();
-        partyParams.setContactInfo(new PartyContactInfo("aaaa@mail.ru"));
+        partyParams.setContactInfo(new PartyContactInfo(email));
         partyManagement.create(userInfo, partyId, partyParams);
         System.out.println("#### User created");
     }
