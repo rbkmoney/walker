@@ -75,7 +75,7 @@ public class PartyEventHandler implements Handler<StockEvent> {
                     claimRecord.setId(partyChange.getClaimUpdated().getId());
                     claimRecord.setEventId(eventId);
                     claimRecord.setPartyId(partyId);
-                    //todo set revision if it come from event
+                    claimRecord.setRevision((long) partyChange.getClaimUpdated().getRevision());
 
                     PartyModificationUnit partyModificationUnit = convertToPartyModificationUnit(partyChange.getClaimUpdated().getChangeset());
                     claimRecord.setChanges(convertToJson(partyModificationUnit));
