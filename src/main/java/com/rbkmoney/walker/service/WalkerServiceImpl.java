@@ -1,13 +1,14 @@
 package com.rbkmoney.walker.service;
 
 import com.rbkmoney.damsel.base.InvalidRequest;
-import com.rbkmoney.damsel.payment_processing.InternalUser;
-import com.rbkmoney.damsel.payment_processing.PartyManagementSrv;
-import com.rbkmoney.damsel.payment_processing.UserInfo;
-import com.rbkmoney.damsel.payment_processing.UserType;
+import com.rbkmoney.damsel.payment_processing.*;
 import com.rbkmoney.damsel.walker.*;
 import com.rbkmoney.damsel.walker.Action;
+import com.rbkmoney.damsel.walker.ChangesetConflict;
+import com.rbkmoney.damsel.walker.ClaimNotFound;
 import com.rbkmoney.damsel.walker.Comment;
+import com.rbkmoney.damsel.walker.InvalidClaimRevision;
+import com.rbkmoney.damsel.walker.InvalidClaimStatus;
 import com.rbkmoney.walker.dao.ActionDao;
 import com.rbkmoney.walker.dao.ClaimDao;
 import com.rbkmoney.walker.dao.CommentDao;
@@ -80,10 +81,10 @@ public class WalkerServiceImpl implements WalkerSrv.Iface {
     }
 
     @Override
-    public void createClaim(UserInformation user, String party_id, PartyModificationUnit changeset) throws TException {
+    public Claim createClaim(UserInformation user, String party_id, PartyModificationUnit changeset) throws TException {
         try {
             log.info("Try to create Claim with party_id: {} and user: {}", party_id, user.toString());
-            partyManagement.createClaim(buildUserInfo(user), party_id, convertToHGPartyModification(changeset));
+            return partyManagement.createClaim(buildUserInfo(user), party_id, convertToHGPartyModification(changeset));
         } catch (IOException e) {
             throw new TException(e);
         }
