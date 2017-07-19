@@ -80,15 +80,22 @@ public class ClaimDaoTest extends AbstractIntegrationTest {
     @Test
     public void testSearch() throws IOException {
         claimDao.create(buildTestClaim(PARTY_ID, CLAIM_ID + 2));
-        claimDao.create(buildTestClaim(PARTY_ID, CLAIM_ID + 3));
+        claimDao.create(buildTestAcceptedClaim(PARTY_ID, CLAIM_ID + 3));
+        claimDao.create(buildTestClaim(PARTY_ID + "2", CLAIM_ID + 2));
+        claimDao.create(buildTestAcceptedClaim(PARTY_ID + "2", CLAIM_ID + 3));
 
         ClaimSearchRequest claimSearchRequest = new ClaimSearchRequest();
         claimSearchRequest.setAssignedUserId(TEST_USER_ID);
         claimSearchRequest.setPartyId(PARTY_ID);
-        claimSearchRequest.setClaimId(Collections.singleton(CLAIM_ID + 2));
-        claimSearchRequest.setClaimStatus("pending");
+        claimSearchRequest.setClaimId(Collections.singleton(CLAIM_ID + 3));
+        claimSearchRequest.setClaimStatus("accepted");
+
         List<ClaimRecord> search = claimDao.search(claimSearchRequest);
         assertEquals(1, search.size());
+
+        claimSearchRequest.setPartyId(PARTY_ID + "2");
+        List<ClaimRecord> search2 = claimDao.search(claimSearchRequest);
+        assertEquals(1, search2.size());
     }
 
     public String buildModification() throws IOException {
@@ -100,7 +107,19 @@ public class ClaimDaoTest extends AbstractIntegrationTest {
 
     private ClaimRecord buildTestClaim(String partyId, long claimId) throws IOException {
         ClaimRecord claimRecord = new ClaimRecord();
-        claimRecord.setStatus(ClaimStatus.pending(new ClaimPending()).toString());
+        claimRecord.setStatus(ClaimDao.getStatusName(ClaimStatus.pending(new ClaimPending())));
+        claimRecord.setId(claimId);
+        claimRecord.setEventId(10l);
+        claimRecord.setAssignedUserId(TEST_USER_ID);
+        claimRecord.setRevision(10L);
+        claimRecord.setPartyId(partyId);
+        claimRecord.setChanges(buildModification());
+        return claimRecord;
+    }
+
+    private ClaimRecord buildTestAcceptedClaim(String partyId, long claimId) throws IOException {
+        ClaimRecord claimRecord = new ClaimRecord();
+        claimRecord.setStatus(ClaimDao.getStatusName(ClaimStatus.accepted(new ClaimAccepted())));
         claimRecord.setId(claimId);
         claimRecord.setEventId(10l);
         claimRecord.setAssignedUserId(TEST_USER_ID);

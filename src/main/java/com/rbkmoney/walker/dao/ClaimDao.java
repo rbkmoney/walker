@@ -134,15 +134,17 @@ public class ClaimDao extends NamedParameterJdbcDaoSupport {
         SelectQuery query = dslContext.selectQuery();
         query.addFrom(CLAIM);
         query.addLimit(100);
-        Set<Long> claimIDs = request.getClaimId();
         if (request.getPartyId() != null) {
             query.addConditions(CLAIM.PARTY_ID.eq(request.getPartyId()));
         }
-        if (claimIDs != null) {
-            query.addConditions(CLAIM.ID.in(claimIDs));
+        if (request.getClaimId() != null && !request.getClaimId().isEmpty()) {
+            query.addConditions(CLAIM.ID.in(request.getClaimId()));
         }
         if (request.getAssignedUserId() != null) {
             query.addConditions(CLAIM.ASSIGNED_USER_ID.eq(request.getAssignedUserId()));
+        }
+        if (request.getClaimStatus() != null) {
+            query.addConditions(CLAIM.STATUS.eq(request.getClaimStatus()));
         }
         return query.fetch().into(ClaimRecord.class);
     }
