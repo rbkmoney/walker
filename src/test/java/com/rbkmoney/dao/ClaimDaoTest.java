@@ -64,6 +64,23 @@ public class ClaimDaoTest extends AbstractIntegrationTest {
     }
 
     @Test
+    public void testInsertAndUpdate() throws IOException {
+        ClaimRecord claimRecord1 = buildTestClaim(PARTY_ID, CLAIM_ID);
+        claimDao.create(claimRecord1);
+        ClaimRecord claimRecord2 = claimDao.get(PARTY_ID, CLAIM_ID);
+
+        assertEquals(claimRecord1.getId(), claimRecord2.getId());
+        assertEquals(claimRecord1.getEventId(), claimRecord2.getEventId());
+        assertEquals(claimRecord1.getPartyId(), claimRecord2.getPartyId());
+
+        claimRecord2.setRevision(4L);
+        claimRecord2.setAssignedUserId("SomebodyElse");
+        claimDao.update(claimRecord2);
+        ClaimRecord claimRecord3 = claimDao.get(PARTY_ID, CLAIM_ID);
+        assertEquals((Long) 4L, claimRecord3.getRevision());
+    }
+
+    @Test
     public void testUpdateStatus() throws IOException {
         long claimId = CLAIM_ID + 1;
         ClaimRecord claimRecord1 = buildTestClaim(PARTY_ID, claimId);

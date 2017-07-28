@@ -79,6 +79,9 @@ public class ClaimDao extends NamedParameterJdbcDaoSupport {
     }
 
     public void update(ClaimRecord claimRecord) {
+        if (StringUtils.isEmpty(claimRecord.getAssignedUserId())) {
+            claimRecord.setAssignedUserId(WALKER_USER_ID);
+        }
         UpdateSetMoreStep<ClaimRecord> update = dslContext.update(CLAIM)
                 .set(CLAIM.EVENT_ID, claimRecord.getEventId())
                 .set(CLAIM.ASSIGNED_USER_ID, claimRecord.getAssignedUserId())
