@@ -78,24 +78,14 @@ public class ClaimDao extends NamedParameterJdbcDaoSupport {
         return claimRecord;
     }
 
-    public void update(ClaimRecord claimRecord) {
-        if (StringUtils.isEmpty(claimRecord.getAssignedUserId())) {
-            claimRecord.setAssignedUserId(WALKER_USER_ID);
-        }
+    public void update(String partyId, Long claimId, Long eventId, Long revision, String changes) {
         UpdateSetMoreStep<ClaimRecord> update = dslContext.update(CLAIM)
-                .set(CLAIM.EVENT_ID, claimRecord.getEventId())
-                .set(CLAIM.ASSIGNED_USER_ID, claimRecord.getAssignedUserId())
-                .set(CLAIM.STATUS, claimRecord.getStatus())
-                .set(CLAIM.PARTY_ID, claimRecord.getPartyId())
-                .set(CLAIM.CHANGES, claimRecord.getChanges())
-                .set(CLAIM.DESCRIPTION, claimRecord.getDescription())
-                .set(CLAIM.REVISION, claimRecord.getRevision())
+                .set(CLAIM.EVENT_ID, eventId)
+                .set(CLAIM.CHANGES, changes)
+                .set(CLAIM.REVISION, revision)
                 .set(CLAIM.UPDATED_AT, LocalDateTime.now())
                 .set(CLAIM.DAMSEL_VERSION, damselVersion);
-        if (StringUtils.isEmpty(claimRecord.getReason())) {
-            update.set(CLAIM.REASON, claimRecord.getReason());
-        }
-        String sql = update.where(CLAIM.ID.eq(claimRecord.getId())).toString();
+        String sql = update.where(CLAIM.ID.eq(claimId).and(CLAIM.PARTY_ID.eq(partyId))).toString();
         getJdbcTemplate().update(sql);
     }
 

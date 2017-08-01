@@ -23,6 +23,7 @@ import java.util.List;
 import static com.rbkmoney.walker.dao.ClaimDao.getStatusName;
 import static com.rbkmoney.walker.utils.ThriftConvertor.convertToPartyModificationUnit;
 import static com.rbkmoney.walker.utils.ThriftConvertor.convertToJson;
+import static com.rbkmoney.walker.utils.ThriftConvertor.fromJsonPartyModificationUnit;
 
 
 @Component
@@ -71,15 +72,15 @@ public class PartyEventHandler implements Handler<StockEvent> {
                 } else if (partyChange.isSetClaimUpdated()) {
                     long claimId = partyChange.getClaimUpdated().getId();
                     log.info("Got claim updated PartyId: {}, ClaimId: {}", partyId, claimId);
-                    ClaimRecord claimRecord = new ClaimRecord();
-                    claimRecord.setId(partyChange.getClaimUpdated().getId());
-                    claimRecord.setEventId(eventId);
-                    claimRecord.setPartyId(partyId);
-                    claimRecord.setRevision((long) partyChange.getClaimUpdated().getRevision());
+                    ClaimRecord claimRecord = claimDao.get(partyId, claimId);
+                    PartyModificationUnit partyModificationUnit = fromJsonPartyModificationUnit(String.valueOf(claimRecord.getChanges()));
 
-                    PartyModificationUnit partyModificationUnit = convertToPartyModificationUnit(partyChange.getClaimUpdated().getChangeset());
-                    claimRecord.setChanges(convertToJson(partyModificationUnit));
-                    claimDao.update(claimRecord);
+                    partyModificationUnit.getModifications().addAll(
+                            convertToPartyModificationUnit(partyChange.getClaimUpdated().getChangeset()).getModifications());
+
+                    Long revision = (long) partyChange.getClaimUpdated().getRevision();
+
+                    claimDao.update(partyId, claimId, eventId, revision, convertToJson(partyModificationUnit));
                     actionService.claimUpdated(partyId, claimId, partyChange.getClaimUpdated().getChangeset(), "event");
                 } else if (partyChange.isSetClaimStatusChanged()) {
                     long claimId = partyChange.getClaimStatusChanged().getId();
