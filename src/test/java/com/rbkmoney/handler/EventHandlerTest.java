@@ -27,6 +27,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.rbkmoney.utils.ActionDiffTest.buildLegalAgreement;
 import static org.junit.Assert.assertEquals;
 
 
@@ -76,6 +77,28 @@ public class EventHandlerTest extends AbstractIntegrationTest {
         assertEquals(PARTY_ID, claimInfos.get(0).getPartyId());
     }
 
+    @Test
+    public void testUpdateClaim() throws IOException, TException {
+        partyEventHandler.handle(buildClaimCreated());
+        ClaimInfo claim1 = walkerService.getClaim(PARTY_ID, CLAIM_ID);
+        int claim1ModSize = claim1.getModifications().getModificationsSize();
+
+        partyEventHandler.handle(buildClaimUpdated());
+        ClaimInfo claim2 = walkerService.getClaim(PARTY_ID, CLAIM_ID);
+        int claim2ModSize = claim2.getModifications().getModificationsSize();
+
+        assertEquals(claim1ModSize + 1, claim2ModSize);
+
+        ClaimSearchRequest claimSearchRequest = new ClaimSearchRequest();
+        claimSearchRequest.setPartyId(PARTY_ID);
+        claimSearchRequest.setClaimId(Collections.singleton(Long.valueOf(CLAIM_ID)));
+        List<ClaimInfo> claimInfos = walkerService.searchClaims(claimSearchRequest);
+
+        assertEquals(1, claimInfos.size());
+        assertEquals(PARTY_ID, claimInfos.get(0).getPartyId());
+        assertEquals(claim2ModSize, claimInfos.get(0).getModifications().getModifications().size());
+    }
+
 
     public StockEvent buildClaimCreated() throws IOException {
         Claim emptyCreated = new Claim();
@@ -97,6 +120,30 @@ public class EventHandlerTest extends AbstractIntegrationTest {
         stockEvent.getSourceEvent().getProcessingEvent().getPayload().setPartyChanges(Collections.singletonList(partyChange));
 
 //        printJson(stockEvent);
+        return stockEvent;
+    }
+
+    public StockEvent buildClaimUpdated() throws IOException {
+        ClaimUpdated claimUpdated = new ClaimUpdated();
+        claimUpdated.setId(CLAIM_ID);
+        claimUpdated.setRevision(1);
+        claimUpdated.setUpdatedAt("2016-01-24T10:15:30Z");
+        claimUpdated.setChangeset(Collections.singletonList(buildLegalAgreement()));
+
+        PartyChange emptyPartyChange = new PartyChange();
+        PartyChange partyChange = new MockTBaseProcessor(MockMode.REQUIRED_ONLY).process(emptyPartyChange, new TBaseHandler<>(PartyChange.class));
+        partyChange.setClaimUpdated(claimUpdated);
+
+        EventSource eventSource = new EventSource();
+        eventSource.setPartyId(PARTY_ID);
+
+        StockEvent emptyStockEvent = new StockEvent();
+        StockEvent stockEvent = new MockTBaseProcessor(MockMode.REQUIRED_ONLY).process(emptyStockEvent, new TBaseHandler<>(StockEvent.class));
+
+        stockEvent.getSourceEvent().getProcessingEvent().setSource(eventSource);
+        stockEvent.getSourceEvent().getProcessingEvent().getPayload().setPartyChanges(Collections.singletonList(partyChange));
+
+        printJson(stockEvent);
         return stockEvent;
     }
 

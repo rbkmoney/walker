@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static com.rbkmoney.utils.ActionDiffTest.buildLegalAgreement;
 import static com.rbkmoney.utils.ActionDiffTest.buildWalkerComplexModification;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
@@ -67,17 +68,15 @@ public class ClaimDaoTest extends AbstractIntegrationTest {
     public void testInsertAndUpdate() throws IOException {
         ClaimRecord claimRecord1 = buildTestClaim(PARTY_ID, CLAIM_ID);
         claimDao.create(claimRecord1);
-        ClaimRecord claimRecord2 = claimDao.get(PARTY_ID, CLAIM_ID);
 
-        assertEquals(claimRecord1.getId(), claimRecord2.getId());
-        assertEquals(claimRecord1.getEventId(), claimRecord2.getEventId());
-        assertEquals(claimRecord1.getPartyId(), claimRecord2.getPartyId());
-
-        claimRecord2.setRevision(4L);
-        claimRecord2.setAssignedUserId("SomebodyElse");
-        claimDao.update(claimRecord2);
+        String modification = buildAdjustmentModification();
+        claimDao.update(PARTY_ID, CLAIM_ID, 22L, 10L, modification);
         ClaimRecord claimRecord3 = claimDao.get(PARTY_ID, CLAIM_ID);
-        assertEquals((Long) 4L, claimRecord3.getRevision());
+
+        assertEquals((Long) 10L, claimRecord3.getRevision());
+        assertEquals(Long.valueOf(22L), claimRecord3.getEventId());
+        assertEquals(Long.valueOf(10L), claimRecord3.getRevision());
+        assertEquals(modification, String.valueOf(claimRecord3.getChanges()).replace(" ",""));
     }
 
     @Test
@@ -118,6 +117,13 @@ public class ClaimDaoTest extends AbstractIntegrationTest {
     public String buildModification() throws IOException {
         PartyModificationUnit partyModificationUnit = new PartyModificationUnit();
         List<PartyModification> partyModificationList = Arrays.asList(buildWalkerComplexModification());
+        partyModificationUnit.setModifications(partyModificationList);
+        return ThriftConvertor.convertToJson(partyModificationUnit);
+    }
+
+    public String buildAdjustmentModification() throws IOException {
+        PartyModificationUnit partyModificationUnit = new PartyModificationUnit();
+        List<PartyModification> partyModificationList = Collections.singletonList(buildLegalAgreement());
         partyModificationUnit.setModifications(partyModificationList);
         return ThriftConvertor.convertToJson(partyModificationUnit);
     }

@@ -89,6 +89,23 @@ public class ActionDiffTest {
         return partyModification;
     }
 
+    public static PartyModification buildLegalAgreement() {
+        LegalAgreement legalAgreement = new LegalAgreement();
+        legalAgreement.setLegalAgreementId("006815/07");
+        legalAgreement.setSignedAt("2015-06-17T00:00:00Z");
+
+        ContractModification contractModification = new ContractModification();
+        contractModification.setLegalAgreementBinding(legalAgreement);
+
+        ContractModificationUnit contractModificationUnit = new ContractModificationUnit();
+        contractModificationUnit.setId("2");
+        contractModificationUnit.setModification(contractModification);
+
+        PartyModification partyModification = new PartyModification();
+        partyModification.setContractModification(contractModificationUnit);
+        return partyModification;
+    }
+
     public PartyModification buildRandomModification() throws IOException {
         PartyModification process = new MockTBaseProcessor().process(new PartyModification(), new TBaseHandler<>(PartyModification.class));
         return process;
