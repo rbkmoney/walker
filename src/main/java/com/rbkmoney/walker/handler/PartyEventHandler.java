@@ -93,7 +93,7 @@ public class PartyEventHandler implements Handler<StockEvent> {
                 } else if (partyChange.isSetShopSuspension()) {
                     log.info("Shop Suspension event", eventId);
                 } else {
-                    log.error("Unsupported event type: {}", partyChange.toString());
+                    log.warn("Unsupported event type: {}", partyChange.toString());
                 }
             }
         } catch (IOException e) {

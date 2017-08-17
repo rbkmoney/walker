@@ -22,7 +22,6 @@ public class WalkerServlet extends GenericServlet {
 
     @Override
     public void init(ServletConfig config) throws ServletException {
-
         super.init(config);
         thriftServlet = new THServiceBuilder()
                 .build(WalkerSrv.Iface.class, requestHandler);
