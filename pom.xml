@@ -99,7 +99,7 @@
         <dependency>
             <groupId>com.rbkmoney.geck</groupId>
             <artifactId>serializer</artifactId>
-            <version>0.5.0</version>
+            <version>0.6.2</version>
         </dependency>
         <dependency>
             <groupId>com.rbkmoney</groupId>
