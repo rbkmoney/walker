@@ -30,7 +30,7 @@
         <db.user>postgres</db.user>
         <db.password>postgres</db.password>
         <db.schema>walk</db.schema>
-        <damsel.version>1.183-a282232</damsel.version>
+        <damsel.version>1.188-c23a0b1</damsel.version>
     </properties>
 
     <dependencies>
