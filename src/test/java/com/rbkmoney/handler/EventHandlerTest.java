@@ -1,6 +1,7 @@
 package com.rbkmoney.handler;
 
 import com.rbkmoney.AbstractIntegrationTest;
+import com.rbkmoney.damsel.event_stock.SourceEvent;
 import com.rbkmoney.damsel.event_stock.StockEvent;
 import com.rbkmoney.damsel.payment_processing.*;
 import com.rbkmoney.damsel.payment_processing.Claim;
@@ -21,11 +22,9 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.rbkmoney.utils.ActionDiffTest.buildLegalAgreement;
 import static org.junit.Assert.assertEquals;
@@ -110,16 +109,9 @@ public class EventHandlerTest extends AbstractIntegrationTest {
         PartyChange partyChange = new MockTBaseProcessor(MockMode.REQUIRED_ONLY).process(emptyPartyChange, new TBaseHandler<>(PartyChange.class));
         partyChange.setClaimCreated(claim);
 
-        EventSource eventSource = new EventSource();
-        eventSource.setPartyId(PARTY_ID);
+        StockEvent stockEvent = buildStockEvent(partyChange);
 
-        StockEvent emptyStockEvent = new StockEvent();
-        StockEvent stockEvent = new MockTBaseProcessor(MockMode.REQUIRED_ONLY).process(emptyStockEvent, new TBaseHandler<>(StockEvent.class));
-
-        stockEvent.getSourceEvent().getProcessingEvent().setSource(eventSource);
-        stockEvent.getSourceEvent().getProcessingEvent().getPayload().setPartyChanges(Collections.singletonList(partyChange));
-
-//        printJson(stockEvent);
+        printJson(stockEvent);
         return stockEvent;
     }
 
@@ -134,15 +126,7 @@ public class EventHandlerTest extends AbstractIntegrationTest {
         PartyChange partyChange = new MockTBaseProcessor(MockMode.REQUIRED_ONLY).process(emptyPartyChange, new TBaseHandler<>(PartyChange.class));
         partyChange.setClaimUpdated(claimUpdated);
 
-        EventSource eventSource = new EventSource();
-        eventSource.setPartyId(PARTY_ID);
-
-        StockEvent emptyStockEvent = new StockEvent();
-        StockEvent stockEvent = new MockTBaseProcessor(MockMode.REQUIRED_ONLY).process(emptyStockEvent, new TBaseHandler<>(StockEvent.class));
-
-        stockEvent.getSourceEvent().getProcessingEvent().setSource(eventSource);
-        stockEvent.getSourceEvent().getProcessingEvent().getPayload().setPartyChanges(Collections.singletonList(partyChange));
-
+        StockEvent stockEvent = buildStockEvent(partyChange);
         printJson(stockEvent);
         return stockEvent;
     }
@@ -158,18 +142,26 @@ public class EventHandlerTest extends AbstractIntegrationTest {
         PartyChange partyChange = new MockTBaseProcessor(MockMode.REQUIRED_ONLY).process(emptyPartyEvent, new TBaseHandler<>(PartyChange.class));
         partyChange.setClaimStatusChanged(claimStatusChanged);
 
+        StockEvent stockEvent = buildStockEvent(partyChange);
+
+        printJson(stockEvent);
+        return stockEvent;
+    }
+
+    public StockEvent buildStockEvent(PartyChange partyChange) throws IOException {
+        Event eventFull = new MockTBaseProcessor(MockMode.REQUIRED_ONLY).process(new Event(), new TBaseHandler<>(Event.class));
+        eventFull.getPayload().setPartyChanges(Collections.singletonList(partyChange));
+
         EventSource eventSource = new EventSource();
         eventSource.setPartyId(PARTY_ID);
 
-        StockEvent emptyStockEvent = new StockEvent();
-        MockTBaseProcessor mockTBaseProcessor = new MockTBaseProcessor(MockMode.REQUIRED_ONLY);
-        mockTBaseProcessor.addFieldHandler((handler -> handler.value("2016-01-24T10:15:30Z")), "created_at");
-        StockEvent stockEvent = mockTBaseProcessor.process(emptyStockEvent, new TBaseHandler<>(StockEvent.class));
+        SourceEvent sourceEvent = new SourceEvent();
+        sourceEvent.setProcessingEvent(eventFull);
+        sourceEvent.getProcessingEvent().setSource(eventSource);
 
-        stockEvent.getSourceEvent().getProcessingEvent().setSource(eventSource);
-        stockEvent.getSourceEvent().getProcessingEvent().getPayload().setPartyChanges(Collections.singletonList(partyChange));
+        StockEvent stockEvent = new StockEvent();
+        stockEvent.setSourceEvent(sourceEvent);
 
-        printJson(stockEvent);
         return stockEvent;
     }
 
