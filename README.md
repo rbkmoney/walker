@@ -44,6 +44,7 @@
  
 # Development 
 Все данные по claim-am хранятся в базе данных в виде
+
     - partyId   
     - версия дамзели
     - assigned user (пока не используется)
@@ -85,6 +86,7 @@ https://github.com/rbkmoney/talks_summary/pull/49/files
 2. ContractTemplate содержит ссылку на TermSetHierarchyObject
 3. TermSetHierarchyObject содержит набор из PaymentsServiceTerms
 4. PaymentsServiceTerms - содержит информацию о fee, холдах рефанда и прочее
+
 При добвалении пользователся создается контракт с дефолтным темплейтом, либо с указанным в заяке
 Сейчас (вроде) нет возможности частично изменить PaymentsServiceTerms - только переписать все сразу,
 поэтому на данный момент для каждого мерчанта с другим процентом создается новый ContractTemplate.
