@@ -50,7 +50,9 @@ public class WalkerServiceTest extends AbstractIntegrationTest {
     @Test
     public void addActionTest() throws IOException, TException {
         ClaimStatus claimStatus = new ClaimStatus();
-        claimStatus.setDenied(new ClaimDenied("because"));
+        ClaimDenied claimDenied = new ClaimDenied();
+        claimDenied.setReason("because");
+        claimStatus.setDenied(claimDenied);
         actionService.claimStatusChanged(PARTY_ID, 1L, claimStatus, TEST_USER_ID);
         List<Action> actions = walkerService.getActions(PARTY_ID, 1L);
         assertEquals(1, actions.size());
