@@ -4,7 +4,6 @@ import com.rbkmoney.AbstractIntegrationTest;
 import com.rbkmoney.damsel.event_stock.SourceEvent;
 import com.rbkmoney.damsel.event_stock.StockEvent;
 import com.rbkmoney.damsel.payment_processing.*;
-import com.rbkmoney.damsel.payment_processing.Claim;
 import com.rbkmoney.damsel.walker.ClaimInfo;
 import com.rbkmoney.damsel.walker.ClaimSearchRequest;
 import com.rbkmoney.damsel.walker.WalkerSrv;

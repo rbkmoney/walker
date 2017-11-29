@@ -1,11 +1,9 @@
 package com.rbkmoney.dao;
 
 import com.rbkmoney.AbstractIntegrationTest;
-import com.rbkmoney.damsel.payment_processing.ClaimDenied;
-import com.rbkmoney.damsel.payment_processing.ClaimStatus;
 import com.rbkmoney.damsel.payment_processing.PartyModification;
-import com.rbkmoney.damsel.walker.*;
-
+import com.rbkmoney.damsel.walker.ActionType;
+import com.rbkmoney.damsel.walker.PartyModificationUnit;
 import com.rbkmoney.walker.dao.ActionDao;
 import com.rbkmoney.walker.domain.generated.tables.records.ActionRecord;
 import com.rbkmoney.walker.service.ActionService;
@@ -19,8 +17,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import static com.rbkmoney.utils.ActionDiffTest.buildWalkerComplexModification;
-
-import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
 
 /**

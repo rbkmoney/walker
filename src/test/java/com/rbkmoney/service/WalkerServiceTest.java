@@ -1,7 +1,8 @@
 package com.rbkmoney.service;
 
 import com.rbkmoney.AbstractIntegrationTest;
-import com.rbkmoney.damsel.payment_processing.*;
+import com.rbkmoney.damsel.payment_processing.ClaimDenied;
+import com.rbkmoney.damsel.payment_processing.ClaimStatus;
 import com.rbkmoney.damsel.walker.*;
 import com.rbkmoney.walker.dao.ActionDao;
 import com.rbkmoney.walker.dao.CommentDao;
