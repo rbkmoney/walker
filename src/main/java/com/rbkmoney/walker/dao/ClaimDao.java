@@ -12,10 +12,8 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
 import org.springframework.util.StringUtils;
 
 import javax.sql.DataSource;
-
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
 
 import static com.rbkmoney.walker.domain.generated.Tables.CLAIM;
 import static org.jooq.impl.DSL.max;

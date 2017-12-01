@@ -1,11 +1,8 @@
 package com.rbkmoney.dao;
 
 import com.rbkmoney.AbstractIntegrationTest;
-import com.rbkmoney.walker.dao.ClaimDao;
 import com.rbkmoney.walker.dao.CommentDao;
-import com.rbkmoney.walker.domain.generated.tables.records.ActionRecord;
 import com.rbkmoney.walker.domain.generated.tables.records.CommentRecord;
-import com.rbkmoney.walker.service.ActionService;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
