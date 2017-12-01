@@ -7,6 +7,7 @@ package com.rbkmoney.walker.domain.generated;
 import com.rbkmoney.walker.domain.generated.tables.Action;
 import com.rbkmoney.walker.domain.generated.tables.Claim;
 import com.rbkmoney.walker.domain.generated.tables.Comment;
+import com.rbkmoney.walker.domain.generated.tables.LastEventId;
 
 import javax.annotation.Generated;
 
@@ -38,4 +39,9 @@ public class Tables {
      * The table <code>walk.comment</code>.
      */
     public static final Comment COMMENT = com.rbkmoney.walker.domain.generated.tables.Comment.COMMENT;
+
+    /**
+     * The table <code>walk.last_event_id</code>.
+     */
+    public static final LastEventId LAST_EVENT_ID = com.rbkmoney.walker.domain.generated.tables.LastEventId.LAST_EVENT_ID;
 }

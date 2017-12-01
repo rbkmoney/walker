@@ -4,8 +4,6 @@ import com.rbkmoney.damsel.event_stock.StockEvent;
 import com.rbkmoney.eventstock.client.EventAction;
 import com.rbkmoney.eventstock.client.EventHandler;
 import com.rbkmoney.walker.handler.Handler;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -13,8 +11,6 @@ import java.util.List;
  * Created by tolkonepiu on 03.08.16.
  */
 public class EventStockHandler implements EventHandler<StockEvent> {
-
-    private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     List<Handler> handlers;
 
@@ -27,7 +23,6 @@ public class EventStockHandler implements EventHandler<StockEvent> {
         for (Handler handler : handlers) {
             if (handler.accept(event)) {
                 handler.handle(event);
-                break;
             }
         }
         return EventAction.CONTINUE;
