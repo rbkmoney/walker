@@ -148,7 +148,7 @@ public class EventHandlerTest extends AbstractIntegrationTest {
     }
 
     public StockEvent buildStockEvent(PartyChange partyChange) throws IOException {
-        Event eventFull = new MockTBaseProcessor(MockMode.REQUIRED_ONLY).process(new Event(), new TBaseHandler<>(Event.class));
+        Event eventFull = new MockTBaseProcessor(MockMode.REQUIRED_ONLY, 15, 1).process(new Event(), new TBaseHandler<>(Event.class));
         eventFull.getPayload().setPartyChanges(Collections.singletonList(partyChange));
 
         EventSource eventSource = new EventSource();

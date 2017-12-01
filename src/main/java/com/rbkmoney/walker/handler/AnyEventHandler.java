@@ -2,42 +2,36 @@ package com.rbkmoney.walker.handler;
 
 import com.rbkmoney.damsel.event_stock.StockEvent;
 import com.rbkmoney.geck.filter.Filter;
+import com.rbkmoney.geck.filter.PathConditionFilter;
+import com.rbkmoney.geck.filter.condition.IsNullCondition;
+import com.rbkmoney.geck.filter.rule.PathConditionRule;
 import com.rbkmoney.walker.dao.LastEventDao;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 
 @Component
 public class AnyEventHandler implements Handler<StockEvent> {
-    Logger log = LoggerFactory.getLogger(this.getClass());
+
+    private String path = "source_event.processing_event";
+
+    private Filter filter;
+
+    public AnyEventHandler() {
+        filter = new PathConditionFilter(new PathConditionRule(path, new IsNullCondition().not()));
+    }
 
     @Autowired
     private LastEventDao lastEventDao;
 
     @Override
-    public boolean accept(StockEvent value) {
-        return true;
-    }
-
-    @Override
     public void handle(StockEvent value) {
-        long eventId = -1;
-        if (value.getSourceEvent().isSetPayoutEvent()) {
-            eventId = value.getSourceEvent().getPayoutEvent().getId();
-        } else if (value.getSourceEvent().isSetProcessingEvent()){
-            eventId = value.getSourceEvent().getProcessingEvent().getId();
-        }
-        if (eventId == -1) {
-            log.warn("Unknown event. It should be PayoutEvent or ProcessingEvent");
-            return;
-        }
+        long eventId = value.getSourceEvent().getProcessingEvent().getId();
         lastEventDao.update(eventId);
     }
 
     @Override
     public Filter getFilter() {
-        throw new UnsupportedOperationException("Filter shouldn't use for AnyEventHandler");
+        return filter;
     }
 }
