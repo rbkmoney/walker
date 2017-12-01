@@ -3,12 +3,6 @@ package com.rbkmoney.walker.service;
 import com.rbkmoney.damsel.base.InvalidRequest;
 import com.rbkmoney.damsel.payment_processing.*;
 import com.rbkmoney.damsel.walker.*;
-import com.rbkmoney.damsel.walker.Action;
-import com.rbkmoney.damsel.walker.ChangesetConflict;
-import com.rbkmoney.damsel.walker.ClaimNotFound;
-import com.rbkmoney.damsel.walker.Comment;
-import com.rbkmoney.damsel.walker.InvalidClaimRevision;
-import com.rbkmoney.damsel.walker.InvalidClaimStatus;
 import com.rbkmoney.walker.dao.ActionDao;
 import com.rbkmoney.walker.dao.ClaimDao;
 import com.rbkmoney.walker.dao.CommentDao;
@@ -26,7 +20,6 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
-
 
 import static com.rbkmoney.walker.utils.ThriftConvertor.convertToClaimInfo;
 import static com.rbkmoney.walker.utils.ThriftConvertor.convertToHGPartyModification;

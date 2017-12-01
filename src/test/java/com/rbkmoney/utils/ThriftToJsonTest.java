@@ -1,20 +1,10 @@
 package com.rbkmoney.utils;
 
 import com.bazaarvoice.jolt.Diffy;
-import com.bazaarvoice.jolt.JsonUtilImpl;
 import com.bazaarvoice.jolt.JsonUtils;
-import com.bazaarvoice.jolt.utils.JoltUtils;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rbkmoney.damsel.domain.*;
 import com.rbkmoney.damsel.payment_processing.*;
 import com.rbkmoney.damsel.walker.PartyModificationUnit;
-import com.rbkmoney.geck.serializer.kit.json.JsonHandler;
-import com.rbkmoney.geck.serializer.kit.json.JsonProcessor;
-import com.rbkmoney.geck.serializer.kit.object.ObjectHandler;
-import com.rbkmoney.geck.serializer.kit.object.ObjectProcessor;
-import com.rbkmoney.geck.serializer.kit.tbase.TBaseHandler;
-import com.rbkmoney.geck.serializer.kit.tbase.TBaseProcessor;
 import org.junit.Test;
 
 import java.io.IOException;

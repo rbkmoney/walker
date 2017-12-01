@@ -6,7 +6,6 @@ import com.rbkmoney.walker.dao.CommentDao;
 import com.rbkmoney.walker.dao.LastEventDao;
 import com.rbkmoney.walker.domain.generated.Walk;
 import org.jooq.Schema;
-import org.jooq.impl.SchemaImpl;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

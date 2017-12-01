@@ -3,7 +3,7 @@ package com.rbkmoney.utils;
 import com.bazaarvoice.jolt.utils.JoltUtils;
 import com.rbkmoney.damsel.domain.*;
 import com.rbkmoney.damsel.payment_processing.*;
-import com.rbkmoney.damsel.walker.*;
+import com.rbkmoney.damsel.walker.PartyModificationUnit;
 import com.rbkmoney.geck.serializer.kit.mock.MockTBaseProcessor;
 import com.rbkmoney.geck.serializer.kit.object.ObjectHandler;
 import com.rbkmoney.geck.serializer.kit.tbase.TBaseHandler;

@@ -2,8 +2,6 @@ package com.rbkmoney.utils;
 
 import com.rbkmoney.damsel.domain.*;
 import com.rbkmoney.damsel.payment_processing.*;
-import com.rbkmoney.damsel.walker.PartyModificationUnit;
-import com.rbkmoney.woody.thrift.impl.http.THClientBuilder;
 import com.rbkmoney.woody.thrift.impl.http.THPooledClientBuilder;
 import org.apache.thrift.TException;
 import org.junit.Before;
