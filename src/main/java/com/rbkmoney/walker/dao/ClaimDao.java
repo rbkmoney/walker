@@ -6,8 +6,6 @@ import com.rbkmoney.walker.domain.generated.tables.records.ClaimRecord;
 import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.jooq.impl.DefaultConfiguration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
 import org.springframework.util.StringUtils;
 
@@ -15,10 +13,8 @@ import javax.sql.DataSource;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
 
 import static com.rbkmoney.walker.domain.generated.Tables.CLAIM;
-import static org.jooq.impl.DSL.max;
 
 /**
  * @since 15.03.17
@@ -26,11 +22,7 @@ import static org.jooq.impl.DSL.max;
 public class ClaimDao extends NamedParameterJdbcDaoSupport {
 
     public static String WALKER_USER_ID = "0";
-
     private DSLContext dslContext;
-
-    Logger log = LoggerFactory.getLogger(this.getClass());
-
     private String damselVersion;
 
     public ClaimDao(DataSource ds, String damselVersion) {
@@ -40,14 +32,6 @@ public class ClaimDao extends NamedParameterJdbcDaoSupport {
         configuration.set(SQLDialect.POSTGRES);
         configuration.set(ds);
         this.dslContext = DSL.using(configuration);
-    }
-
-    public Long getLastEventId() {
-        log.debug("Try to get last event id");
-        Long lastEventId = getJdbcTemplate().queryForObject(dslContext
-                .select(max(CLAIM.EVENT_ID)).from(CLAIM).toString(), Long.class);
-        log.info("Got last eventID {} from db", lastEventId);
-        return lastEventId;
     }
 
     public void create(ClaimRecord claimRecord) {
@@ -141,12 +125,4 @@ public class ClaimDao extends NamedParameterJdbcDaoSupport {
         }
         return query.fetch().into(ClaimRecord.class);
     }
-
-    private void selectJsonExample() {
-        String sql = "SELECT  * from walk.claim where changes->'contract_modification' ->> 'id' = '123';";
-        Result<Record> result = dslContext.fetch(sql);
-        List<ClaimRecord> list = result.into(ClaimRecord.class);
-    }
-
-
 }
