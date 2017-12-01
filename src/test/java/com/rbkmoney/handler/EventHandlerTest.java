@@ -100,12 +100,12 @@ public class EventHandlerTest extends AbstractIntegrationTest {
 
     public StockEvent buildClaimCreated() throws IOException {
         Claim emptyCreated = new Claim();
-        Claim claim = new MockTBaseProcessor(MockMode.REQUIRED_ONLY).process(emptyCreated, new TBaseHandler<>(Claim.class));
+        Claim claim = new MockTBaseProcessor(MockMode.REQUIRED_ONLY, 15, 1).process(emptyCreated, new TBaseHandler<>(Claim.class));
         claim.setStatus(ClaimStatus.pending(new ClaimPending()));
         claim.setId(CLAIM_ID);
 
         PartyChange emptyPartyChange = new PartyChange();
-        PartyChange partyChange = new MockTBaseProcessor(MockMode.REQUIRED_ONLY).process(emptyPartyChange, new TBaseHandler<>(PartyChange.class));
+        PartyChange partyChange = new MockTBaseProcessor(MockMode.REQUIRED_ONLY, 15, 1).process(emptyPartyChange, new TBaseHandler<>(PartyChange.class));
         partyChange.setClaimCreated(claim);
 
         StockEvent stockEvent = buildStockEvent(partyChange);
@@ -122,7 +122,7 @@ public class EventHandlerTest extends AbstractIntegrationTest {
         claimUpdated.setChangeset(Collections.singletonList(buildLegalAgreement()));
 
         PartyChange emptyPartyChange = new PartyChange();
-        PartyChange partyChange = new MockTBaseProcessor(MockMode.REQUIRED_ONLY).process(emptyPartyChange, new TBaseHandler<>(PartyChange.class));
+        PartyChange partyChange = new MockTBaseProcessor(MockMode.REQUIRED_ONLY, 15, 1).process(emptyPartyChange, new TBaseHandler<>(PartyChange.class));
         partyChange.setClaimUpdated(claimUpdated);
 
         StockEvent stockEvent = buildStockEvent(partyChange);
@@ -138,7 +138,7 @@ public class EventHandlerTest extends AbstractIntegrationTest {
         claimStatusChanged.setChangedAt(TimeUtils.toIsoInstantString(LocalDateTime.now()));
 
         PartyChange emptyPartyEvent = new PartyChange();
-        PartyChange partyChange = new MockTBaseProcessor(MockMode.REQUIRED_ONLY).process(emptyPartyEvent, new TBaseHandler<>(PartyChange.class));
+        PartyChange partyChange = new MockTBaseProcessor(MockMode.REQUIRED_ONLY, 15, 1).process(emptyPartyEvent, new TBaseHandler<>(PartyChange.class));
         partyChange.setClaimStatusChanged(claimStatusChanged);
 
         StockEvent stockEvent = buildStockEvent(partyChange);
