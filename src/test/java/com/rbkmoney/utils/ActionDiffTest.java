@@ -4,6 +4,7 @@ import com.bazaarvoice.jolt.utils.JoltUtils;
 import com.rbkmoney.damsel.domain.*;
 import com.rbkmoney.damsel.payment_processing.*;
 import com.rbkmoney.damsel.walker.PartyModificationUnit;
+import com.rbkmoney.geck.serializer.kit.mock.MockMode;
 import com.rbkmoney.geck.serializer.kit.mock.MockTBaseProcessor;
 import com.rbkmoney.geck.serializer.kit.object.ObjectHandler;
 import com.rbkmoney.geck.serializer.kit.tbase.TBaseHandler;
@@ -107,7 +108,7 @@ public class ActionDiffTest {
     }
 
     public PartyModification buildRandomModification() throws IOException {
-        PartyModification process = new MockTBaseProcessor().process(new PartyModification(), new TBaseHandler<>(PartyModification.class));
+        PartyModification process = new MockTBaseProcessor(MockMode.ALL, 15, 1).process(new PartyModification(), new TBaseHandler<>(PartyModification.class));
         return process;
     }
 
