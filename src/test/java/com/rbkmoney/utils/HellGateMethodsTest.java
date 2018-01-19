@@ -95,7 +95,7 @@ public class HellGateMethodsTest {
     private PartyModification buildCreateContract() {
         RussianLegalEntity russianLegalEntity = new RussianLegalEntity();
         russianLegalEntity.setActualAddress("Bunny hole");
-        russianLegalEntity.setBankAccount(new BankAccount("132", "Bunny bank", "bbbbbuuuuunnny", "bibibiib"));
+        russianLegalEntity.setRussianBankAccount(new RussianBankAccount("132", "Bunny bank", "bbbbbuuuuunnny", "bibibiib"));
         russianLegalEntity.setInn("123123");
         russianLegalEntity.setPostAddress("pppaaaa papapa");
         russianLegalEntity.setActualAddress("pipipipip");
