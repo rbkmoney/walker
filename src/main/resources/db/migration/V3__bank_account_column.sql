@@ -1,0 +1,1 @@
+update WALK.CLAIM set changes = replace(changes::TEXT, '"bank_account"', '"russian_bank_account"')::jsonb;
