@@ -24,7 +24,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
         <postgresql.jdbc.version>9.4.1210</postgresql.jdbc.version>
-        <dockerfile.base.service.tag>60ec6caf5c52778c9e89075656cca2ceeee4d0dd</dockerfile.base.service.tag>
+        <dockerfile.base.service.tag>22c57470c4fc47161894f036b7cf9d70f42b75f5</dockerfile.base.service.tag>
         <shared.resources.version>0.2.1</shared.resources.version>
         <db.url>jdbc:postgresql://localhost:5432/walk</db.url>
         <db.user>postgres</db.user>
