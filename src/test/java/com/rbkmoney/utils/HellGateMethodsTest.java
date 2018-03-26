@@ -2,8 +2,6 @@ package com.rbkmoney.utils;
 
 import com.rbkmoney.damsel.domain.*;
 import com.rbkmoney.damsel.payment_processing.*;
-import com.rbkmoney.damsel.walker.PartyModificationUnit;
-import com.rbkmoney.woody.thrift.impl.http.THClientBuilder;
 import com.rbkmoney.woody.thrift.impl.http.THPooledClientBuilder;
 import org.apache.thrift.TException;
 import org.junit.Before;
@@ -97,7 +95,7 @@ public class HellGateMethodsTest {
     private PartyModification buildCreateContract() {
         RussianLegalEntity russianLegalEntity = new RussianLegalEntity();
         russianLegalEntity.setActualAddress("Bunny hole");
-        russianLegalEntity.setBankAccount(new BankAccount("132", "Bunny bank", "bbbbbuuuuunnny", "bibibiib"));
+        russianLegalEntity.setRussianBankAccount(new RussianBankAccount("132", "Bunny bank", "bbbbbuuuuunnny", "bibibiib"));
         russianLegalEntity.setInn("123123");
         russianLegalEntity.setPostAddress("pppaaaa papapa");
         russianLegalEntity.setActualAddress("pipipipip");

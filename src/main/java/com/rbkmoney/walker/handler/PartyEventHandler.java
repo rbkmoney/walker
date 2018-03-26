@@ -21,9 +21,7 @@ import java.io.IOException;
 import java.util.List;
 
 import static com.rbkmoney.walker.dao.ClaimDao.getStatusName;
-import static com.rbkmoney.walker.utils.ThriftConvertor.convertToPartyModificationUnit;
-import static com.rbkmoney.walker.utils.ThriftConvertor.convertToJson;
-import static com.rbkmoney.walker.utils.ThriftConvertor.fromJsonPartyModificationUnit;
+import static com.rbkmoney.walker.utils.ThriftConvertor.*;
 
 
 @Component

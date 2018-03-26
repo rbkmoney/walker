@@ -1,20 +1,10 @@
 package com.rbkmoney.utils;
 
 import com.bazaarvoice.jolt.Diffy;
-import com.bazaarvoice.jolt.JsonUtilImpl;
 import com.bazaarvoice.jolt.JsonUtils;
-import com.bazaarvoice.jolt.utils.JoltUtils;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rbkmoney.damsel.domain.*;
 import com.rbkmoney.damsel.payment_processing.*;
 import com.rbkmoney.damsel.walker.PartyModificationUnit;
-import com.rbkmoney.geck.serializer.kit.json.JsonHandler;
-import com.rbkmoney.geck.serializer.kit.json.JsonProcessor;
-import com.rbkmoney.geck.serializer.kit.object.ObjectHandler;
-import com.rbkmoney.geck.serializer.kit.object.ObjectProcessor;
-import com.rbkmoney.geck.serializer.kit.tbase.TBaseHandler;
-import com.rbkmoney.geck.serializer.kit.tbase.TBaseProcessor;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -75,8 +65,8 @@ public class ThriftToJsonTest {
 
     public static PartyModification buildComplexModification() {
 
-        BankAccount bankAccount1 = new BankAccount("Аккаунт", "Degu Bank Inc", "123123123 post", "12313");
-        BankAccount bankAccount2 = new BankAccount("Аккаунт2", "Not Degu Bank Inc", "333 post", "BIKBIK");
+        RussianBankAccount bankAccount1 = new RussianBankAccount("Аккаунт", "Degu Bank Inc", "123123123 post", "12313");
+        RussianBankAccount bankAccount2 = new RussianBankAccount("Аккаунт2", "Not Degu Bank Inc", "333 post", "BIKBIK");
 
         RussianLegalEntity russianLegalEntity = new RussianLegalEntity();
         russianLegalEntity.setActualAddress("Улица пушкина, Дом колотушкина");
@@ -87,7 +77,7 @@ public class ThriftToJsonTest {
         russianLegalEntity.setRepresentativeDocument("Усы лапы и хвост");
         russianLegalEntity.setRepresentativePosition("Миссионерская");
         russianLegalEntity.setRepresentativeFullName("Александра Грей");
-        russianLegalEntity.setBankAccount(bankAccount1);
+        russianLegalEntity.setRussianBankAccount(bankAccount1);
 
         LegalEntity legalEntity = new LegalEntity();
 
@@ -96,7 +86,7 @@ public class ThriftToJsonTest {
         contractor.setLegalEntity(legalEntity);
 
         PayoutToolInfo payoutToolInfo = new PayoutToolInfo();
-        payoutToolInfo.setBankAccount(bankAccount2);
+        payoutToolInfo.setRussianBankAccount(bankAccount2);
 
         PayoutToolParams payoutToolParams = new PayoutToolParams();
         payoutToolParams.setCurrency(new CurrencyRef("RUB"));

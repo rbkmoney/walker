@@ -7,6 +7,7 @@ package com.rbkmoney.walker.domain.generated;
 import com.rbkmoney.walker.domain.generated.tables.Action;
 import com.rbkmoney.walker.domain.generated.tables.Claim;
 import com.rbkmoney.walker.domain.generated.tables.Comment;
+import com.rbkmoney.walker.domain.generated.tables.LastEventId;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,7 +34,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Walk extends SchemaImpl {
 
-    private static final long serialVersionUID = -520676646;
+    private static final long serialVersionUID = 226960240;
 
     /**
      * The reference instance of <code>walk</code>
@@ -54,6 +55,11 @@ public class Walk extends SchemaImpl {
      * The table <code>walk.comment</code>.
      */
     public final Comment COMMENT = com.rbkmoney.walker.domain.generated.tables.Comment.COMMENT;
+
+    /**
+     * The table <code>walk.last_event_id</code>.
+     */
+    public final LastEventId LAST_EVENT_ID = com.rbkmoney.walker.domain.generated.tables.LastEventId.LAST_EVENT_ID;
 
     /**
      * No further instances allowed
@@ -95,6 +101,7 @@ public class Walk extends SchemaImpl {
         return Arrays.<Table<?>>asList(
             Action.ACTION,
             Claim.CLAIM,
-            Comment.COMMENT);
+            Comment.COMMENT,
+            LastEventId.LAST_EVENT_ID);
     }
 }

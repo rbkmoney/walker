@@ -3,7 +3,8 @@ package com.rbkmoney.utils;
 import com.bazaarvoice.jolt.utils.JoltUtils;
 import com.rbkmoney.damsel.domain.*;
 import com.rbkmoney.damsel.payment_processing.*;
-import com.rbkmoney.damsel.walker.*;
+import com.rbkmoney.damsel.walker.PartyModificationUnit;
+import com.rbkmoney.geck.serializer.kit.mock.MockMode;
 import com.rbkmoney.geck.serializer.kit.mock.MockTBaseProcessor;
 import com.rbkmoney.geck.serializer.kit.object.ObjectHandler;
 import com.rbkmoney.geck.serializer.kit.tbase.TBaseHandler;
@@ -44,8 +45,8 @@ public class ActionDiffTest {
     }
 
     public static PartyModification buildWalkerComplexModification() throws IOException {
-        BankAccount bankAccount1 = new BankAccount("Аккаунт", "Degu Bank Inc", "123123123 post", "12313");
-        BankAccount bankAccount2 = new BankAccount("Аккаунт2", "Not Degu Bank Inc", "333 post", "BIKBIK");
+        RussianBankAccount bankAccount1 = new RussianBankAccount("Аккаунт", "Degu Bank Inc", "123123123 post", "12313");
+        RussianBankAccount bankAccount2 = new RussianBankAccount("Аккаунт2", "Not Degu Bank Inc", "333 post", "BIKBIK");
 
         RussianLegalEntity russianLegalEntity = new RussianLegalEntity();
         russianLegalEntity.setActualAddress("Улица пушкина, Дом колотушкина");
@@ -56,7 +57,7 @@ public class ActionDiffTest {
         russianLegalEntity.setRepresentativeDocument("Усы лапы и хвост");
         russianLegalEntity.setRepresentativePosition("Миссионерская");
         russianLegalEntity.setRepresentativeFullName("Александра Грей");
-        russianLegalEntity.setBankAccount(bankAccount2);
+        russianLegalEntity.setRussianBankAccount(bankAccount2);
 
 
         LegalEntity legalEntity = new LegalEntity();
@@ -66,7 +67,7 @@ public class ActionDiffTest {
         contractor.setLegalEntity(legalEntity);
 
         PayoutToolInfo payoutToolInfo = new PayoutToolInfo();
-        payoutToolInfo.setBankAccount(bankAccount2);
+        payoutToolInfo.setRussianBankAccount(bankAccount2);
 
         PayoutToolParams payoutToolParams = new PayoutToolParams();
         payoutToolParams.setCurrency(new CurrencyRef("RUB"));
@@ -107,7 +108,7 @@ public class ActionDiffTest {
     }
 
     public PartyModification buildRandomModification() throws IOException {
-        PartyModification process = new MockTBaseProcessor().process(new PartyModification(), new TBaseHandler<>(PartyModification.class));
+        PartyModification process = new MockTBaseProcessor(MockMode.ALL, 15, 1).process(new PartyModification(), new TBaseHandler<>(PartyModification.class));
         return process;
     }
 
