@@ -4,19 +4,14 @@ import com.rbkmoney.damsel.event_stock.StockEvent;
 import com.rbkmoney.eventstock.client.EventAction;
 import com.rbkmoney.eventstock.client.EventHandler;
 import com.rbkmoney.walker.handler.Handler;
+import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-/**
- * Created by tolkonepiu on 03.08.16.
- */
+@RequiredArgsConstructor
 public class EventStockHandler implements EventHandler<StockEvent> {
 
-    List<Handler> handlers;
-
-    public EventStockHandler(List<Handler> handlers) {
-        this.handlers = handlers;
-    }
+    private final List<Handler> handlers;
 
     @Override
     public EventAction handle(StockEvent event, String subsKey) {

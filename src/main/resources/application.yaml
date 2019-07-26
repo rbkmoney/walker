@@ -1,0 +1,33 @@
+server.port: @server.port@
+info:
+  damsel:
+    version: @damsel.version@
+
+spring:
+  application.name: walker
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/walk
+    username: postgres
+    password: postgres
+  flyway:
+    schemas: walk
+
+
+management:
+  metrics:
+    export:
+      statsd:
+        flavor: etsy
+        enabled: false
+
+# Bustermaze
+bm.pooling:
+  url: http://localhost:8023/repo
+  maxPoolSize: 1
+  delay: 10000
+
+# Hellgate
+hg.party.management.url: http://localhost:8022/v1/processing/partymgmt
+

@@ -14,9 +14,6 @@ import java.util.List;
 
 import static com.rbkmoney.walker.domain.generated.Tables.COMMENT;
 
-/**
- * @since 15.03.17
- **/
 public class CommentDao extends NamedParameterJdbcDaoSupport {
 
     private DSLContext dslContext;

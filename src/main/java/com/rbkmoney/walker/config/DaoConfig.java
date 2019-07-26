@@ -22,25 +22,21 @@ public class DaoConfig {
     public String damselVersion;
 
     @Bean
-    @DependsOn("dbInitializer")
     public ClaimDao claimDao(DataSource ds) {
         return new ClaimDao(ds, damselVersion);
     }
 
     @Bean
-    @DependsOn("dbInitializer")
     public ActionDao actionDao(DataSource ds) {
         return new ActionDao(ds);
     }
 
     @Bean
-    @DependsOn("dbInitializer")
     public CommentDao commentDao(DataSource ds) {
         return new CommentDao(ds);
     }
 
     @Bean
-    @DependsOn("dbInitializer")
     public LastEventDao lastEventDao(DataSource ds) {
         return new LastEventDao(ds);
     }
@@ -49,4 +45,5 @@ public class DaoConfig {
     public Schema dbSchema() {
         return WALK;
     }
+
 }

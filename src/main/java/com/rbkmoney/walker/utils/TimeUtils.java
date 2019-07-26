@@ -6,9 +6,6 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
-/**
- * @since 27.03.17
- **/
 public class TimeUtils {
 
     public static String toIsoInstantString(LocalDateTime localDateTime) {

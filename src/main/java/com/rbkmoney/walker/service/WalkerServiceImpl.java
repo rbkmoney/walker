@@ -10,6 +10,8 @@ import com.rbkmoney.walker.domain.generated.tables.records.ActionRecord;
 import com.rbkmoney.walker.domain.generated.tables.records.ClaimRecord;
 import com.rbkmoney.walker.domain.generated.tables.records.CommentRecord;
 import com.rbkmoney.walker.utils.ThriftConvertor;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,26 +27,15 @@ import static com.rbkmoney.walker.utils.ThriftConvertor.convertToClaimInfo;
 import static com.rbkmoney.walker.utils.ThriftConvertor.convertToHGPartyModification;
 import static com.rbkmoney.walker.utils.TimeUtils.toIsoInstantString;
 
-/**
- * @since 15.03.17
- **/
+@Slf4j
 @Service
+@RequiredArgsConstructor
 public class WalkerServiceImpl implements WalkerSrv.Iface {
 
-    Logger log = LoggerFactory.getLogger(this.getClass());
-
-    @Autowired
-    private ActionDao actionDao;
-
-    @Autowired
-    private PartyManagementSrv.Iface partyManagement;
-
-    @Autowired
-    private ClaimDao claimDao;
-
-
-    @Autowired
-    private CommentDao commentDao;
+    private final ActionDao actionDao;
+    private final PartyManagementSrv.Iface partyManagement;
+    private final ClaimDao claimDao;
+    private final CommentDao commentDao;
 
     @Override
     public void acceptClaim(String party_id, long claim_id, UserInformation user, int revision) throws InvalidUser, PartyNotFound, ClaimNotFound, InvalidClaimStatus, InvalidClaimRevision, InvalidChangeset, TException {

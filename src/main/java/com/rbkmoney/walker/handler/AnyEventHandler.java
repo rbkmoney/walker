@@ -6,23 +6,19 @@ import com.rbkmoney.geck.filter.PathConditionFilter;
 import com.rbkmoney.geck.filter.condition.IsNullCondition;
 import com.rbkmoney.geck.filter.rule.PathConditionRule;
 import com.rbkmoney.walker.dao.LastEventDao;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 
 @Component
+@RequiredArgsConstructor
 public class AnyEventHandler implements Handler<StockEvent> {
 
     private String path = "source_event.processing_event";
 
-    private Filter filter;
-
-    public AnyEventHandler() {
-        filter = new PathConditionFilter(new PathConditionRule(path, new IsNullCondition().not()));
-    }
-
-    @Autowired
-    private LastEventDao lastEventDao;
+    private Filter filter = new PathConditionFilter(new PathConditionRule(path, new IsNullCondition().not()));
+    private final LastEventDao lastEventDao;
 
     @Override
     public void handle(StockEvent value) {

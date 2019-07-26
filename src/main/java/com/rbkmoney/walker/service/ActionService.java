@@ -7,6 +7,7 @@ import com.rbkmoney.damsel.walker.PartyModificationUnit;
 import com.rbkmoney.walker.dao.ActionDao;
 import com.rbkmoney.walker.domain.generated.tables.records.ActionRecord;
 import com.rbkmoney.walker.utils.ThriftConvertor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,14 +17,11 @@ import java.util.List;
 import static com.rbkmoney.walker.utils.ThriftConvertor.convertToJson;
 
 
-/**
- * @since 22.03.17 👩‍🎤
- **/
 @Service
+@RequiredArgsConstructor
 public class ActionService {
 
-    @Autowired
-    private ActionDao actionDao;
+    private final ActionDao actionDao;
 
     public void claimCreated(String partyId, Long claimId, List<PartyModification> changeset, String userId) throws IOException {
         PartyModificationUnit partyModificationUnit = ThriftConvertor.convertToPartyModificationUnit(changeset);

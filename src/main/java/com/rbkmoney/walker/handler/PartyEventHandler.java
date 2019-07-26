@@ -12,6 +12,8 @@ import com.rbkmoney.geck.filter.rule.PathConditionRule;
 import com.rbkmoney.walker.dao.ClaimDao;
 import com.rbkmoney.walker.domain.generated.tables.records.ClaimRecord;
 import com.rbkmoney.walker.service.ActionService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,25 +25,17 @@ import java.util.List;
 import static com.rbkmoney.walker.dao.ClaimDao.getStatusName;
 import static com.rbkmoney.walker.utils.ThriftConvertor.*;
 
-
+@Slf4j
 @Component
+@RequiredArgsConstructor
 public class PartyEventHandler implements Handler<StockEvent> {
-    Logger log = LoggerFactory.getLogger(this.getClass());
 
     private String path = "source_event.processing_event.payload.party_changes";
 
-    private Filter filter;
+    private Filter filter = new PathConditionFilter(new PathConditionRule(path, new IsNullCondition().not()));;
 
-    public PartyEventHandler() {
-        filter = new PathConditionFilter(new PathConditionRule(path, new IsNullCondition().not()));
-    }
-
-
-    @Autowired
-    private ClaimDao claimDao;
-
-    @Autowired
-    private ActionService actionService;
+    private final ClaimDao claimDao;
+    private final ActionService actionService;
 
 
     @Override
