@@ -1,26 +1,35 @@
-server.port: @server.port@
 info:
+  version: @project.version@
   damsel:
     version: @damsel.version@
-
-spring:
-  application.name: walker
-  datasource:
-    type: com.zaxxer.hikari.HikariDataSource
-    driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/walk
-    username: postgres
-    password: postgres
-  flyway:
-    schemas: walk
-
-
+  stage: dev
+server:
+  port: @server.port@
 management:
   metrics:
     export:
       statsd:
         flavor: etsy
         enabled: false
+  security:
+    flag: false
+spring:
+  application:
+    name: @project.name@
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: org.postgresql.Driver
+    url: @db.url@
+    username: @db.user@
+    password: @db.password@
+    hikari:
+      idle-timeout: 30000
+      maximum-pool-size: 3
+  flyway:
+    schemas: @db.schema@
+  output:
+    ansi:
+      enabled: always
 
 # Bustermaze
 bm.pooling:

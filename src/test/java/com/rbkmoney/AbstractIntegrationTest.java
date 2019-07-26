@@ -39,14 +39,14 @@ public abstract class AbstractIntegrationTest {
         @Override
         public void initialize(ConfigurableApplicationContext configurableApplicationContext) {
             TestPropertyValues.of(
-                    "spring.datasource.url", postgres.getJdbcUrl(),
-                    "spring.datasource.username", postgres.getUsername(),
-                    "spring.datasource.password", postgres.getPassword(),
-                    "spring.datasource.driver-class-name", postgres.getDriverClassName(),
-                    "spring.flyway.url", postgres.getJdbcUrl(),
-                    "spring.flyway.user", postgres.getUsername(),
-                    "spring.flyway.password" ,postgres.getPassword()
-            ).applyTo(configurableApplicationContext);
+                    "spring.datasource.url=" + postgres.getJdbcUrl(),
+                    "spring.datasource.username=" + postgres.getUsername(),
+                    "spring.datasource.password=" + postgres.getPassword(),
+                    "flyway.url=" + postgres.getJdbcUrl(),
+                    "flyway.user=" + postgres.getUsername(),
+                    "flyway.password=" + postgres.getPassword()
+            )
+                    .applyTo(configurableApplicationContext);
 
             Flyway flyway = Flyway.configure()
                     .dataSource(postgres.getJdbcUrl(), postgres.getUsername(), postgres.getPassword())
