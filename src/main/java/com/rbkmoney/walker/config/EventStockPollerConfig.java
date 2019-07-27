@@ -6,6 +6,8 @@ import com.rbkmoney.eventstock.client.poll.PollingEventPublisherBuilder;
 import com.rbkmoney.walker.dao.LastEventDao;
 import com.rbkmoney.walker.handler.Handler;
 import com.rbkmoney.walker.handler.poller.EventStockHandler;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,12 +19,10 @@ import org.springframework.core.io.Resource;
 import java.io.IOException;
 import java.util.List;
 
-/**
- * Created by tolkonepiu on 03.08.16.
- */
+@Slf4j
 @Configuration
+@RequiredArgsConstructor
 public class EventStockPollerConfig {
-    private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Value("${bm.pooling.url}")
     Resource bmUri;
@@ -33,11 +33,8 @@ public class EventStockPollerConfig {
     @Value("${bm.pooling.maxPoolSize}")
     int maxPoolSize;
 
-    @Autowired
-    List<Handler> handlers;
-
-    @Autowired
-    LastEventDao lastEventDao;
+    private final List<Handler> handlers;
+    private final LastEventDao lastEventDao;
 
     @Bean
     public EventPublisher eventPublisher() throws IOException {

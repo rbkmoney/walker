@@ -23,7 +23,7 @@ import static com.rbkmoney.walker.utils.TimeUtils.toIsoInstantString;
  **/
 public class ThriftConvertor {
 
-    public static ObjectMapper mapper = new ObjectMapper();
+    private static ObjectMapper mapper = new ObjectMapper();
 
     public static String convertToJson(TBase tBase) throws IOException {
         String json = new TBaseProcessor().process(tBase, new JsonHandler()).toString();

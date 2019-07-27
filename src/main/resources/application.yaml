@@ -1,0 +1,42 @@
+info:
+  version: @project.version@
+  damsel:
+    version: @damsel.version@
+  stage: dev
+server:
+  port: @server.port@
+management:
+  metrics:
+    export:
+      statsd:
+        flavor: etsy
+        enabled: false
+  security:
+    flag: false
+spring:
+  application:
+    name: @project.name@
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: org.postgresql.Driver
+    url: @db.url@
+    username: @db.user@
+    password: @db.password@
+    hikari:
+      idle-timeout: 30000
+      maximum-pool-size: 3
+  flyway:
+    schemas: @db.schema@
+  output:
+    ansi:
+      enabled: always
+
+# Bustermaze
+bm.pooling:
+  url: http://localhost:8023/repo
+  maxPoolSize: 1
+  delay: 10000
+
+# Hellgate
+hg.party.management.url: http://localhost:8022/v1/processing/partymgmt
+

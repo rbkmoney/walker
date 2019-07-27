@@ -16,9 +16,7 @@ import java.util.stream.Collectors;
 
 import static com.rbkmoney.walker.domain.generated.Tables.ACTION;
 
-/**
- * @since 15.03.17
- **/
+
 public class ActionDao extends NamedParameterJdbcDaoSupport {
 
     private DSLContext dslContext;

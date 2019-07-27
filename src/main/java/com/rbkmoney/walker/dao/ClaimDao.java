@@ -15,9 +15,6 @@ import java.util.List;
 
 import static com.rbkmoney.walker.domain.generated.Tables.CLAIM;
 
-/**
- * @since 15.03.17
- **/
 public class ClaimDao extends NamedParameterJdbcDaoSupport {
 
     public static String WALKER_USER_ID = "0";

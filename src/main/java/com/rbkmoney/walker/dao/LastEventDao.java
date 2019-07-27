@@ -1,6 +1,7 @@
 package com.rbkmoney.walker.dao;
 
 import com.rbkmoney.walker.domain.generated.tables.records.LastEventIdRecord;
+import lombok.extern.slf4j.Slf4j;
 import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.jooq.impl.DefaultConfiguration;
@@ -10,14 +11,10 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
 import javax.sql.DataSource;
 import static com.rbkmoney.walker.domain.generated.Tables.LAST_EVENT_ID;
 
-/**
- * @since 15.03.17
- **/
+@Slf4j
 public class LastEventDao extends NamedParameterJdbcDaoSupport {
 
     private DSLContext dslContext;
-
-    Logger log = LoggerFactory.getLogger(this.getClass());
 
     public LastEventDao(DataSource ds) {
         setDataSource(ds);
