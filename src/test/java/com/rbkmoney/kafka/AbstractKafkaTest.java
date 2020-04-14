@@ -74,7 +74,8 @@ public abstract class AbstractKafkaTest extends AbstractTestUtils {
 
     private static Consumer<EnvironmentProperties> getEnvironmentPropertiesConsumer() {
         return environmentProperties -> {
-            environmentProperties.put("topics.party-management.id: mg-events-party", "mg-events-party");
+            environmentProperties.put("info.single-instance-mode", "false");
+            environmentProperties.put("kafka.topics.party-management.enabled", "true");
         };
     }
 

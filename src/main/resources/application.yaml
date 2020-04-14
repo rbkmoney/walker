@@ -3,7 +3,7 @@ info:
   damsel:
     version: @damsel.version@
   stage: dev
-  single-instance-mode: false
+  single-instance-mode: true
 server:
   port: @server.port@
 spring:
