@@ -6,7 +6,6 @@ import com.rbkmoney.damsel.walker.ActionType;
 import com.rbkmoney.damsel.walker.PartyModificationUnit;
 import com.rbkmoney.walker.dao.ActionDao;
 import com.rbkmoney.walker.domain.generated.tables.records.ActionRecord;
-import com.rbkmoney.walker.service.ActionService;
 import com.rbkmoney.walker.utils.ThriftConvertor;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,20 +18,14 @@ import java.util.List;
 import static com.rbkmoney.utils.ActionDiffTest.buildWalkerComplexModification;
 import static org.junit.Assert.assertEquals;
 
-/**
- * @since 20.03.17
- **/
 public class ActionDaoTest extends AbstractIntegrationTest {
 
     @Autowired
     private ActionDao actionDao;
 
-    @Autowired
-    private ActionService actionService;
-
-    private String PARTY_ID = "test-party-id";
-    private String TEST_USER_ID = "test_user_id";
-    private long CLAIM_ID = 1L;
+    private static final String PARTY_ID = "test-party-id";
+    private static final String TEST_USER_ID = "test_user_id";
+    private static final long CLAIM_ID = 1L;
 
     @Before
     public void before() {

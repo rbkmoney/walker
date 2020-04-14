@@ -8,14 +8,12 @@ import com.rbkmoney.walker.dao.ActionDao;
 import com.rbkmoney.walker.domain.generated.tables.records.ActionRecord;
 import com.rbkmoney.walker.utils.ThriftConvertor;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.List;
 
 import static com.rbkmoney.walker.utils.ThriftConvertor.convertToJson;
-
 
 @Service
 @RequiredArgsConstructor
@@ -59,6 +57,5 @@ public class ActionService {
 
         actionDao.add(actionRecord);
     }
-
 
 }

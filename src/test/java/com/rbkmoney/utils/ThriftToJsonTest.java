@@ -15,11 +15,7 @@ import static com.rbkmoney.walker.utils.ThriftConvertor.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-/**
- * @since 14.03.17
- **/
 public class ThriftToJsonTest {
-
 
     @Test
     public void thriftToJsonComplex() throws IOException {

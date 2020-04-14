@@ -11,15 +11,12 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
-/**
- * @since 28.03.17
- **/
 public class CommentDaoTest extends AbstractIntegrationTest {
 
     @Autowired
-    CommentDao commentDao;
+    private CommentDao commentDao;
 
-    String PARTY_ID = "test-party-id";
+    private static final String PARTY_ID = "test-party-id";
 
     @Before
     public void before() {
@@ -47,6 +44,5 @@ public class CommentDaoTest extends AbstractIntegrationTest {
         assertEquals("Буууу", comments.get(0).getText());
         assertEquals((Long) 1L, comments.get(0).getClaimId());
     }
-
 
 }

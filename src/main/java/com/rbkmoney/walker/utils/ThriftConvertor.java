@@ -18,9 +18,6 @@ import java.util.List;
 
 import static com.rbkmoney.walker.utils.TimeUtils.toIsoInstantString;
 
-/**
- * @since 23.03.17
- **/
 public class ThriftConvertor {
 
     private static ObjectMapper mapper = new ObjectMapper();

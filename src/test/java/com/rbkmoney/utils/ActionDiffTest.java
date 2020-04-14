@@ -18,9 +18,6 @@ import java.util.List;
 
 import static com.rbkmoney.utils.ThriftToJsonTest.buildDiffObjects;
 
-/**
- * @since 21.03.17
- **/
 public class ActionDiffTest {
 
     @Test

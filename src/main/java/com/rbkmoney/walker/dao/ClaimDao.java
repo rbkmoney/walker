@@ -17,9 +17,10 @@ import static com.rbkmoney.walker.domain.generated.Tables.CLAIM;
 
 public class ClaimDao extends NamedParameterJdbcDaoSupport {
 
-    public static String WALKER_USER_ID = "0";
     private DSLContext dslContext;
     private String damselVersion;
+
+    public static final String WALKER_USER_ID = "0";
 
     public ClaimDao(DataSource ds, String damselVersion) {
         this.damselVersion = damselVersion;

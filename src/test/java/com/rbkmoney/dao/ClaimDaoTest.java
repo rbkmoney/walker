@@ -11,7 +11,6 @@ import com.rbkmoney.damsel.walker.ClaimSearchRequest;
 import com.rbkmoney.damsel.walker.PartyModificationUnit;
 import com.rbkmoney.walker.dao.ClaimDao;
 import com.rbkmoney.walker.domain.generated.tables.records.ClaimRecord;
-import com.rbkmoney.walker.service.ActionService;
 import com.rbkmoney.walker.utils.ThriftConvertor;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,21 +26,14 @@ import static com.rbkmoney.utils.ActionDiffTest.buildWalkerComplexModification;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
 
-/**
- * @since 17.03.17
- **/
 public class ClaimDaoTest extends AbstractIntegrationTest {
 
     @Autowired
-    ClaimDao claimDao;
+    private ClaimDao claimDao;
 
-    @Autowired
-    ActionService actionService;
-
-    private String TEST_USER_ID = "test_user_id";
-    private long CLAIM_ID = 1;
-
-    String PARTY_ID = "test-party-id";
+    private static final String TEST_USER_ID = "test_user_id";
+    private static final String PARTY_ID = "test-party-id";
+    private static final long CLAIM_ID = 1;
 
     @Before
     public void before() {

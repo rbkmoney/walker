@@ -1,9 +1,8 @@
-package com.rbkmoney.walker.config;
+package com.rbkmoney.walker.endpoint;
 
 import com.rbkmoney.damsel.walker.WalkerSrv;
 import com.rbkmoney.woody.thrift.impl.http.THServiceBuilder;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.*;
 import javax.servlet.annotation.WebServlet;

@@ -17,28 +17,23 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
-/**
- * @since 03.07.17
- **/
 public class WalkerServiceTest extends AbstractIntegrationTest {
 
     @Autowired
-    ActionService actionService;
+    private ActionService actionService;
 
     @Autowired
-    ActionDao actionDao;
+    private ActionDao actionDao;
 
     @Autowired
-    CommentDao commentDao;
-
+    private CommentDao commentDao;
 
     @Autowired
-    WalkerSrv.Iface walkerService;
+    private WalkerSrv.Iface walkerService;
 
-
-    private String TEST_USER_ID = "test_user_id";
-    private long CLAIM_ID = 1;
-    private String PARTY_ID = "test-party-id";
+    private static final String TEST_USER_ID = "test_user_id";
+    private static final String PARTY_ID = "test-party-id";
+    private static final long CLAIM_ID = 1;
 
     @Before
     public void before() {

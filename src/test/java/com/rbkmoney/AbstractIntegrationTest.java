@@ -18,10 +18,6 @@ import java.time.Duration;
 
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
-/**
- * Created by jeckep on 08.02.17.
- */
-
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 @ContextConfiguration(classes = WalkerApplication.class, initializers = AbstractIntegrationTest.Initializer.class)

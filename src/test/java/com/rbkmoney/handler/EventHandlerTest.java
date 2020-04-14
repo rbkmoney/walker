@@ -1,7 +1,6 @@
 package com.rbkmoney.handler;
 
 import com.rbkmoney.AbstractIntegrationTest;
-import com.rbkmoney.damsel.event_stock.SourceEvent;
 import com.rbkmoney.damsel.event_stock.StockEvent;
 import com.rbkmoney.damsel.payment_processing.*;
 import com.rbkmoney.damsel.walker.ClaimInfo;
@@ -12,6 +11,7 @@ import com.rbkmoney.geck.serializer.kit.mock.MockMode;
 import com.rbkmoney.geck.serializer.kit.mock.MockTBaseProcessor;
 import com.rbkmoney.geck.serializer.kit.tbase.TBaseHandler;
 import com.rbkmoney.geck.serializer.kit.tbase.TBaseProcessor;
+import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.walker.dao.ClaimDao;
 import com.rbkmoney.walker.handler.PartyEventHandler;
 import com.rbkmoney.walker.utils.TimeUtils;
@@ -22,29 +22,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import static com.rbkmoney.utils.ActionDiffTest.buildLegalAgreement;
+import static io.github.benas.randombeans.api.EnhancedRandom.random;
 import static org.junit.Assert.assertEquals;
 
-
-/**
- * @since 30.06.17
- **/
 public class EventHandlerTest extends AbstractIntegrationTest {
 
     @Autowired
-    PartyEventHandler partyEventHandler;
+    private PartyEventHandler partyEventHandler;
 
     @Autowired
-    WalkerSrv.Iface walkerService;
+    private WalkerSrv.Iface walkerService;
 
     @Autowired
-    ClaimDao claimDao;
+    private ClaimDao claimDao;
 
-    static String PARTY_ID = "test-party-id";
-    static long CLAIM_ID = 1L;
+    private static final String PARTY_ID = "test-party-id";
+    private static final long CLAIM_ID = 1L;
 
     @Before
     public void before() {
@@ -53,14 +51,14 @@ public class EventHandlerTest extends AbstractIntegrationTest {
 
     @Test
     public void testCreateClaim() throws IOException, TException {
-        partyEventHandler.handle(buildClaimCreated());
+        partyEventHandler.handle(createTestMachineEvent(), createTestPartyEventData(buildClaimCreated()));
         ClaimInfo claim = walkerService.getClaim(PARTY_ID, CLAIM_ID);
 
         assertEquals(PARTY_ID, claim.getPartyId());
         assertEquals(CLAIM_ID, claim.getClaimId());
         assertEquals("pending", claim.getStatus());
 
-        partyEventHandler.handle(buildClaimAccepted());
+        partyEventHandler.handle(createTestMachineEvent(), createTestPartyEventData(buildClaimAccepted()));
         ClaimInfo claimAccepted = walkerService.getClaim(PARTY_ID, CLAIM_ID);
 
         assertEquals(PARTY_ID, claimAccepted.getPartyId());
@@ -77,11 +75,11 @@ public class EventHandlerTest extends AbstractIntegrationTest {
 
     @Test
     public void testUpdateClaim() throws IOException, TException {
-        partyEventHandler.handle(buildClaimCreated());
+        partyEventHandler.handle(createTestMachineEvent(), createTestPartyEventData(buildClaimCreated()));
         ClaimInfo claim1 = walkerService.getClaim(PARTY_ID, CLAIM_ID);
         int claim1ModSize = claim1.getModifications().getModificationsSize();
 
-        partyEventHandler.handle(buildClaimUpdated());
+        partyEventHandler.handle(createTestMachineEvent(), createTestPartyEventData(buildClaimUpdated()));
         ClaimInfo claim2 = walkerService.getClaim(PARTY_ID, CLAIM_ID);
         int claim2ModSize = claim2.getModifications().getModificationsSize();
 
@@ -98,23 +96,21 @@ public class EventHandlerTest extends AbstractIntegrationTest {
     }
 
 
-    public StockEvent buildClaimCreated() throws IOException {
+    public PartyChange buildClaimCreated() throws IOException {
         Claim emptyCreated = new Claim();
         Claim claim = new MockTBaseProcessor(MockMode.REQUIRED_ONLY, 15, 1).process(emptyCreated, new TBaseHandler<>(Claim.class));
         claim.setStatus(ClaimStatus.pending(new ClaimPending()));
         claim.setId(CLAIM_ID);
 
         PartyChange emptyPartyChange = new PartyChange();
-        PartyChange partyChange = new MockTBaseProcessor(MockMode.REQUIRED_ONLY, 15, 1).process(emptyPartyChange, new TBaseHandler<>(PartyChange.class));
+        PartyChange partyChange = new MockTBaseProcessor(MockMode.REQUIRED_ONLY, 15, 1)
+                .process(emptyPartyChange, new TBaseHandler<>(PartyChange.class));
         partyChange.setClaimCreated(claim);
 
-        StockEvent stockEvent = buildStockEvent(partyChange);
-
-        printJson(stockEvent);
-        return stockEvent;
+        return partyChange;
     }
 
-    public StockEvent buildClaimUpdated() throws IOException {
+    public PartyChange buildClaimUpdated() throws IOException {
         ClaimUpdated claimUpdated = new ClaimUpdated();
         claimUpdated.setId(CLAIM_ID);
         claimUpdated.setRevision(1);
@@ -125,12 +121,10 @@ public class EventHandlerTest extends AbstractIntegrationTest {
         PartyChange partyChange = new MockTBaseProcessor(MockMode.REQUIRED_ONLY, 15, 1).process(emptyPartyChange, new TBaseHandler<>(PartyChange.class));
         partyChange.setClaimUpdated(claimUpdated);
 
-        StockEvent stockEvent = buildStockEvent(partyChange);
-        printJson(stockEvent);
-        return stockEvent;
+        return partyChange;
     }
 
-    public StockEvent buildClaimAccepted() throws IOException {
+    public PartyChange buildClaimAccepted() throws IOException {
         ClaimStatusChanged claimStatusChanged = new ClaimStatusChanged();
         claimStatusChanged.setId(CLAIM_ID);
         claimStatusChanged.setStatus(ClaimStatus.accepted(new ClaimAccepted()));
@@ -141,27 +135,20 @@ public class EventHandlerTest extends AbstractIntegrationTest {
         PartyChange partyChange = new MockTBaseProcessor(MockMode.REQUIRED_ONLY, 15, 1).process(emptyPartyEvent, new TBaseHandler<>(PartyChange.class));
         partyChange.setClaimStatusChanged(claimStatusChanged);
 
-        StockEvent stockEvent = buildStockEvent(partyChange);
-
-        printJson(stockEvent);
-        return stockEvent;
+        return partyChange;
     }
 
-    public StockEvent buildStockEvent(PartyChange partyChange) throws IOException {
-        Event eventFull = new MockTBaseProcessor(MockMode.REQUIRED_ONLY, 15, 1).process(new Event(), new TBaseHandler<>(Event.class));
-        eventFull.getPayload().setPartyChanges(Collections.singletonList(partyChange));
+    private static MachineEvent createTestMachineEvent() {
+        MachineEvent event = new MachineEvent();
+        event.setEventId(random(Long.class));
+        event.setSourceId(PARTY_ID);
+        return event;
+    }
 
-        EventSource eventSource = new EventSource();
-        eventSource.setPartyId(PARTY_ID);
-
-        SourceEvent sourceEvent = new SourceEvent();
-        sourceEvent.setProcessingEvent(eventFull);
-        sourceEvent.getProcessingEvent().setSource(eventSource);
-
-        StockEvent stockEvent = new StockEvent();
-        stockEvent.setSourceEvent(sourceEvent);
-
-        return stockEvent;
+    private static PartyEventData createTestPartyEventData(PartyChange partyChange) {
+        PartyEventData eventData = new PartyEventData();
+        eventData.setChanges(Arrays.asList(partyChange));
+        return eventData;
     }
 
     private void printJson(StockEvent stockEvent) {

@@ -1,6 +1,5 @@
 package com.rbkmoney.walker.dao;
 
-
 import com.rbkmoney.walker.domain.generated.tables.records.ActionRecord;
 import org.jooq.Configuration;
 import org.jooq.DSLContext;
@@ -15,7 +14,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.rbkmoney.walker.domain.generated.Tables.ACTION;
-
 
 public class ActionDao extends NamedParameterJdbcDaoSupport {
 
