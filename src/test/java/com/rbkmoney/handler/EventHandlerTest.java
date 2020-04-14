@@ -95,7 +95,6 @@ public class EventHandlerTest extends AbstractIntegrationTest {
         assertEquals(claim2ModSize, claimInfos.get(0).getModifications().getModifications().size());
     }
 
-
     public PartyChange buildClaimCreated() throws IOException {
         Claim emptyCreated = new Claim();
         Claim claim = new MockTBaseProcessor(MockMode.REQUIRED_ONLY, 15, 1).process(emptyCreated, new TBaseHandler<>(Claim.class));

@@ -37,7 +37,6 @@ public class ThriftConvertor {
         return new JsonProcessor().process(jsonNode, new TBaseHandler<>(PartyModification.class));
     }
 
-
     public static PartyChange fromJsonPartyEvent(String json) throws IOException {
         JsonNode jsonNode = mapper.readTree(json);
         return new JsonProcessor().process(jsonNode, new TBaseHandler<>(PartyChange.class));

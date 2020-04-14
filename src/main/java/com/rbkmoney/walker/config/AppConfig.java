@@ -23,5 +23,4 @@ public class AppConfig {
         return new PartyEventDataDeserializer();
     }
 
-
 }

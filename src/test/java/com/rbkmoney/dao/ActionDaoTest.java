@@ -60,5 +60,4 @@ public class ActionDaoTest extends AbstractIntegrationTest {
         return ThriftConvertor.convertToJson(partyModificationUnit);
     }
 
-
 }

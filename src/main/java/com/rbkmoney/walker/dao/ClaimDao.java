@@ -102,7 +102,6 @@ public class ClaimDao extends NamedParameterJdbcDaoSupport {
         }
     }
 
-
     public List<ClaimRecord> search(ClaimSearchRequest request) {
         //todo: "contains" - field does not work now.
         SelectQuery query = dslContext.selectQuery();

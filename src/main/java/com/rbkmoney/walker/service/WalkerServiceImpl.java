@@ -81,7 +81,6 @@ public class WalkerServiceImpl implements WalkerSrv.Iface {
         }
     }
 
-
     @Override
     public List<ClaimInfo> searchClaims(ClaimSearchRequest request) throws TException {
         try {

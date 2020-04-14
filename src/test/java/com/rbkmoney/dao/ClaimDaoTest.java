@@ -86,7 +86,6 @@ public class ClaimDaoTest extends AbstractIntegrationTest {
         assertEquals("accepted", claimRecord.getStatus());
     }
 
-
     @Test
     public void testSearch() throws IOException {
         claimDao.create(buildTestClaim(PARTY_ID, CLAIM_ID + 2));
