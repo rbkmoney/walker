@@ -38,6 +38,8 @@ public abstract class AbstractKafkaTest extends AbstractTestUtils {
     @Value("${kafka.bootstrap-servers}")
     private String bootstrapServers;
 
+    public static final long DEFAULT_KAFKA_SYNC = 5000L;
+
     private static TestContainers testContainers =
             TestContainersBuilder.builderWithTestContainers(getTestContainersParametersSupplier())
             .addKafkaTestContainer()
@@ -77,10 +79,6 @@ public abstract class AbstractKafkaTest extends AbstractTestUtils {
             environmentProperties.put("info.single-instance-mode", "false");
             environmentProperties.put("kafka.topics.party-management.enabled", "true");
         };
-    }
-
-    protected void waitForTopicSync() throws InterruptedException {
-        Thread.sleep(5000L);
     }
 
     protected void writeToTopic(String topic, SinkEvent sinkEvent) {

@@ -15,12 +15,13 @@ import java.util.List;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class PartyManagementEventService {
+public class PartyManagementEventService implements EventService {
 
     private final MachineEventParser<PartyEventData> parser;
 
     private final EventHandler<PartyEventData> partyEventHandler;
 
+    @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public void handleEvents(List<MachineEvent> machineEvents) {
         for (MachineEvent machineEvent : machineEvents) {

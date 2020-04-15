@@ -2,7 +2,7 @@ package com.rbkmoney.walker.listener;
 
 import com.rbkmoney.kafka.common.util.LogUtil;
 import com.rbkmoney.machinegun.eventsink.SinkEvent;
-import com.rbkmoney.walker.service.PartyManagementEventService;
+import com.rbkmoney.walker.service.EventService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class PartyManagementListener {
 
-    private final PartyManagementEventService partyManagementEventService;
+    private final EventService partyManagementEventService;
 
     @KafkaListener(topics = "${kafka.topics.party-management.id}", containerFactory = "kafkaListenerContainerFactory")
     public void handle(List<ConsumerRecord<String, SinkEvent>> messages, Acknowledgment ack) {

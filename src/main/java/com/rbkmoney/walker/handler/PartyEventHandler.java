@@ -7,6 +7,8 @@ import com.rbkmoney.walker.handler.party.PartyChangeEventHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.List;
@@ -23,6 +25,7 @@ public class PartyEventHandler implements EventHandler<PartyEventData> {
     private final PartyChangeEventHandler claimUpdatedHandler;
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void handle(MachineEvent machineEvent, PartyEventData event) {
         try {
             long eventId = machineEvent.getEventId();

@@ -13,10 +13,10 @@ import org.springframework.test.context.ContextConfiguration;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @Slf4j
 @ContextConfiguration(classes = {KafkaAutoConfiguration.class, KafkaConsumerBeanEnableConfig.class})
@@ -29,14 +29,34 @@ public class PartyManagementKafkaListenerTest extends AbstractKafkaTest {
     private PartyManagementEventService partyManagementService;
 
     @Test
-    public void listenTopic() throws InterruptedException {
+    public void listenTopic() {
         SinkEvent sinkEvent = new SinkEvent();
         sinkEvent.setEvent(createMessage());
 
         writeToTopic(topic, sinkEvent);
-        waitForTopicSync();
 
-        verify(partyManagementService, times(1)).handleEvents(anyList());
+        verify(partyManagementService, timeout(DEFAULT_KAFKA_SYNC).times(1))
+                .handleEvents(anyList());
+    }
+
+    @Test
+    public void retryEventTest() {
+        final AtomicBoolean firstIteration = new AtomicBoolean(true);
+        SinkEvent sinkEvent = new SinkEvent();
+        sinkEvent.setEvent(createMessage());
+        doAnswer(invocation -> {
+            if (firstIteration.get()) {
+                firstIteration.set(false);
+                throw new RuntimeException();
+            } else {
+                return null;
+            }
+        }).when(partyManagementService).handleEvents(any());
+
+        writeToTopic(topic, sinkEvent);
+
+        verify(partyManagementService, timeout(20000L).times(2))
+                .handleEvents(anyList());
     }
 
     private static MachineEvent createMessage() {
