@@ -28,7 +28,12 @@ public class ActionDao extends NamedParameterJdbcDaoSupport {
     }
 
     public void add(ActionRecord actionRecord) {
-        dslContext.insertInto(ACTION).set(actionRecord).execute();
+        dslContext.insertInto(ACTION)
+                .set(actionRecord)
+                .onConflict(ACTION.CLAIM_ID, ACTION.PARTY_ID, ACTION.EVENT_CREATED_AT, ACTION.TYPE)
+                .doUpdate()
+                .set(actionRecord)
+                .execute();
     }
 
     public List<ActionRecord> getActions(String partyId, Long claimId) {

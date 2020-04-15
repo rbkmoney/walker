@@ -49,7 +49,7 @@ public class WalkerServiceTest extends AbstractIntegrationTest {
         ClaimDenied claimDenied = new ClaimDenied();
         claimDenied.setReason("because");
         claimStatus.setDenied(claimDenied);
-        actionService.claimStatusChanged(PARTY_ID, 1L, claimStatus, TEST_USER_ID);
+        actionService.claimStatusChanged(PARTY_ID, 1L, claimStatus, TEST_USER_ID, "2020-02-02");
         List<Action> actions = walkerService.getActions(PARTY_ID, 1L);
         assertEquals(1, actions.size());
         assertEquals(ActionType.status_changed, actions.get(0).getType());

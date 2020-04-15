@@ -41,7 +41,7 @@ public class ClaimCreatedHandler implements PartyChangeEventHandler {
         PartyModificationUnit partyModificationUnit = convertToPartyModificationUnit(claim.getChangeset());
         claimRecord.setChanges(convertToJson(partyModificationUnit));
         claimDao.create(claimRecord);
-        actionService.claimCreated(partyId, claim.getId(), claim.getChangeset(), "event");
+        actionService.claimCreated(partyId, claim.getId(), claim.getChangeset(), "event", claim.getCreatedAt());
     }
 
 }

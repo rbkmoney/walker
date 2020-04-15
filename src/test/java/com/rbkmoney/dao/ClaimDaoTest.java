@@ -46,6 +46,7 @@ public class ClaimDaoTest extends AbstractIntegrationTest {
     public void testInsertAndGet() throws IOException {
         ClaimRecord claimRecord1 = buildTestClaim(PARTY_ID, CLAIM_ID);
         claimDao.create(claimRecord1);
+        claimDao.create(claimRecord1);
         ClaimRecord claimRecord2 = claimDao.get(PARTY_ID, CLAIM_ID);
 
         assertEquals(claimRecord1.getId(), claimRecord2.getId());

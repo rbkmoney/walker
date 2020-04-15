@@ -1,5 +1,6 @@
 package com.rbkmoney.walker.handler.party.claim;
 
+import com.rbkmoney.damsel.payment_processing.ClaimUpdated;
 import com.rbkmoney.damsel.payment_processing.PartyChange;
 import com.rbkmoney.damsel.walker.PartyModificationUnit;
 import com.rbkmoney.walker.dao.ClaimDao;
@@ -25,19 +26,20 @@ public class ClaimUpdatedHandler implements PartyChangeEventHandler {
 
     @Override
     public void handleEvent(PartyChange partyChange, long eventId, String partyId) throws IOException {
-        long claimId = partyChange.getClaimUpdated().getId();
+        ClaimUpdated claimUpdated = partyChange.getClaimUpdated();
+        long claimId = claimUpdated.getId();
         log.info("Got claim updated PartyId: {}, ClaimId: {}", partyId, claimId);
         ClaimRecord claimRecord = claimDao.get(partyId, claimId);
         PartyModificationUnit partyModificationUnit =
                 fromJsonPartyModificationUnit(String.valueOf(claimRecord.getChanges()));
 
         partyModificationUnit.getModifications().addAll(
-                convertToPartyModificationUnit(partyChange.getClaimUpdated().getChangeset()).getModifications());
+                convertToPartyModificationUnit(claimUpdated.getChangeset()).getModifications());
 
-        Long revision = (long) partyChange.getClaimUpdated().getRevision();
+        Long revision = (long) claimUpdated.getRevision();
 
         claimDao.update(partyId, claimId, eventId, revision, convertToJson(partyModificationUnit));
-        actionService.claimUpdated(partyId, claimId, partyChange.getClaimUpdated().getChangeset(), "event");
+        actionService.claimUpdated(partyId, claimId, claimUpdated.getChangeset(), "event", claimUpdated.getUpdatedAt());
     }
 
 }

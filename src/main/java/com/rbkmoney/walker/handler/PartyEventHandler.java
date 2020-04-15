@@ -25,7 +25,7 @@ public class PartyEventHandler implements EventHandler<PartyEventData> {
     private final PartyChangeEventHandler claimUpdatedHandler;
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional(propagation = Propagation.REQUIRED)
     public void handle(MachineEvent machineEvent, PartyEventData event) {
         try {
             long eventId = machineEvent.getEventId();

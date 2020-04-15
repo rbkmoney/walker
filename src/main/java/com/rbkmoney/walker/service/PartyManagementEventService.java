@@ -7,8 +7,6 @@ import com.rbkmoney.walker.handler.EventHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -22,7 +20,6 @@ public class PartyManagementEventService implements EventService {
     private final EventHandler<PartyEventData> partyEventHandler;
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRED)
     public void handleEvents(List<MachineEvent> machineEvents) {
         for (MachineEvent machineEvent : machineEvents) {
             PartyEventData eventPayload = parser.parse(machineEvent);

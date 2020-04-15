@@ -1,6 +1,7 @@
 package com.rbkmoney.walker.handler.party.claim;
 
 import com.rbkmoney.damsel.payment_processing.ClaimStatus;
+import com.rbkmoney.damsel.payment_processing.ClaimStatusChanged;
 import com.rbkmoney.damsel.payment_processing.PartyChange;
 import com.rbkmoney.walker.dao.ClaimDao;
 import com.rbkmoney.walker.handler.party.PartyChangeEventHandler;
@@ -22,11 +23,12 @@ public class ClaimStatusChangedHandler implements PartyChangeEventHandler {
 
     @Override
     public void handleEvent(PartyChange partyChange, long eventId, String partyId) throws IOException {
-        long claimId = partyChange.getClaimStatusChanged().getId();
-        ClaimStatus status = partyChange.getClaimStatusChanged().getStatus();
+        ClaimStatusChanged claimStatusChanged = partyChange.getClaimStatusChanged();
+        long claimId = claimStatusChanged.getId();
+        ClaimStatus status = claimStatusChanged.getStatus();
         log.info("Got claim status changed Status: {}, PartyId: {}, ClaimId: {}", status.toString(), partyId, claimId);
         claimDao.updateStatus(partyId, claimId, status);
-        actionService.claimStatusChanged(partyId, claimId, status, "event");
+        actionService.claimStatusChanged(partyId, claimId, status, "event", claimStatusChanged.getChangedAt());
     }
 
 }

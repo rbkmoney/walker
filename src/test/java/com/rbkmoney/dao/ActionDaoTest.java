@@ -12,6 +12,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -43,6 +44,8 @@ public class ActionDaoTest extends AbstractIntegrationTest {
         actionRecord.setType(ActionType.claim_changed.toString());
         actionRecord.setAfter(buildModification());
         actionRecord.setPartyId(PARTY_ID);
+        actionRecord.setEventCreatedAt(LocalDateTime.now().toString());
+        actionDao.add(actionRecord);
         actionDao.add(actionRecord);
 
         List<ActionRecord> actions = actionDao.getActions(PARTY_ID, CLAIM_ID);
