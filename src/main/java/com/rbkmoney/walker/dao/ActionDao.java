@@ -31,8 +31,7 @@ public class ActionDao extends NamedParameterJdbcDaoSupport {
         dslContext.insertInto(ACTION)
                 .set(actionRecord)
                 .onConflict(ACTION.CLAIM_ID, ACTION.PARTY_ID, ACTION.EVENT_CREATED_AT, ACTION.TYPE)
-                .doUpdate()
-                .set(actionRecord)
+                .doNothing()
                 .execute();
     }
 

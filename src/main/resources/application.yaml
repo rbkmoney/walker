@@ -25,7 +25,7 @@ spring:
       enabled: always
 kafka:
   bootstrap-servers: localhost:9092
-  client-id: reporter
+  client-id: walker
   ssl:
     enabled: false
     trust-store-location: "test"
@@ -36,7 +36,7 @@ kafka:
     key-store-type: PKCS12
     trust-store-type: PKCS12
   consumer:
-    group-id: "ReporterListener"
+    group-id: "WalkerListener"
     enable-auto-commit: false
     auto-offset-reset: earliest
     max-poll-records: 20

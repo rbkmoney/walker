@@ -40,8 +40,7 @@ public class ClaimDao extends NamedParameterJdbcDaoSupport {
         String sql = dslContext.insertInto(CLAIM)
                 .set(claimRecord)
                 .onConflict(CLAIM.PARTY_ID, CLAIM.ID)
-                .doUpdate()
-                .set(claimRecord)
+                .doNothing()
                 .toString();
         dslContext.execute(sql);
     }
