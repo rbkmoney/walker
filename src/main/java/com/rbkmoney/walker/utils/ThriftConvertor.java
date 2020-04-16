@@ -18,9 +18,6 @@ import java.util.List;
 
 import static com.rbkmoney.walker.utils.TimeUtils.toIsoInstantString;
 
-/**
- * @since 23.03.17
- **/
 public class ThriftConvertor {
 
     private static ObjectMapper mapper = new ObjectMapper();
@@ -39,7 +36,6 @@ public class ThriftConvertor {
         JsonNode jsonNode = mapper.readTree(json);
         return new JsonProcessor().process(jsonNode, new TBaseHandler<>(PartyModification.class));
     }
-
 
     public static PartyChange fromJsonPartyEvent(String json) throws IOException {
         JsonNode jsonNode = mapper.readTree(json);

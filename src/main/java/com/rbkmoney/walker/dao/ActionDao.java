@@ -1,6 +1,5 @@
 package com.rbkmoney.walker.dao;
 
-
 import com.rbkmoney.walker.domain.generated.tables.records.ActionRecord;
 import org.jooq.Configuration;
 import org.jooq.DSLContext;
@@ -16,7 +15,6 @@ import java.util.stream.Collectors;
 
 import static com.rbkmoney.walker.domain.generated.Tables.ACTION;
 
-
 public class ActionDao extends NamedParameterJdbcDaoSupport {
 
     private DSLContext dslContext;
@@ -30,7 +28,11 @@ public class ActionDao extends NamedParameterJdbcDaoSupport {
     }
 
     public void add(ActionRecord actionRecord) {
-        dslContext.insertInto(ACTION).set(actionRecord).execute();
+        dslContext.insertInto(ACTION)
+                .set(actionRecord)
+                .onConflict(ACTION.CLAIM_ID, ACTION.PARTY_ID, ACTION.EVENT_CREATED_AT, ACTION.TYPE)
+                .doNothing()
+                .execute();
     }
 
     public List<ActionRecord> getActions(String partyId, Long claimId) {

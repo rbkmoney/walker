@@ -6,33 +6,27 @@ import com.rbkmoney.damsel.walker.ActionType;
 import com.rbkmoney.damsel.walker.PartyModificationUnit;
 import com.rbkmoney.walker.dao.ActionDao;
 import com.rbkmoney.walker.domain.generated.tables.records.ActionRecord;
-import com.rbkmoney.walker.service.ActionService;
 import com.rbkmoney.walker.utils.ThriftConvertor;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
 import static com.rbkmoney.utils.ActionDiffTest.buildWalkerComplexModification;
 import static org.junit.Assert.assertEquals;
 
-/**
- * @since 20.03.17
- **/
 public class ActionDaoTest extends AbstractIntegrationTest {
 
     @Autowired
     private ActionDao actionDao;
 
-    @Autowired
-    private ActionService actionService;
-
-    private String PARTY_ID = "test-party-id";
-    private String TEST_USER_ID = "test_user_id";
-    private long CLAIM_ID = 1L;
+    private static final String PARTY_ID = "test-party-id";
+    private static final String TEST_USER_ID = "test_user_id";
+    private static final long CLAIM_ID = 1L;
 
     @Before
     public void before() {
@@ -50,6 +44,8 @@ public class ActionDaoTest extends AbstractIntegrationTest {
         actionRecord.setType(ActionType.claim_changed.toString());
         actionRecord.setAfter(buildModification());
         actionRecord.setPartyId(PARTY_ID);
+        actionRecord.setEventCreatedAt(LocalDateTime.now().toString());
+        actionDao.add(actionRecord);
         actionDao.add(actionRecord);
 
         List<ActionRecord> actions = actionDao.getActions(PARTY_ID, CLAIM_ID);
@@ -66,6 +62,5 @@ public class ActionDaoTest extends AbstractIntegrationTest {
         partyModificationUnit.setModifications(partyModificationList);
         return ThriftConvertor.convertToJson(partyModificationUnit);
     }
-
 
 }

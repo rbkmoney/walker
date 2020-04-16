@@ -18,10 +18,6 @@ import java.time.Duration;
 
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
-/**
- * Created by jeckep on 08.02.17.
- */
-
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 @ContextConfiguration(classes = WalkerApplication.class, initializers = AbstractIntegrationTest.Initializer.class)
@@ -29,7 +25,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 public abstract class AbstractIntegrationTest {
 
     @ClassRule
-    public static PostgreSQLContainer postgres = (PostgreSQLContainer) new PostgreSQLContainer("postgres:9.6")
+    public static PostgreSQLContainer postgres = (PostgreSQLContainer) new PostgreSQLContainer("postgres:11.4")
             .withStartupTimeout(Duration.ofMinutes(5));
 
     @Value("${local.server.port}")

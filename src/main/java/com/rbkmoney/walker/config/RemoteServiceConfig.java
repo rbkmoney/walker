@@ -14,12 +14,12 @@ import java.net.URISyntaxException;
 public class RemoteServiceConfig {
 
     @Value("${hg.party.management.url}")
-    private String PARTY_MANAGEMENT_SERVICE_URL;
+    private String partyManagementServiceUrl;
 
     @Bean
     public PartyManagementSrv.Iface partyManagementSrv() throws IOException, URISyntaxException {
         return new THSpawnClientBuilder()
-                .withAddress(new URI(PARTY_MANAGEMENT_SERVICE_URL))
+                .withAddress(new URI(partyManagementServiceUrl))
                 .build(PartyManagementSrv.Iface.class);
     }
 

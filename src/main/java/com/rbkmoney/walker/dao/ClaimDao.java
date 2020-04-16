@@ -17,9 +17,10 @@ import static com.rbkmoney.walker.domain.generated.Tables.CLAIM;
 
 public class ClaimDao extends NamedParameterJdbcDaoSupport {
 
-    public static String WALKER_USER_ID = "0";
     private DSLContext dslContext;
     private String damselVersion;
+
+    public static final String WALKER_USER_ID = "0";
 
     public ClaimDao(DataSource ds, String damselVersion) {
         this.damselVersion = damselVersion;
@@ -34,21 +35,14 @@ public class ClaimDao extends NamedParameterJdbcDaoSupport {
         if (StringUtils.isEmpty(claimRecord.getAssignedUserId())) {
             claimRecord.setAssignedUserId(WALKER_USER_ID);
         }
+        claimRecord.setUpdatedAt(LocalDateTime.now());
+        claimRecord.setDamselVersion(damselVersion);
         String sql = dslContext.insertInto(CLAIM)
-                .set(CLAIM.ID, claimRecord.getId())
-                .set(CLAIM.PARTY_ID, claimRecord.getPartyId())
-                .set(CLAIM.EVENT_ID, claimRecord.getEventId())
-                .set(CLAIM.ASSIGNED_USER_ID, claimRecord.getAssignedUserId())
-                .set(CLAIM.STATUS, claimRecord.getStatus())
-                .set(CLAIM.PARTY_ID, claimRecord.getPartyId())
-                .set(CLAIM.DESCRIPTION, claimRecord.getDescription())
-                .set(CLAIM.REASON, claimRecord.getReason())
-                .set(CLAIM.CHANGES, claimRecord.getChanges())
-                .set(CLAIM.REVISION, claimRecord.getRevision())
-                .set(CLAIM.UPDATED_AT, LocalDateTime.now())
-                .set(CLAIM.DAMSEL_VERSION, damselVersion)
+                .set(claimRecord)
+                .onConflict(CLAIM.PARTY_ID, CLAIM.ID)
+                .doNothing()
                 .toString();
-        getJdbcTemplate().update(sql);
+        dslContext.execute(sql);
     }
 
     public ClaimRecord get(String partyId, long claimId) {
@@ -100,7 +94,6 @@ public class ClaimDao extends NamedParameterJdbcDaoSupport {
             return "unknown";
         }
     }
-
 
     public List<ClaimRecord> search(ClaimSearchRequest request) {
         //todo: "contains" - field does not work now.

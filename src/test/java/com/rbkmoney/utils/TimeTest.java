@@ -11,9 +11,6 @@ import java.time.format.DateTimeParseException;
 import static java.time.format.DateTimeFormatter.ISO_INSTANT;
 import static org.junit.Assert.assertEquals;
 
-/**
- * @since 14.02.17
- **/
 public class TimeTest {
 
     public static String toPrettyDate(String time) {

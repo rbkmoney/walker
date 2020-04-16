@@ -18,52 +18,31 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
-/**
- * @since 12.07.17
- **/
-
-
-@RunWith(SpringRunner.class)
 @Ignore
+@RunWith(SpringRunner.class)
 public class HellGateMethodsTest {
 
     private PartyManagementSrv.Iface partyManagement;
-    private EventSinkSrv.Iface eventSink;
 
-    private static String PARTY_MANAGEMENT_SERVICE_URL = "http://hellgate:8022/v1/processing/partymgmt";
-    private static String EVENT_SINK_SERVICE_URL = "http://hellgate:8022/v1/processing/eventsink";
+    private static final String PARTY_MANAGEMENT_SERVICE_URL = "http://hellgate:8022/v1/processing/partymgmt";
 
-    String userId = "1";
-    String email = "info@bfsfera.org.ru";
-    String partyId = "6954b4d1-f39f-4cc1-8843-eae834e6f849";
-    String shopName = "Honey Bunny Winny 1";
-    String categoryName = "Sweet Honey";
-    String categoryDescription = "Best honey in region. Just try it!";
-    String contractId = "contactrId5";
-    String shopId = "2";
-    String claimId = "4";
+    private String userId = "1";
+    private String email = "info@bfsfera.org.ru";
+    private String partyId = "6954b4d1-f39f-4cc1-8843-eae834e6f849";
+    private String shopName = "Honey Bunny Winny 1";
+    private String categoryName = "Sweet Honey";
+    private String categoryDescription = "Best honey in region. Just try it!";
+    private String contractId = "contactrId5";
+    private String shopId = "2";
+    private String claimId = "4";
     private UserInfo userInfo;
 
     @Before
     public void setUp() throws Exception {
         partyManagement = new THPooledClientBuilder().withAddress(new URI(PARTY_MANAGEMENT_SERVICE_URL))
                 .build(PartyManagementSrv.Iface.class);
-        eventSink = new THPooledClientBuilder().withAddress(new URI(EVENT_SINK_SERVICE_URL))
-                .build(EventSinkSrv.Iface.class);
-
         userInfo = new UserInfo(userId, UserType.service_user(new ServiceUser()));
-    }
-
-    @Test
-    public void eventSink() throws TException {
-        List<Event> events = eventSink.getEvents(new EventRange(10));
-        events.stream().map(e->{
-            System.out.println(e.getPayload().toString());
-            return null;
-        }).collect(Collectors.toList());
-        System.out.println("### Count of events in sink " + events.size());
     }
 
     @Test
@@ -222,3 +201,4 @@ public class HellGateMethodsTest {
 //        return shopParams;
 //    }
 }
+
