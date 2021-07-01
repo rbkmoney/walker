@@ -1,7 +1,26 @@
 package com.rbkmoney.utils;
 
-import com.rbkmoney.damsel.domain.*;
-import com.rbkmoney.damsel.payment_processing.*;
+import com.rbkmoney.damsel.domain.CategoryRef;
+import com.rbkmoney.damsel.domain.Contractor;
+import com.rbkmoney.damsel.domain.LegalEntity;
+import com.rbkmoney.damsel.domain.Party;
+import com.rbkmoney.damsel.domain.PartyContactInfo;
+import com.rbkmoney.damsel.domain.RussianBankAccount;
+import com.rbkmoney.damsel.domain.RussianLegalEntity;
+import com.rbkmoney.damsel.domain.Shop;
+import com.rbkmoney.damsel.payment_processing.Claim;
+import com.rbkmoney.damsel.payment_processing.ContractModification;
+import com.rbkmoney.damsel.payment_processing.ContractModificationUnit;
+import com.rbkmoney.damsel.payment_processing.ContractParams;
+import com.rbkmoney.damsel.payment_processing.PartyManagementSrv;
+import com.rbkmoney.damsel.payment_processing.PartyModification;
+import com.rbkmoney.damsel.payment_processing.PartyParams;
+import com.rbkmoney.damsel.payment_processing.ServiceUser;
+import com.rbkmoney.damsel.payment_processing.ShopModification;
+import com.rbkmoney.damsel.payment_processing.ShopModificationUnit;
+import com.rbkmoney.damsel.payment_processing.ShopParams;
+import com.rbkmoney.damsel.payment_processing.UserInfo;
+import com.rbkmoney.damsel.payment_processing.UserType;
 import com.rbkmoney.woody.thrift.impl.http.THPooledClientBuilder;
 import org.apache.thrift.TException;
 import org.junit.Before;
@@ -23,19 +42,17 @@ import java.util.UUID;
 @RunWith(SpringRunner.class)
 public class HellGateMethodsTest {
 
-    private PartyManagementSrv.Iface partyManagement;
-
     private static final String PARTY_MANAGEMENT_SERVICE_URL = "http://hellgate:8022/v1/processing/partymgmt";
-
-    private String userId = "1";
-    private String email = "info@bfsfera.org.ru";
-    private String partyId = "6954b4d1-f39f-4cc1-8843-eae834e6f849";
-    private String shopName = "Honey Bunny Winny 1";
-    private String categoryName = "Sweet Honey";
-    private String categoryDescription = "Best honey in region. Just try it!";
-    private String contractId = "contactrId5";
-    private String shopId = "2";
-    private String claimId = "4";
+    private PartyManagementSrv.Iface partyManagement;
+    private final String userId = "1";
+    private final String email = "info@bfsfera.org.ru";
+    private final String partyId = "6954b4d1-f39f-4cc1-8843-eae834e6f849";
+    private final String shopName = "Honey Bunny Winny 1";
+    private final String categoryName = "Sweet Honey";
+    private final String categoryDescription = "Best honey in region. Just try it!";
+    private final String contractId = "contactrId5";
+    private final String shopId = "2";
+    private final String claimId = "4";
     private UserInfo userInfo;
 
     @Before
@@ -63,7 +80,7 @@ public class HellGateMethodsTest {
 
     @Test
     public void createContract() throws TException {
-        System.out.println(UUID.randomUUID().toString());
+        System.out.println(UUID.randomUUID());
         LinkedList<PartyModification> partyModifications = new LinkedList<>();
         partyModifications.add(buildCreateContract());
         partyManagement.createClaim(userInfo, partyId, partyModifications);
@@ -74,7 +91,8 @@ public class HellGateMethodsTest {
     private PartyModification buildCreateContract() {
         RussianLegalEntity russianLegalEntity = new RussianLegalEntity();
         russianLegalEntity.setActualAddress("Bunny hole");
-        russianLegalEntity.setRussianBankAccount(new RussianBankAccount("132", "Bunny bank", "bbbbbuuuuunnny", "bibibiib"));
+        russianLegalEntity
+                .setRussianBankAccount(new RussianBankAccount("132", "Bunny bank", "bbbbbuuuuunnny", "bibibiib"));
         russianLegalEntity.setInn("123123");
         russianLegalEntity.setPostAddress("pppaaaa papapa");
         russianLegalEntity.setActualAddress("pipipipip");
@@ -110,7 +128,7 @@ public class HellGateMethodsTest {
     @Test
     public void createShop() throws TException {
 
-        System.out.println(UUID.randomUUID().toString());
+        System.out.println(UUID.randomUUID());
         LinkedList<PartyModification> partyModifications = new LinkedList<>();
 
 //        partyManagement.createClaim(userInfo,partyId,);
@@ -156,11 +174,11 @@ public class HellGateMethodsTest {
     public void getShopInfo() throws TException {
         Shop shop = partyManagement.getShop(userInfo, partyId, shopId);
         System.out.println(
-                " Shop info  rev.: " + shop.getContractId()
-                        + " id: " + shop.getId()
-                        + " name: " + shop.getDetails().getName()
-                        + " Status " + shop.getSuspension().getFieldValue().toString()
-                        + "; Cat name:  " + shop.getCategory().getId()
+                " Shop info  rev.: " + shop.getContractId() +
+                        " id: " + shop.getId() +
+                        " name: " + shop.getDetails().getName() +
+                        " Status " + shop.getSuspension().getFieldValue().toString() +
+                        "; Cat name:  " + shop.getCategory().getId()
         );
     }
 

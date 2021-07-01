@@ -13,11 +13,9 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class EnrichmentServiceImpl implements EnrichmentService {
 
-    private final PartyManagementSrv.Iface partyManagement;
-
     private static final String USER_ID = "walker";
-
     private static final UserInfo USER_INFO = new UserInfo(USER_ID, UserType.service_user(new ServiceUser()));
+    private final PartyManagementSrv.Iface partyManagement;
 
     @Override
     public String getPartyEmail(String partyId) throws TException {

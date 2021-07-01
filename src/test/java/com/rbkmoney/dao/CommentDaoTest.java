@@ -13,10 +13,9 @@ import static org.junit.Assert.assertEquals;
 
 public class CommentDaoTest extends AbstractIntegrationTest {
 
+    private static final String PARTY_ID = "test-party-id";
     @Autowired
     private CommentDao commentDao;
-
-    private static final String PARTY_ID = "test-party-id";
 
     @Before
     public void before() {

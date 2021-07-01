@@ -26,9 +26,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
+@SuppressWarnings({"LineLength"})
 @EnableConfigurationProperties(KafkaSslProperties.class)
 public class KafkaConfig {
 
+    @Value("${retry-policy.maxAttempts}")
+    int maxAttempts;
     @Value("${kafka.consumer.auto-offset-reset}")
     private String autoOffsetReset;
     @Value("${kafka.consumer.enable-auto-commit}")
@@ -43,13 +46,10 @@ public class KafkaConfig {
     private int maxPollIntervalMs;
     @Value("${kafka.consumer.session-timeout-ms}")
     private int sessionTimeoutMs;
-
     @Value("${kafka.bootstrap-servers}")
     private String bootstrapServers;
     @Value("${kafka.consumer.party-management.concurrency}")
     private int concurrency;
-    @Value("${retry-policy.maxAttempts}")
-    int maxAttempts;
 
     @Bean
     public Map<String, Object> consumerConfigs(KafkaSslProperties kafkaSslProperties) {
@@ -90,13 +90,12 @@ public class KafkaConfig {
 
     @Bean
     public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, MachineEvent>> kafkaListenerContainerFactory(
-                    ConsumerFactory<String, MachineEvent> consumerFactory
+            ConsumerFactory<String, MachineEvent> consumerFactory
     ) {
         ConcurrentKafkaListenerContainerFactory<String, MachineEvent> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory);
         factory.setBatchListener(true);
-        factory.getContainerProperties().setAckOnError(false);
         factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL);
         factory.setBatchErrorHandler(kafkaErrorHandler());
         factory.setConcurrency(concurrency);

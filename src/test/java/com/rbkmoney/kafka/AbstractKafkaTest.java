@@ -1,6 +1,10 @@
 package com.rbkmoney.kafka;
 
-import com.rbkmoney.easyway.*;
+import com.rbkmoney.easyway.AbstractTestUtils;
+import com.rbkmoney.easyway.EnvironmentProperties;
+import com.rbkmoney.easyway.TestContainers;
+import com.rbkmoney.easyway.TestContainersBuilder;
+import com.rbkmoney.easyway.TestContainersParameters;
 import com.rbkmoney.kafka.common.serialization.ThriftSerializer;
 import com.rbkmoney.machinegun.eventsink.SinkEvent;
 import com.rbkmoney.walker.WalkerApplication;
@@ -35,16 +39,14 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public abstract class AbstractKafkaTest extends AbstractTestUtils {
 
+    public static final long DEFAULT_KAFKA_SYNC = 5000L;
+    private static final TestContainers testContainers =
+            TestContainersBuilder.builderWithTestContainers(getTestContainersParametersSupplier())
+                    .addKafkaTestContainer()
+                    .addPostgresqlTestContainer()
+                    .build();
     @Value("${kafka.bootstrap-servers}")
     private String bootstrapServers;
-
-    public static final long DEFAULT_KAFKA_SYNC = 5000L;
-
-    private static TestContainers testContainers =
-            TestContainersBuilder.builderWithTestContainers(getTestContainersParametersSupplier())
-            .addKafkaTestContainer()
-            .addPostgresqlTestContainer()
-            .build();
 
     @BeforeClass
     public static void beforeClass() {
@@ -56,20 +58,10 @@ public abstract class AbstractKafkaTest extends AbstractTestUtils {
         testContainers.stopTestContainers();
     }
 
-    public static class Initializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
-
-        @Override
-        public void initialize(ConfigurableApplicationContext configurableApplicationContext) {
-            TestPropertyValues.of(testContainers.getEnvironmentProperties(getEnvironmentPropertiesConsumer())).
-                    applyTo(configurableApplicationContext);
-        }
-    }
-
     private static Supplier<TestContainersParameters> getTestContainersParametersSupplier() {
         return () -> {
             TestContainersParameters testContainersParameters = new TestContainersParameters();
             testContainersParameters.setPostgresqlJdbcUrl("jdbc:postgresql://localhost:5432/newway");
-
             return testContainersParameters;
         };
     }
@@ -98,6 +90,15 @@ public abstract class AbstractKafkaTest extends AbstractTestUtils {
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, new ThriftSerializer<SinkEvent>().getClass());
         return new KafkaProducer<>(props);
+    }
+
+    public static class Initializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
+
+        @Override
+        public void initialize(ConfigurableApplicationContext configurableApplicationContext) {
+            TestPropertyValues.of(testContainers.getEnvironmentProperties(getEnvironmentPropertiesConsumer()))
+                    .applyTo(configurableApplicationContext);
+        }
     }
 
 }
