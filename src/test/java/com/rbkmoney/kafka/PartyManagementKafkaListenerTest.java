@@ -16,7 +16,10 @@ import java.time.format.DateTimeFormatter;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.timeout;
+import static org.mockito.Mockito.verify;
 
 @Slf4j
 @ContextConfiguration(classes = {KafkaAutoConfiguration.class, KafkaConsumerBeanEnableConfig.class})
@@ -27,6 +30,18 @@ public class PartyManagementKafkaListenerTest extends AbstractKafkaTest {
 
     @MockBean
     private PartyManagementEventService partyManagementService;
+
+    private static MachineEvent createMessage() {
+        MachineEvent message = new MachineEvent();
+        var data = new com.rbkmoney.machinegun.msgpack.Value();
+        data.setBin(new byte[0]);
+        message.setCreatedAt(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+        message.setEventId(1L);
+        message.setSourceNs("sad");
+        message.setSourceId("sda");
+        message.setData(data);
+        return message;
+    }
 
     @Test
     public void listenTopic() {
@@ -57,18 +72,6 @@ public class PartyManagementKafkaListenerTest extends AbstractKafkaTest {
 
         verify(partyManagementService, timeout(20000L).times(2))
                 .handleEvents(anyList());
-    }
-
-    private static MachineEvent createMessage() {
-        MachineEvent message = new MachineEvent();
-        var data = new com.rbkmoney.machinegun.msgpack.Value();
-        data.setBin(new byte[0]);
-        message.setCreatedAt(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
-        message.setEventId(1L);
-        message.setSourceNs("sad");
-        message.setSourceId("sda");
-        message.setData(data);
-        return message;
     }
 
 }

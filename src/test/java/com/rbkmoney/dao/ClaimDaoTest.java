@@ -28,12 +28,11 @@ import static org.junit.Assert.assertEquals;
 
 public class ClaimDaoTest extends AbstractIntegrationTest {
 
-    @Autowired
-    private ClaimDao claimDao;
-
     private static final String TEST_USER_ID = "test_user_id";
     private static final String PARTY_ID = "test-party-id";
     private static final long CLAIM_ID = 1;
+    @Autowired
+    private ClaimDao claimDao;
 
     @Before
     public void before() {
@@ -71,7 +70,7 @@ public class ClaimDaoTest extends AbstractIntegrationTest {
         assertEquals((Long) 10L, claimRecord3.getRevision());
         assertEquals(Long.valueOf(22L), claimRecord3.getEventId());
         assertEquals(Long.valueOf(10L), claimRecord3.getRevision());
-        assertEquals(modification, String.valueOf(claimRecord3.getChanges()).replace(" ",""));
+        assertEquals(modification, String.valueOf(claimRecord3.getChanges()).replace(" ", ""));
     }
 
     @Test
@@ -126,7 +125,7 @@ public class ClaimDaoTest extends AbstractIntegrationTest {
         ClaimRecord claimRecord = new ClaimRecord();
         claimRecord.setStatus(ClaimDao.getStatusName(ClaimStatus.pending(new ClaimPending())));
         claimRecord.setId(claimId);
-        claimRecord.setEventId(10l);
+        claimRecord.setEventId(10L);
         claimRecord.setAssignedUserId(TEST_USER_ID);
         claimRecord.setRevision(10L);
         claimRecord.setPartyId(partyId);
@@ -138,7 +137,7 @@ public class ClaimDaoTest extends AbstractIntegrationTest {
         ClaimRecord claimRecord = new ClaimRecord();
         claimRecord.setStatus(ClaimDao.getStatusName(ClaimStatus.accepted(new ClaimAccepted())));
         claimRecord.setId(claimId);
-        claimRecord.setEventId(10l);
+        claimRecord.setEventId(10L);
         claimRecord.setAssignedUserId(TEST_USER_ID);
         claimRecord.setRevision(10L);
         claimRecord.setPartyId(partyId);
@@ -147,7 +146,7 @@ public class ClaimDaoTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void testprint() throws IOException {
+    public void testPrint() throws IOException {
         String json = buildModification();
         System.out.println(json);
     }

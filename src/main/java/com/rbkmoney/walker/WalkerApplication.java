@@ -8,7 +8,7 @@ import org.springframework.boot.web.servlet.ServletComponentScan;
 @SpringBootApplication(scanBasePackages = {"com.rbkmoney.walker"})
 public class WalkerApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(WalkerApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(WalkerApplication.class, args);
+    }
 }

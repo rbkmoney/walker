@@ -2,7 +2,14 @@ package com.rbkmoney.handler;
 
 import com.rbkmoney.AbstractIntegrationTest;
 import com.rbkmoney.damsel.event_stock.StockEvent;
-import com.rbkmoney.damsel.payment_processing.*;
+import com.rbkmoney.damsel.payment_processing.Claim;
+import com.rbkmoney.damsel.payment_processing.ClaimAccepted;
+import com.rbkmoney.damsel.payment_processing.ClaimPending;
+import com.rbkmoney.damsel.payment_processing.ClaimStatus;
+import com.rbkmoney.damsel.payment_processing.ClaimStatusChanged;
+import com.rbkmoney.damsel.payment_processing.ClaimUpdated;
+import com.rbkmoney.damsel.payment_processing.PartyChange;
+import com.rbkmoney.damsel.payment_processing.PartyEventData;
 import com.rbkmoney.damsel.walker.ClaimInfo;
 import com.rbkmoney.damsel.walker.ClaimSearchRequest;
 import com.rbkmoney.damsel.walker.WalkerSrv;
@@ -32,17 +39,27 @@ import static org.junit.Assert.assertEquals;
 
 public class EventHandlerTest extends AbstractIntegrationTest {
 
+    private static final String PARTY_ID = "test-party-id";
+    private static final long CLAIM_ID = 1L;
     @Autowired
     private PartyEventHandler partyEventHandler;
-
     @Autowired
     private WalkerSrv.Iface walkerService;
-
     @Autowired
     private ClaimDao claimDao;
 
-    private static final String PARTY_ID = "test-party-id";
-    private static final long CLAIM_ID = 1L;
+    private static MachineEvent createTestMachineEvent() {
+        MachineEvent event = new MachineEvent();
+        event.setEventId(random(Long.class));
+        event.setSourceId(PARTY_ID);
+        return event;
+    }
+
+    private static PartyEventData createTestPartyEventData(PartyChange partyChange) {
+        PartyEventData eventData = new PartyEventData();
+        eventData.setChanges(Arrays.asList(partyChange));
+        return eventData;
+    }
 
     @Before
     public void before() {
@@ -97,7 +114,8 @@ public class EventHandlerTest extends AbstractIntegrationTest {
 
     public PartyChange buildClaimCreated() throws IOException {
         Claim emptyCreated = new Claim();
-        Claim claim = new MockTBaseProcessor(MockMode.REQUIRED_ONLY, 15, 1).process(emptyCreated, new TBaseHandler<>(Claim.class));
+        Claim claim = new MockTBaseProcessor(MockMode.REQUIRED_ONLY, 15, 1)
+                .process(emptyCreated, new TBaseHandler<>(Claim.class));
         claim.setStatus(ClaimStatus.pending(new ClaimPending()));
         claim.setId(CLAIM_ID);
 
@@ -117,7 +135,8 @@ public class EventHandlerTest extends AbstractIntegrationTest {
         claimUpdated.setChangeset(Collections.singletonList(buildLegalAgreement()));
 
         PartyChange emptyPartyChange = new PartyChange();
-        PartyChange partyChange = new MockTBaseProcessor(MockMode.REQUIRED_ONLY, 15, 1).process(emptyPartyChange, new TBaseHandler<>(PartyChange.class));
+        PartyChange partyChange = new MockTBaseProcessor(MockMode.REQUIRED_ONLY, 15, 1)
+                .process(emptyPartyChange, new TBaseHandler<>(PartyChange.class));
         partyChange.setClaimUpdated(claimUpdated);
 
         return partyChange;
@@ -131,28 +150,17 @@ public class EventHandlerTest extends AbstractIntegrationTest {
         claimStatusChanged.setChangedAt(TimeUtils.toIsoInstantString(LocalDateTime.now()));
 
         PartyChange emptyPartyEvent = new PartyChange();
-        PartyChange partyChange = new MockTBaseProcessor(MockMode.REQUIRED_ONLY, 15, 1).process(emptyPartyEvent, new TBaseHandler<>(PartyChange.class));
+        PartyChange partyChange = new MockTBaseProcessor(MockMode.REQUIRED_ONLY, 15, 1)
+                .process(emptyPartyEvent, new TBaseHandler<>(PartyChange.class));
         partyChange.setClaimStatusChanged(claimStatusChanged);
 
         return partyChange;
     }
 
-    private static MachineEvent createTestMachineEvent() {
-        MachineEvent event = new MachineEvent();
-        event.setEventId(random(Long.class));
-        event.setSourceId(PARTY_ID);
-        return event;
-    }
-
-    private static PartyEventData createTestPartyEventData(PartyChange partyChange) {
-        PartyEventData eventData = new PartyEventData();
-        eventData.setChanges(Arrays.asList(partyChange));
-        return eventData;
-    }
-
     private void printJson(StockEvent stockEvent) {
         try {
-            System.out.println("Full json : \n " + new TBaseProcessor().process(stockEvent, new JsonHandler()).toString());
+            System.out.println(
+                    "Full json : \n " + new TBaseProcessor().process(stockEvent, new JsonHandler()).toString());
         } catch (IOException e) {
             e.printStackTrace();
         }

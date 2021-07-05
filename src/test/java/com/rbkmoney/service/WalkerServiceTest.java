@@ -3,7 +3,11 @@ package com.rbkmoney.service;
 import com.rbkmoney.AbstractIntegrationTest;
 import com.rbkmoney.damsel.payment_processing.ClaimDenied;
 import com.rbkmoney.damsel.payment_processing.ClaimStatus;
-import com.rbkmoney.damsel.walker.*;
+import com.rbkmoney.damsel.walker.Action;
+import com.rbkmoney.damsel.walker.ActionType;
+import com.rbkmoney.damsel.walker.Comment;
+import com.rbkmoney.damsel.walker.UserInformation;
+import com.rbkmoney.damsel.walker.WalkerSrv;
 import com.rbkmoney.walker.dao.ActionDao;
 import com.rbkmoney.walker.dao.CommentDao;
 import com.rbkmoney.walker.service.ActionService;
@@ -19,21 +23,17 @@ import static org.junit.Assert.assertEquals;
 
 public class WalkerServiceTest extends AbstractIntegrationTest {
 
-    @Autowired
-    private ActionService actionService;
-
-    @Autowired
-    private ActionDao actionDao;
-
-    @Autowired
-    private CommentDao commentDao;
-
-    @Autowired
-    private WalkerSrv.Iface walkerService;
-
     private static final String TEST_USER_ID = "test_user_id";
     private static final String PARTY_ID = "test-party-id";
     private static final long CLAIM_ID = 1;
+    @Autowired
+    private ActionService actionService;
+    @Autowired
+    private ActionDao actionDao;
+    @Autowired
+    private CommentDao commentDao;
+    @Autowired
+    private WalkerSrv.Iface walkerService;
 
     @Before
     public void before() {

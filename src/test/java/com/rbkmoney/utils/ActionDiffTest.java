@@ -1,8 +1,18 @@
 package com.rbkmoney.utils;
 
 import com.bazaarvoice.jolt.utils.JoltUtils;
-import com.rbkmoney.damsel.domain.*;
-import com.rbkmoney.damsel.payment_processing.*;
+import com.rbkmoney.damsel.domain.Contractor;
+import com.rbkmoney.damsel.domain.CurrencyRef;
+import com.rbkmoney.damsel.domain.LegalAgreement;
+import com.rbkmoney.damsel.domain.LegalEntity;
+import com.rbkmoney.damsel.domain.PayoutToolInfo;
+import com.rbkmoney.damsel.domain.RussianBankAccount;
+import com.rbkmoney.damsel.domain.RussianLegalEntity;
+import com.rbkmoney.damsel.payment_processing.ContractModification;
+import com.rbkmoney.damsel.payment_processing.ContractModificationUnit;
+import com.rbkmoney.damsel.payment_processing.ContractParams;
+import com.rbkmoney.damsel.payment_processing.PartyModification;
+import com.rbkmoney.damsel.payment_processing.PayoutToolParams;
 import com.rbkmoney.damsel.walker.PartyModificationUnit;
 import com.rbkmoney.geck.serializer.kit.mock.MockMode;
 import com.rbkmoney.geck.serializer.kit.mock.MockTBaseProcessor;
@@ -20,30 +30,9 @@ import static com.rbkmoney.utils.ThriftToJsonTest.buildDiffObjects;
 
 public class ActionDiffTest {
 
-    @Test
-    public void test() throws IOException {
-        // ПРОЩЕ показывать две разные
-
-        PartyModificationUnit partyModificationUnit1 = new PartyModificationUnit();
-        List<PartyModification> partyModificationList = Collections.singletonList(buildWalkerComplexModification());
-        partyModificationUnit1.setModifications(partyModificationList);
-        Object o1 = convertToObjects(partyModificationUnit1);
-
-        PartyModificationUnit partyModificationUnit2 = new PartyModificationUnit();
-        LinkedList<PartyModification> partyModificationList2 = new LinkedList<>();
-        PartyModification partyModification2 = buildWalkerComplexModification();
-        partyModification2.getContractModification().setId("12313");
-        partyModificationList2.add(partyModification2);
-        partyModificationList2.add(buildRandomModification());
-        partyModificationUnit2.setModifications(partyModificationList2);
-        Object o2 = convertToObjects(partyModificationUnit2);
-
-        buildDiffObjects(o1, o2);
-    }
-
     public static PartyModification buildWalkerComplexModification() throws IOException {
-        RussianBankAccount bankAccount1 = new RussianBankAccount("Аккаунт", "Degu Bank Inc", "123123123 post", "12313");
-        RussianBankAccount bankAccount2 = new RussianBankAccount("Аккаунт2", "Not Degu Bank Inc", "333 post", "BIKBIK");
+        RussianBankAccount bankAccount1 = new RussianBankAccount("Аккаунт",
+                "Degu Bank Inc", "123123123 post", "12313");
 
         RussianLegalEntity russianLegalEntity = new RussianLegalEntity();
         russianLegalEntity.setActualAddress("Улица пушкина, Дом колотушкина");
@@ -54,6 +43,8 @@ public class ActionDiffTest {
         russianLegalEntity.setRepresentativeDocument("Усы лапы и хвост");
         russianLegalEntity.setRepresentativePosition("Миссионерская");
         russianLegalEntity.setRepresentativeFullName("Александра Грей");
+        RussianBankAccount bankAccount2 = new RussianBankAccount("Аккаунт2",
+                "Not Degu Bank Inc", "333 post", "BIKBIK");
         russianLegalEntity.setRussianBankAccount(bankAccount2);
 
 
@@ -104,14 +95,36 @@ public class ActionDiffTest {
         return partyModification;
     }
 
-    public PartyModification buildRandomModification() throws IOException {
-        PartyModification process = new MockTBaseProcessor(MockMode.ALL, 15, 1).process(new PartyModification(), new TBaseHandler<>(PartyModification.class));
-        return process;
-    }
-
     public static Object convertToObjects(PartyModificationUnit partyModificationUnit) throws IOException {
         Object o = JoltUtils.compactJson(new TBaseProcessor().process(partyModificationUnit, new ObjectHandler()));
         return o;
+    }
+
+    @Test
+    public void test() throws IOException {
+        // ПРОЩЕ показывать две разные
+        PartyModificationUnit partyModificationUnit1 = new PartyModificationUnit();
+        List<PartyModification> partyModificationList = Collections.singletonList(buildWalkerComplexModification());
+        partyModificationUnit1.setModifications(partyModificationList);
+
+        LinkedList<PartyModification> partyModificationList2 = new LinkedList<>();
+        PartyModification partyModification2 = buildWalkerComplexModification();
+        partyModification2.getContractModification().setId("12313");
+        partyModificationList2.add(partyModification2);
+        partyModificationList2.add(buildRandomModification());
+
+        PartyModificationUnit partyModificationUnit2 = new PartyModificationUnit();
+        partyModificationUnit2.setModifications(partyModificationList2);
+
+        Object o1 = convertToObjects(partyModificationUnit1);
+        Object o2 = convertToObjects(partyModificationUnit2);
+        buildDiffObjects(o1, o2);
+    }
+
+    public PartyModification buildRandomModification() throws IOException {
+        PartyModification process = new MockTBaseProcessor(MockMode.ALL, 15, 1)
+                .process(new PartyModification(), new TBaseHandler<>(PartyModification.class));
+        return process;
     }
 
 }

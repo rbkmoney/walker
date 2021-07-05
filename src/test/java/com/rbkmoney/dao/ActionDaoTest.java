@@ -21,12 +21,11 @@ import static org.junit.Assert.assertEquals;
 
 public class ActionDaoTest extends AbstractIntegrationTest {
 
-    @Autowired
-    private ActionDao actionDao;
-
     private static final String PARTY_ID = "test-party-id";
     private static final String TEST_USER_ID = "test_user_id";
     private static final long CLAIM_ID = 1L;
+    @Autowired
+    private ActionDao actionDao;
 
     @Before
     public void before() {
