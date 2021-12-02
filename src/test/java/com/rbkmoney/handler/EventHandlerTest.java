@@ -20,8 +20,8 @@ import com.rbkmoney.walker.dao.ClaimDao;
 import com.rbkmoney.walker.handler.PartyEventHandler;
 import com.rbkmoney.walker.utils.TimeUtils;
 import org.apache.thrift.TException;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
@@ -33,7 +33,7 @@ import java.util.List;
 
 import static com.rbkmoney.utils.ActionDiffTest.buildLegalAgreement;
 import static io.github.benas.randombeans.api.EnhancedRandom.random;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class EventHandlerTest extends AbstractIntegrationTest {
 
@@ -59,7 +59,7 @@ public class EventHandlerTest extends AbstractIntegrationTest {
         return eventData;
     }
 
-    @Before
+    @BeforeEach
     public void before() {
         claimDao.getJdbcTemplate().execute("TRUNCATE TABLE walk.claim CONTINUE IDENTITY RESTRICT;");
     }

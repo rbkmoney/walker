@@ -1,6 +1,6 @@
 package com.rbkmoney.utils;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -9,7 +9,8 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
 import static java.time.format.DateTimeFormatter.ISO_INSTANT;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class TimeTest {
 
@@ -39,6 +40,6 @@ public class TimeTest {
     @Test
     public void timeNullTest() {
         String s = toPrettyDate(null);
-        assertEquals(null, s);
+        assertNull(s);
     }
 }

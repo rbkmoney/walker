@@ -12,14 +12,14 @@ import com.rbkmoney.walker.dao.ActionDao;
 import com.rbkmoney.walker.dao.CommentDao;
 import com.rbkmoney.walker.service.ActionService;
 import org.apache.thrift.TException;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class WalkerServiceTest extends AbstractIntegrationTest {
 
@@ -35,7 +35,7 @@ public class WalkerServiceTest extends AbstractIntegrationTest {
     @Autowired
     private WalkerSrv.Iface walkerService;
 
-    @Before
+    @BeforeEach
     public void before() {
         actionDao.getJdbcTemplate()
                 .execute("TRUNCATE TABLE walk.ACTION CONTINUE IDENTITY RESTRICT;");

@@ -19,7 +19,7 @@ import com.rbkmoney.damsel.payment_processing.PartyChange;
 import com.rbkmoney.damsel.payment_processing.PartyModification;
 import com.rbkmoney.damsel.payment_processing.PayoutToolParams;
 import com.rbkmoney.damsel.walker.PartyModificationUnit;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -29,8 +29,8 @@ import static com.rbkmoney.walker.utils.ThriftConvertor.convertToJson;
 import static com.rbkmoney.walker.utils.ThriftConvertor.convertToPartyModificationUnit;
 import static com.rbkmoney.walker.utils.ThriftConvertor.fromJsonPartyEvent;
 import static com.rbkmoney.walker.utils.ThriftConvertor.fromJsonPartyModification;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ThriftToJsonTest {
 
