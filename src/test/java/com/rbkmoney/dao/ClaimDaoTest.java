@@ -12,8 +12,8 @@ import com.rbkmoney.damsel.walker.PartyModificationUnit;
 import com.rbkmoney.walker.dao.ClaimDao;
 import com.rbkmoney.walker.domain.generated.tables.records.ClaimRecord;
 import com.rbkmoney.walker.utils.ThriftConvertor;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
@@ -23,8 +23,8 @@ import java.util.List;
 
 import static com.rbkmoney.utils.ActionDiffTest.buildLegalAgreement;
 import static com.rbkmoney.utils.ActionDiffTest.buildWalkerComplexModification;
-import static junit.framework.TestCase.assertTrue;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ClaimDaoTest extends AbstractIntegrationTest {
 
@@ -34,7 +34,7 @@ public class ClaimDaoTest extends AbstractIntegrationTest {
     @Autowired
     private ClaimDao claimDao;
 
-    @Before
+    @BeforeEach
     public void before() {
         claimDao.getJdbcTemplate().execute(
                 "TRUNCATE TABLE walk.claim CONTINUE IDENTITY RESTRICT;"

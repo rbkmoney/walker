@@ -1,7 +1,6 @@
 package com.rbkmoney.handler;
 
 import com.rbkmoney.AbstractIntegrationTest;
-import com.rbkmoney.damsel.event_stock.StockEvent;
 import com.rbkmoney.damsel.payment_processing.Claim;
 import com.rbkmoney.damsel.payment_processing.ClaimAccepted;
 import com.rbkmoney.damsel.payment_processing.ClaimPending;
@@ -13,29 +12,28 @@ import com.rbkmoney.damsel.payment_processing.PartyEventData;
 import com.rbkmoney.damsel.walker.ClaimInfo;
 import com.rbkmoney.damsel.walker.ClaimSearchRequest;
 import com.rbkmoney.damsel.walker.WalkerSrv;
-import com.rbkmoney.geck.serializer.kit.json.JsonHandler;
 import com.rbkmoney.geck.serializer.kit.mock.MockMode;
 import com.rbkmoney.geck.serializer.kit.mock.MockTBaseProcessor;
 import com.rbkmoney.geck.serializer.kit.tbase.TBaseHandler;
-import com.rbkmoney.geck.serializer.kit.tbase.TBaseProcessor;
 import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.walker.dao.ClaimDao;
 import com.rbkmoney.walker.handler.PartyEventHandler;
 import com.rbkmoney.walker.utils.TimeUtils;
 import org.apache.thrift.TException;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import static com.rbkmoney.utils.ActionDiffTest.buildLegalAgreement;
 import static io.github.benas.randombeans.api.EnhancedRandom.random;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class EventHandlerTest extends AbstractIntegrationTest {
 
@@ -61,7 +59,7 @@ public class EventHandlerTest extends AbstractIntegrationTest {
         return eventData;
     }
 
-    @Before
+    @BeforeEach
     public void before() {
         claimDao.getJdbcTemplate().execute("TRUNCATE TABLE walk.claim CONTINUE IDENTITY RESTRICT;");
     }
@@ -118,6 +116,7 @@ public class EventHandlerTest extends AbstractIntegrationTest {
                 .process(emptyCreated, new TBaseHandler<>(Claim.class));
         claim.setStatus(ClaimStatus.pending(new ClaimPending()));
         claim.setId(CLAIM_ID);
+        claim.setChangeset(new ArrayList<>());
 
         PartyChange emptyPartyChange = new PartyChange();
         PartyChange partyChange = new MockTBaseProcessor(MockMode.REQUIRED_ONLY, 15, 1)
@@ -157,12 +156,4 @@ public class EventHandlerTest extends AbstractIntegrationTest {
         return partyChange;
     }
 
-    private void printJson(StockEvent stockEvent) {
-        try {
-            System.out.println(
-                    "Full json : \n " + new TBaseProcessor().process(stockEvent, new JsonHandler()).toString());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 }

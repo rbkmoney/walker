@@ -7,8 +7,8 @@ import com.rbkmoney.damsel.walker.PartyModificationUnit;
 import com.rbkmoney.walker.dao.ActionDao;
 import com.rbkmoney.walker.domain.generated.tables.records.ActionRecord;
 import com.rbkmoney.walker.utils.ThriftConvertor;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
@@ -17,7 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static com.rbkmoney.utils.ActionDiffTest.buildWalkerComplexModification;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ActionDaoTest extends AbstractIntegrationTest {
 
@@ -27,7 +27,7 @@ public class ActionDaoTest extends AbstractIntegrationTest {
     @Autowired
     private ActionDao actionDao;
 
-    @Before
+    @BeforeEach
     public void before() {
         actionDao.getJdbcTemplate()
                 .execute("TRUNCATE TABLE walk.ACTION CONTINUE IDENTITY RESTRICT;");

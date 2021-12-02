@@ -23,11 +23,11 @@ import com.rbkmoney.damsel.payment_processing.UserInfo;
 import com.rbkmoney.damsel.payment_processing.UserType;
 import com.rbkmoney.woody.thrift.impl.http.THPooledClientBuilder;
 import org.apache.thrift.TException;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.lang.reflect.Field;
 import java.net.NetworkInterface;
@@ -38,8 +38,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
-@Ignore
-@RunWith(SpringRunner.class)
+@Disabled
+@ExtendWith(SpringExtension.class)
 public class HellGateMethodsTest {
 
     private static final String PARTY_MANAGEMENT_SERVICE_URL = "http://hellgate:8022/v1/processing/partymgmt";
@@ -55,7 +55,7 @@ public class HellGateMethodsTest {
     private final String claimId = "4";
     private UserInfo userInfo;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         partyManagement = new THPooledClientBuilder().withAddress(new URI(PARTY_MANAGEMENT_SERVICE_URL))
                 .build(PartyManagementSrv.Iface.class);

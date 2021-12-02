@@ -3,13 +3,13 @@ package com.rbkmoney.dao;
 import com.rbkmoney.AbstractIntegrationTest;
 import com.rbkmoney.walker.dao.CommentDao;
 import com.rbkmoney.walker.domain.generated.tables.records.CommentRecord;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class CommentDaoTest extends AbstractIntegrationTest {
 
@@ -17,7 +17,7 @@ public class CommentDaoTest extends AbstractIntegrationTest {
     @Autowired
     private CommentDao commentDao;
 
-    @Before
+    @BeforeEach
     public void before() {
         commentDao.getJdbcTemplate().execute(
                 "TRUNCATE TABLE walk.comment CONTINUE IDENTITY RESTRICT;"

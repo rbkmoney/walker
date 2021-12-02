@@ -1,10 +1,8 @@
 package com.rbkmoney.kafka;
 
 import com.rbkmoney.easyway.AbstractTestUtils;
-import com.rbkmoney.easyway.EnvironmentProperties;
-import com.rbkmoney.easyway.TestContainers;
-import com.rbkmoney.easyway.TestContainersBuilder;
-import com.rbkmoney.easyway.TestContainersParameters;
+import com.rbkmoney.extension.KafkaContainerExtension;
+import com.rbkmoney.extension.PostgresContainerExtension;
 import com.rbkmoney.kafka.common.serialization.ThriftSerializer;
 import com.rbkmoney.machinegun.eventsink.SinkEvent;
 import com.rbkmoney.walker.WalkerApplication;
@@ -14,62 +12,33 @@ import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.StringSerializer;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Value;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.util.TestPropertyValues;
-import org.springframework.context.ApplicationContextInitializer;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 
 import java.util.Properties;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 @Slf4j
-@RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = RANDOM_PORT)
-@ContextConfiguration(classes = WalkerApplication.class, initializers = AbstractKafkaTest.Initializer.class)
+@ExtendWith({
+        KafkaContainerExtension.class,
+        PostgresContainerExtension.class
+})
+@SpringBootTest(classes = WalkerApplication.class, webEnvironment = RANDOM_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public abstract class AbstractKafkaTest extends AbstractTestUtils {
 
     public static final long DEFAULT_KAFKA_SYNC = 5000L;
-    private static final TestContainers testContainers =
-            TestContainersBuilder.builderWithTestContainers(getTestContainersParametersSupplier())
-                    .addKafkaTestContainer()
-                    .addPostgresqlTestContainer()
-                    .build();
-    @Value("${kafka.bootstrap-servers}")
-    private String bootstrapServers;
 
-    @BeforeClass
-    public static void beforeClass() {
-        testContainers.startTestContainers();
-    }
-
-    @AfterClass
-    public static void afterClass() {
-        testContainers.stopTestContainers();
-    }
-
-    private static Supplier<TestContainersParameters> getTestContainersParametersSupplier() {
-        return () -> {
-            TestContainersParameters testContainersParameters = new TestContainersParameters();
-            testContainersParameters.setPostgresqlJdbcUrl("jdbc:postgresql://localhost:5432/newway");
-            return testContainersParameters;
-        };
-    }
-
-    private static Consumer<EnvironmentProperties> getEnvironmentPropertiesConsumer() {
-        return environmentProperties -> {
-            environmentProperties.put("kafka.topics.party-management.enabled", "true");
-        };
+    @DynamicPropertySource
+    static void connectionConfigs(DynamicPropertyRegistry registry) {
+        registry.add("spring.datasource.url", PostgresContainerExtension.POSTGRES::getJdbcUrl);
+        registry.add("flyway.url", PostgresContainerExtension.POSTGRES::getJdbcUrl);
+        registry.add("kafka.topics.party-management.enabled", () -> "true");
+        registry.add("kafka.bootstrap-servers", KafkaContainerExtension.KAFKA::getBootstrapServers);
     }
 
     protected void writeToTopic(String topic, SinkEvent sinkEvent) {
@@ -85,20 +54,11 @@ public abstract class AbstractKafkaTest extends AbstractTestUtils {
 
     private Producer<String, SinkEvent> createProducer() {
         Properties props = new Properties();
-        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, KafkaContainerExtension.KAFKA.getBootstrapServers());
         props.put(ProducerConfig.CLIENT_ID_CONFIG, "client_id");
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, new ThriftSerializer<SinkEvent>().getClass());
         return new KafkaProducer<>(props);
-    }
-
-    public static class Initializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
-
-        @Override
-        public void initialize(ConfigurableApplicationContext configurableApplicationContext) {
-            TestPropertyValues.of(testContainers.getEnvironmentProperties(getEnvironmentPropertiesConsumer()))
-                    .applyTo(configurableApplicationContext);
-        }
     }
 
 }
