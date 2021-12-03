@@ -116,7 +116,6 @@ public class EventHandlerTest extends AbstractIntegrationTest {
                 .process(emptyCreated, new TBaseHandler<>(Claim.class));
         claim.setStatus(ClaimStatus.pending(new ClaimPending()));
         claim.setId(CLAIM_ID);
-        claim.setChangeset(new ArrayList<>());
 
         PartyChange emptyPartyChange = new PartyChange();
         PartyChange partyChange = new MockTBaseProcessor(MockMode.REQUIRED_ONLY, 15, 1)

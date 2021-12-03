@@ -16,8 +16,10 @@ import com.rbkmoney.geck.serializer.kit.tbase.TBaseProcessor;
 import com.rbkmoney.walker.domain.generated.tables.records.ActionRecord;
 import com.rbkmoney.walker.domain.generated.tables.records.ClaimRecord;
 import org.apache.thrift.TBase;
+import org.springframework.util.CollectionUtils;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.rbkmoney.walker.utils.TimeUtils.toIsoInstantString;
@@ -51,7 +53,8 @@ public class ThriftConvertor {
     public static PartyModificationUnit convertToPartyModificationUnit(List<PartyModification> hgModifications)
             throws IOException {
         PartyModificationUnit partyModificationUnit = new PartyModificationUnit();
-        partyModificationUnit.setModifications(hgModifications);
+        partyModificationUnit.setModifications(
+                !CollectionUtils.isEmpty(hgModifications) ? hgModifications : new ArrayList<>());
         return partyModificationUnit;
     }
 
